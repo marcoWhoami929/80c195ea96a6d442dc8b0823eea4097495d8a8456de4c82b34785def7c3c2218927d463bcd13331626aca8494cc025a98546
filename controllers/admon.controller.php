@@ -74,13 +74,23 @@ class ControllerAdmon
                             );
 
                             $respuesta = ModelAdmon::mdlRegistroBitacora("bitacora", $datos);
+                            if ($_SESSION["grupo"] != 'Administrador') {
 
-                            echo '<script>
+                                echo '<script>
                            
-                             window.location = "' . $dashboard . '";
-                             /*window.location = "dashboard";*/
- 
-                         </script>';
+                                window.location = "ultimosCostos";
+                                /*window.location = "ultimosCostos";*/
+    
+                            </script>';
+                            } else {
+
+                                echo '<script>
+                           
+                                window.location = "' . $dashboard . '";
+                                /*window.location = "dashboard";*/
+    
+                            </script>';
+                            }
                         } else {
 
                             echo '<script>

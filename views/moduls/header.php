@@ -36,12 +36,19 @@
                             </a>
                         </li>
                     </ul>
-                    <ul class="nav-left">
-                        <li>
-                            <button type="button" class="btn btn-info" onclick="openModal()"> <i class="fa fa-window-restore"></i>Accesos Directos</button>
-                            <strong style="color:white">*presionar f2 para desplegar acceso</strong>
-                        </li>
-                    </ul>
+                    <?php
+                    if ($_SESSION["grupo"] != "Administrador") {
+                    } else {
+
+                        echo '<ul class="nav-left">
+                            <li>
+                                <button type="button" class="btn btn-info" onclick="openModal()"> <i class="fa fa-window-restore"></i>Accesos Directos</button>
+                                <strong style="color:white">*presionar f2 para desplegar acceso</strong>
+                            </li>
+                        </ul>';
+                    }
+                    ?>
+
                     <ul class="nav-right">
 
                         <li class="header-notification">
