@@ -37,7 +37,7 @@
                         </li>
                     </ul>
                     <?php
-                    if ($_SESSION["grupo"] != "Administrador") {
+                    if ($_SESSION["grupo"] != "Administracion") {
                     } else {
 
                         echo '<ul class="nav-left">

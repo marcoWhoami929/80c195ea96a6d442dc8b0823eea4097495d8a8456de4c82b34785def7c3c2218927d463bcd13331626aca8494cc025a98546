@@ -173,7 +173,7 @@ session_start();
     <script src="views/js/templateInventarios.js"></script>
     <script src="views/js/admonTables.js"></script>
     <?php
-    if ($_GET["ruta"] == "dashboard") {
+    if ($_GET["ruta"] == "dashboard" || $_GET["ruta"] == "") {
         echo "<script src='views/js/chart.js'></script>";
         echo "<script src='views/js/indicadoresDashboard.js'></script>";
     } else {

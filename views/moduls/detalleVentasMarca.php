@@ -70,7 +70,7 @@
                                                                             <div class="filter-group">
                                                                                 <label>Centro de Trabajo</label>
                                                                                 <span class="filter-icon"><i class="fa fa-filter"></i></span>
-                                                                                <select class="form-control" id="centroTrabajo" onchange="cargarDetalleVentasMarca(1,'');">
+                                                                                <select class="form-control" id="centroTrabajo" onchange="cargarDetalleVentasClienteProducto(1, '/');">
                                                                                     <option value="">Todos</option>
                                                                                     <?php
 

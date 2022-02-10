@@ -36,12 +36,35 @@ $(function () {
   if (localStorage.arrayClientes === undefined) {
     localStorage.setItem("arrayClientes", "[]");
   }
-
   mesCurrent = currentdate.getMonth() + 1;
   url = window.location.pathname;
   ruta = url.split("/");
+  if(ruta[1] == ""){
 
-  switch (ruta[2]) {
+     $("#numSemana").html(resultWeek);
+      $("#semanaDashboard").val(resultWeek);
+      var arregloAcciones = JSON.parse(localStorage.accionesTablero);
+      dataDashboard();
+      setDiasSemana();
+      if (arregloAcciones["ventasDay"] == 1) {
+      }
+      if (arregloAcciones["ventasYearToDay"] == 1) {
+        cargarVentasYearToDay(1);
+        graficoVentasYearToDay();
+      }
+      if (arregloAcciones["ventasYearToWeek"] == 1) {
+        cargarVentasYearToWeek(1);
+        graficoVentasYearToWeek();
+      }
+      if (arregloAcciones["ventasYearToMonth"] == 1) {
+        cargarVentasYearToMonth(1);
+        graficoVentasYearToMonth();
+      }
+
+      agregarEvento("Visualizo El Tablero Principal", 4);
+
+  }else{
+      switch (ruta[1]) {
     case "login":
       $('input[type="checkbox"]').on("change", function () {
         $('input[name="' + this.name + '"]')
@@ -286,7 +309,11 @@ $(function () {
       }
 
       break;
+   
+    
   }
+  }
+  
   $(".selectorAgentes").select2();
   var agenteVenta = JSON.parse(localStorage.getItem("arrayAgentes"));
   $(".selectorAgentes").val(agenteVenta).trigger("change");
@@ -3696,7 +3723,7 @@ function removeItemFromArregloBusqueda(array, item, nombreArreglo) {
       break;
     }
   }
-  switch (ruta[2]) {
+  switch (ruta[1]) {
     case "ventasClienteDiario":
       cargarVentasClienteDiario(1, "");
       break;
@@ -3823,7 +3850,7 @@ function validateItemArray(array, item, nombreArreglo) {
         break;
     }
 
-    switch (ruta[2]) {
+    switch (ruta[1]) {
       case "ventasClienteDiario":
         cargarVentasClienteDiario(1, "");
         break;
@@ -4546,7 +4573,7 @@ function limpiarFiltros(tipo) {
 
       break;
   }
-  switch (ruta[2]) {
+  switch (ruta[1]) {
     case "ventasClienteDiario":
       cargarVentasClienteDiario(1, "");
       break;

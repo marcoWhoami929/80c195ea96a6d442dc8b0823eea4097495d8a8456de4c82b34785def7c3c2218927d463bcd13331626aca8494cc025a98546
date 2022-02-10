@@ -74,7 +74,7 @@ class ControllerAdmon
                             );
 
                             $respuesta = ModelAdmon::mdlRegistroBitacora("bitacora", $datos);
-                            if ($_SESSION["grupo"] != 'Administrador') {
+                            if ($_SESSION["grupo"] != 'Administracion') {
 
                                 echo '<script>
                            
