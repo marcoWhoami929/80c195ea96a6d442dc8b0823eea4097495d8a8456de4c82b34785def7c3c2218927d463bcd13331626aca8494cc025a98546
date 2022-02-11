@@ -26,6 +26,7 @@ function loadIndicadoresDashboardConcepto(año, semana, dia) {
       respuesta.conceptos[3]["value"] +
       respuesta.conceptos[4]["value"];
 
+    var acumuladoFacturas = respuesta.conceptos[3]["value"] + respuesta.conceptos[4]["value"];
     $("#dataNotasCargo").html(
       "$ " + format(respuesta.conceptos[0]["value"].toFixed(2))
     );
@@ -35,11 +36,9 @@ function loadIndicadoresDashboardConcepto(año, semana, dia) {
     $("#dataNotasDevolucion").html(
       "$ " + format(respuesta.conceptos[2]["value"].toFixed(2))
     );
-    $("#documentosPrueba").html(
-      "$ " + format(respuesta.conceptos[3]["value"].toFixed(2))
-    );
+
     $("#facturas").html(
-      "$ " + format(respuesta.conceptos[4]["value"].toFixed(2))
+      "$ " + format(acumuladoFacturas.toFixed(2))
     );
     $("#totalesConceptos").html("$ " + format(totalAcumulado.toFixed(2)));
   })();

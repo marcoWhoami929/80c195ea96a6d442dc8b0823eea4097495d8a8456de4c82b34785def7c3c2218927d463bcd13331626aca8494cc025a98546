@@ -323,16 +323,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-2 col-sm-6 col-md-2">
-                                                    <div class="card text-center order-visitor-card divVentaData" onclick="redireccionAcion('PRUEBA')">
-                                                        <div class="card-block">
-                                                            <h6 class="m-b-0">DOCUMENTOS PRUEBA</h6>
-                                                            <h4 class="m-t-15 m-b-15" id="documentosPrueba"></h4>
-                                                            </h4>
-                                                            <p class="m-b-0"></p>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                
                                                 <div class="col-lg-2 col-md-2 col-sm-2">
                                                     <div class="card bg-c-danger total-card divVentaData" style="border:1px solid #00BCD4">
                                                         <div class="card-block">

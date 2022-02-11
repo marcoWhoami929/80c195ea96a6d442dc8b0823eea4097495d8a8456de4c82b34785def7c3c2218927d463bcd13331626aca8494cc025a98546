@@ -113,17 +113,17 @@ if ($action == 'ventasProductoMonto') {
                     <tr>
                         <th>Total General</th>
                         <th></th>
-                        <th style="font-weight:bold;text-align:right">$<?= $año1 ?></th>
-                        <th style="font-weight:bold;text-align:right">$<?= $año2 ?></th>
-                        <th style="font-weight:bold;text-align:right">$<?= $año3 ?></th>
-                        <th style="font-weight:bold;text-align:right">$<?= $año4 ?></th>
-                        <th style="font-weight:bold;text-align:right">$<?= $año5 ?></th>
-                        <th style="font-weight:bold;text-align:right">$<?= $año6 ?></th>
-                        <th style="font-weight:bold;text-align:right">$<?= $año7 ?></th>
-                        <th style="font-weight:bold;text-align:right">$<?= $año8 ?></th>
-                        <th style="font-weight:bold;text-align:right">$<?= $año9 ?></th>
-                        <th style="font-weight:bold;text-align:right">$<?= $año10 ?></th>
-                        <th style="font-weight:bold;text-align:right">$<?= $añoTotales ?></th>
+                        <th style="font-weight:bold;text-align:right">$<?= number_format($año1, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">$<?= number_format($año2, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">$<?= number_format($año3, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">$<?= number_format($año4, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">$<?= number_format($año5, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">$<?= number_format($año6, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">$<?= number_format($año7, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">$<?= number_format($año8, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">$<?= number_format($año9, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">$<?= number_format($año10, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">$<?= number_format($añoTotales, 2) ?></th>
                     </tr>
                 </tfoot>
 
@@ -247,7 +247,7 @@ if ($action == 'ventasProductoUnidades') {
                             <td style="font-weight:bold;text-align:right"><?= number_format($row['2020'], 2) ?></td>
                             <td style="font-weight:bold;text-align:right"><?= number_format($row['2021'], 2) ?></td>
                             <td style="font-weight:bold;text-align:right"><?= number_format($row['2022'], 2) ?></td>
-                            <th style="font-weight:bold;text-align:right">#<?= $row['Totales'] ?></th>
+                            <th style="font-weight:bold;text-align:right">#<?= number_format($row['Totales'], 2) ?></th>
                         </tr>
                     <?php
                         $finales++;
@@ -260,17 +260,17 @@ if ($action == 'ventasProductoUnidades') {
                     <tr>
                         <th>Total General</th>
                         <th></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $año1 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $año2 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $año3 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $año4 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $año5 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $año6 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $año7 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $año8 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $año9 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $año10 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $añoTotales ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($año1, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($año2, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($año3, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($año4, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($año5, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($año6, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($año7, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($año8, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($año9, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($año10, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($añoTotales, 2) ?></th>
                     </tr>
                 </tfoot>
 

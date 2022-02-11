@@ -11269,7 +11269,13 @@ SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull(
           }
 
           if ($search['concepto'] != "") {
-               $condicional .= "and Concepto = '" . $search['concepto'] . "' ";
+                if ($search['concepto'] ==  "facturas") {
+
+                    $condicional .= "and Concepto IN ('documentosPrueba','facturas') ";
+                }else{
+                    $condicional .= "and Concepto = '" . $search['concepto'] . "' ";
+                }
+               
           }
 
 

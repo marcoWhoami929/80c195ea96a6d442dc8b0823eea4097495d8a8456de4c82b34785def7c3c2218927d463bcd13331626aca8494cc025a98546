@@ -263,7 +263,7 @@ if ($action == 'ventasProductoUnidades') {
                             <td style="font-weight:bold;text-align:right"><?= number_format($row['10'], 2) ?></td>
                             <td style="font-weight:bold;text-align:right"><?= number_format($row['11'], 2) ?></td>
                             <td style="font-weight:bold;text-align:right"><?= number_format($row['12'], 2) ?></td>
-                            <th>#<?= $row['Totales'] ?></th>
+                            <th>#<?= number_format($row['Totales'], 2) ?></th>
                         </tr>
                     <?php
                         $finales++;
@@ -276,19 +276,19 @@ if ($action == 'ventasProductoUnidades') {
                     <tr>
                         <th>Total General</th>
                         <th></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mes1 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mes2 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mes3 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mes4 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mes5 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mes6 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mes7 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mes8 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mes9 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mes10 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mes11 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mes12 ?></th>
-                        <th style="font-weight:bold;text-align:right">#<?= $mesTotales ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mes1, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mes2, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mes3, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mes4, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mes5, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mes6, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mes7, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mes8, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mes9, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mes10, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mes11, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mes12, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">#<?= number_format($mesTotales, 2) ?></th>
                     </tr>
                 </tfoot>
 
