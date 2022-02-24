@@ -240,7 +240,7 @@
             }
 
 
-            if ($_SESSION["nombre"] == 'Elsa Martinez') {
+            if ($_SESSION["nombre"] == 'Elsa Martinez Ortíz') {
 
                 echo ' <div class="pcoded-navigation-label">Administracion</div><ul class="pcoded-item pcoded-left-item">
                 <li class="pcoded-hasmenu">
