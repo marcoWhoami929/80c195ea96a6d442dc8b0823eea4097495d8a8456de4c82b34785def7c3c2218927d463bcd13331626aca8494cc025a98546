@@ -119,6 +119,97 @@ class ControllerReports
 
                 $mes12 = $value['12'];
                 $fecha12 = $reporteFechas[$key]['12'];
+            } else if ($año == '2022' and  $empresaElegida == 'DEKKERLAB' and $value['1'] === '0.0') {
+
+                if ($value['1'] === '0.0') {
+                    $codigo = $value["CCODIGOPRODUCTO"];
+                    $ultimoCosto = $database->getUltimoCostoDekkerlab($codigo, $año);
+
+                    $mes1 = $ultimoCosto["CULTIMOCOSTOH"];
+                    $fecha1 = $ultimoCosto["CFECHACOSTOH"];
+                } else {
+
+                    $mes1 = $value['1'];
+                    $fecha1 = $reporteFechas[$key]['1'];
+                }
+                if ($value['2'] === NULL) {
+                    $mes2 = $mes1;
+                    $fecha2 = $fecha1;
+                } else {
+                    $mes2 = $value['2'];
+                    $fecha2 = $reporteFechas[$key]['2'];
+                }
+
+                if ($value['3'] === NULL) {
+                    $mes3 = $mes2;
+                    $fecha3 = $fecha2;
+                } else {
+                    $mes3 = $value['3'];
+                    $fecha3 = $reporteFechas[$key]['3'];
+                }
+                if ($value['4'] === NULL) {
+                    $mes4 = $mes3;
+                    $fecha4 = $fecha3;
+                } else {
+                    $mes4 = $value['4'];
+                    $fecha4 = $reporteFechas[$key]['4'];
+                }
+                if ($value['5'] === NULL) {
+                    $mes5 = $mes4;
+                    $fecha5 = $fecha4;
+                } else {
+                    $mes5 = $value['5'];
+                    $fecha5 = $reporteFechas[$key]['5'];
+                }
+                if ($value['6'] === NULL) {
+                    $mes6 = $mes5;
+                    $fecha6 = $fecha5;
+                } else {
+                    $mes6 = $value['6'];
+                    $fecha6 = $reporteFechas[$key]['6'];
+                }
+                if ($value['7'] === NULL) {
+                    $mes7 = $mes6;
+                    $fecha7 = $fecha6;
+                } else {
+                    $mes7 = $value['7'];
+                    $fecha7 = $reporteFechas[$key]['7'];
+                }
+                if ($value['8'] === NULL) {
+                    $mes8 = $mes7;
+                    $fecha8 = $fecha7;
+                } else {
+                    $mes8 = $value['8'];
+                    $fecha8 = $reporteFechas[$key]['8'];
+                }
+                if ($value['9'] === NULL) {
+                    $mes9 = $mes8;
+                    $fecha9 = $fecha8;
+                } else {
+                    $mes9 = $value['9'];
+                    $fecha9 = $reporteFechas[$key]['9'];
+                }
+                if ($value['10'] === NULL) {
+                    $mes10 = $mes9;
+                    $fecha10 = $fecha9;
+                } else {
+                    $mes10 = $value['10'];
+                    $fecha10 = $reporteFechas[$key]['10'];
+                }
+                if ($value['11'] === NULL) {
+                    $mes11 = $mes10;
+                    $fecha11 = $fecha10;
+                } else {
+                    $mes11 = $value['11'];
+                    $fecha11 = $reporteFechas[$key]['11'];
+                }
+                if ($value['12'] === NULL) {
+                    $mes12 = $mes11;
+                    $fecha12 = $fecha11;
+                } else {
+                    $mes12 = $value['12'];
+                    $fecha12 = $reporteFechas[$key]['12'];
+                }
             } else {
 
                 if ($value['1'] === '0.0') {

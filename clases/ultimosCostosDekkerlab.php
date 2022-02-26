@@ -195,6 +195,52 @@ class ultimosCostosDekkerlab extends ConexionsBd
 
         return $query;
     }
+    public function getUltimoCostoDekkerlab($codigo, $año)
+    {
+
+        switch ($año) {
+            case '2013':
+                $meses = "2013";
+                break;
+            case '2014':
+                $meses = "2013";
+                break;
+            case '2015':
+                $meses = "2013,2014";
+                break;
+            case '2016':
+                $meses = "2013,2014,2015";
+                break;
+            case '2017':
+                $meses = "2013,2014,2015,2016";
+                break;
+            case '2018':
+                $meses = "2013,2014,2015,2016,2017";
+                break;
+            case '2019':
+                $meses = "2013,2014,2015,2016,2017,2018";
+                break;
+            case '2020':
+                $meses = "2013,2014,2015,2016,2017,2018,2019";
+                break;
+            case '2021':
+                $meses = "2013,2014,2015,2016,2017,2018,2019,2020";
+                break;
+            case '2022':
+                $meses = "2013,2014,2015,2016,2017,2018,2019,2020,2021";
+                break;
+        }
+
+        $sql = "WITH consulta as (SELECT  admpro.CIDPRODUCTO,admcos.CULTIMOCOSTOH,admmov.CIDDOCUMENTO,admcos.CFECHACOSTOH,MONTH(admcos.CFECHACOSTOH) as mes,YEAR(admcos.CFECHACOSTOH) as año,ROW_NUMBER() OVER(PARTITION BY admcos.CIDPRODUCTO,DATEADD(MONTH,DATEDIFF(MONTH,0,admcos.CFECHACOSTOH),0)
+        ORDER BY admcos.CFECHACOSTOH desc) as filtro1 FROM [adPINTURAS2020SADEC].[dbo].[admProductos] as admpro LEFT OUTER JOIN [adPINTURAS2020SADEC].[dbo].[admCostosHistoricos] as admcos ON admpro.CIDPRODUCTO = admcos.CIDPRODUCTO LEFT OUTER JOIN [adPINTURAS2020SADEC].[dbo].[admMovimientos] as admmov ON admcos.CIDMOVIMIENTO = admmov.CIDMOVIMIENTO LEFT OUTER JOIN [adPINTURAS2020SADEC].[dbo].[admDocumentos] as admdoc ON admmov.CIDDOCUMENTO = admdoc.CIDDOCUMENTO WHERE YEAR(admcos.CFECHACOSTOH) IN($meses) AND admmov.CIDDOCUMENTODE = '19' and admpro.CCODIGOPRODUCTO = '" . $codigo . "' and admdoc.CIDCLIENTEPROVEEDOR != 19 and admcos.CULTIMOCOSTOH != 0 )
+
+     select TOP(1) CFECHACOSTOH,CULTIMOCOSTOH,CIDDOCUMENTO from consulta where filtro1 = 1 ORDER BY YEAR(CFECHACOSTOH) DESC,MONTH(CFECHACOSTOH) DESC,CFECHACOSTOH DESC";
+
+        $query = $this->mysqli->query($sql);
+        $query = $query->fetch();
+
+        return $query;
+    }
     public function getDataReporteUltimosCostos($codigo, $añoElegido)
     {
 

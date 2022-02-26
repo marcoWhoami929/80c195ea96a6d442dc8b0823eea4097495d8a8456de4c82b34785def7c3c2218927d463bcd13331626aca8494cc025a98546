@@ -78,7 +78,7 @@ if ($action == 'ultimosCostos') {
                     $finales = 0;
 
                     foreach ($datos as $key => $row) {
-
+                        $empresas = $_REQUEST["empresa"];
                         if ($año == '2013') {
 
                             $mes1 = $row['1'];
@@ -105,7 +105,105 @@ if ($action == 'ultimosCostos') {
                             $idDocumento11 = $documents[$key]['11'];
                             $mes12 = $row['12'];
                             $idDocumento12 = $documents[$key]['12'];
-                        } else {
+                        }else if ($año == '2022' and $empresa == 'DEKKERLAB' and $row['1'] === '0.0') {
+
+                            if ($row['1'] === '0.0') {
+                                $codigo = $row["CCODIGOPRODUCTO"];
+
+                                $ultimoCosto = $database->getUltimoCostoDekkerlab($codigo, $año);
+
+                                if ($ultimoCosto != true) {
+                                    $mes1 = 0;
+                                    $idDocumento1 = 0;
+                                } else {
+                                    $mes1 = $ultimoCosto["CULTIMOCOSTOH"];
+                                    $idDocumento1 = $ultimoCosto["CIDDOCUMENTO"];
+                                }
+                            } else {
+
+                                $mes1 = $row['1'];
+                                $idDocumento1 = $documents[$key]['1'];
+                            }
+                            if ($row['2'] === NULL) {
+                                $mes2 = $mes1;
+                                $idDocumento2 = $idDocumento1;
+                            } else {
+                                $mes2 = $row['2'];
+                                $idDocumento2 = $documents[$key]['2'];
+                            }
+
+                            if ($row['3'] === NULL) {
+                                $mes3 = $mes2;
+                                $idDocumento3 = $idDocumento2;
+                            } else {
+                                $mes3 = $row['3'];
+                                $idDocumento3 = $documents[$key]['3'];
+                            }
+                            if ($row['4'] === NULL) {
+                                $mes4 = $mes3;
+                                $idDocumento4 = $idDocumento3;
+                            } else {
+                                $mes4 = $row['4'];
+                                $idDocumento4 = $documents[$key]['4'];
+                            }
+                            if ($row['5'] === NULL) {
+                                $mes5 = $mes4;
+                                $idDocumento5 = $idDocumento4;
+                            } else {
+                                $mes5 = $row['5'];
+                                $idDocumento5 = $documents[$key]['5'];
+                            }
+                            if ($row['6'] === NULL) {
+                                $mes6 = $mes5;
+                                $idDocumento6 = $idDocumento5;
+                            } else {
+                                $mes6 = $row['6'];
+                                $idDocumento6 = $documents[$key]['6'];
+                            }
+                            if ($row['7'] === NULL) {
+                                $mes7 = $mes6;
+                                $idDocumento7 = $idDocumento6;
+                            } else {
+                                $mes7 = $row['7'];
+                                $idDocumento7 = $documents[$key]['7'];
+                            }
+                            if ($row['8'] === NULL) {
+                                $mes8 = $mes7;
+                                $idDocumento8 = $idDocumento7;
+                            } else {
+                                $mes8 = $row['8'];
+                                $idDocumento8 = $documents[$key]['8'];
+                            }
+                            if ($row['9'] === NULL) {
+                                $mes9 = $mes8;
+                                $idDocumento9 = $idDocumento8;
+                            } else {
+                                $mes9 = $row['9'];
+                                $idDocumento9 = $documents[$key]['9'];
+                            }
+                            if ($row['10'] === NULL) {
+                                $mes10 = $mes9;
+                                $idDocumento10 = $idDocumento9;
+                            } else {
+                                $mes10 = $row['10'];
+                                $idDocumento10 = $documents[$key]['10'];
+                            }
+                            if ($row['11'] === NULL) {
+                                $mes11 = $mes10;
+                                $idDocumento11 = $idDocumento10;
+                            } else {
+                                $mes11 = $row['11'];
+                                $idDocumento11 = $documents[$key]['11'];
+                            }
+                            if ($row['12'] === NULL) {
+                                $mes12 = $mes11;
+                                $idDocumento12 = $idDocumento11;
+                            } else {
+                                $mes12 = $row['12'];
+                                $idDocumento12 = $documents[$key]['12'];
+                            }
+                            $empresas = 'PINTURAS';
+                        }  else {
 
                             if ($row['1'] === '0.0') {
                                 $idProducto = $row[0];
@@ -208,18 +306,18 @@ if ($action == 'ultimosCostos') {
                             <th><?= $row['CIDPRODUCTO']; ?></th>
                             <th><?= $row['CCODIGOPRODUCTO']; ?></th>
                             <th><?= $row['CNOMBREPRODUCTO'] ?></th>
-                            <td style="font-weight:bold">$<?= number_format($mes1, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento1 . "," . "'" . strtoupper($empresa) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
-                            <td style="font-weight:bold">$<?= number_format($mes2, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento2 . "," . "'" . strtoupper($empresa) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
-                            <td style="font-weight:bold">$<?= number_format($mes3, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento3 . "," . "'" . strtoupper($empresa) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
-                            <td style="font-weight:bold">$<?= number_format($mes4, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento4 . "," . "'" . strtoupper($empresa) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
-                            <td style="font-weight:bold">$<?= number_format($mes5, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento5 . "," . "'" . strtoupper($empresa) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
-                            <td style="font-weight:bold">$<?= number_format($mes6, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento6 . "," . "'" . strtoupper($empresa) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
-                            <td style="font-weight:bold">$<?= number_format($mes7, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento7 . "," . "'" . strtoupper($empresa) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
-                            <td style="font-weight:bold">$<?= number_format($mes8, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento8 . "," . "'" . strtoupper($empresa) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
-                            <td style="font-weight:bold">$<?= number_format($mes9, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento9 . "," . "'" . strtoupper($empresa) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
-                            <td style="font-weight:bold">$<?= number_format($mes10, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento10 . "," . "'" . strtoupper($empresa) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
-                            <td style="font-weight:bold">$<?= number_format($mes11, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento11 . "," . "'" . strtoupper($empresa) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
-                            <td style="font-weight:bold">$<?= number_format($mes12, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento12 . "," . "'" . strtoupper($empresa) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
+                            <td style="font-weight:bold">$<?= number_format($mes1, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento1 . "," . "'" . strtoupper($empresas) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
+                            <td style="font-weight:bold">$<?= number_format($mes2, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento2 . "," . "'" . strtoupper($empresas) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
+                            <td style="font-weight:bold">$<?= number_format($mes3, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento3 . "," . "'" . strtoupper($empresas) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
+                            <td style="font-weight:bold">$<?= number_format($mes4, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento4 . "," . "'" . strtoupper($empresas) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
+                            <td style="font-weight:bold">$<?= number_format($mes5, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento5 . "," . "'" . strtoupper($empresas) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
+                            <td style="font-weight:bold">$<?= number_format($mes6, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento6 . "," . "'" . strtoupper($empresas) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
+                            <td style="font-weight:bold">$<?= number_format($mes7, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento7 . "," . "'" . strtoupper($empresas) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
+                            <td style="font-weight:bold">$<?= number_format($mes8, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento8 . "," . "'" . strtoupper($empresas) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
+                            <td style="font-weight:bold">$<?= number_format($mes9, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento9 . "," . "'" . strtoupper($empresas) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
+                            <td style="font-weight:bold">$<?= number_format($mes10, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento10 . "," . "'" . strtoupper($empresas) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
+                            <td style="font-weight:bold">$<?= number_format($mes11, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento11 . "," . "'" . strtoupper($empresas) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
+                            <td style="font-weight:bold">$<?= number_format($mes12, 2) ?><button class="btn" onclick="obtenerDatosCompra(<?php echo $idDocumento12 . "," . "'" . strtoupper($empresas) . "'" ?>);"><i class="fa fa-plus" style="color:#00BCD4"></i></button></td>
                         </tr>
                     <?php
                         $finales++;
