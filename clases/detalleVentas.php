@@ -1,5 +1,4 @@
 <?php
-
 include("../models/db_conexion.php");
 $agenteListPinturas = "CASE SUBSTRING(adoc.CSERIEDOCUMENTO,3,4)
 WHEN 'CP'

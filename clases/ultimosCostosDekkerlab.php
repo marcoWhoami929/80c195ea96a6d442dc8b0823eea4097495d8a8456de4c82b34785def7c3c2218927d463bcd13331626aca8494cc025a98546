@@ -186,9 +186,9 @@ class ultimosCostosDekkerlab extends ConexionsBd
         }
 
         $sql = "WITH consulta as (SELECT  admpro.CIDPRODUCTO,admcos.CULTIMOCOSTOH,admmov.CIDDOCUMENTO,admcos.CFECHACOSTOH,MONTH(admcos.CFECHACOSTOH) as mes,YEAR(admcos.CFECHACOSTOH) as año,ROW_NUMBER() OVER(PARTITION BY admcos.CIDPRODUCTO,DATEADD(MONTH,DATEDIFF(MONTH,0,admcos.CFECHACOSTOH),0)
-        ORDER BY admcos.CFECHACOSTOH desc) as filtro1 FROM dbo.admProductos as admpro LEFT OUTER JOIN dbo.admCostosHistoricos as admcos ON admpro.CIDPRODUCTO = admcos.CIDPRODUCTO LEFT OUTER JOIN dbo.admMovimientos as admmov ON admcos.CIDMOVIMIENTO = admmov.CIDMOVIMIENTO LEFT OUTER JOIN dbo.admDocumentos as admdoc ON admmov.CIDDOCUMENTO = admdoc.CIDDOCUMENTO WHERE YEAR(admcos.CFECHACOSTOH) IN($meses) AND admmov.CIDDOCUMENTODE = '19' and admcos.CIDPRODUCTO = $idProducto and admdoc.CIDCLIENTEPROVEEDOR != 19)
+        ORDER BY admcos.CFECHACOSTOH desc) as filtro1 FROM dbo.admProductos as admpro LEFT OUTER JOIN dbo.admCostosHistoricos as admcos ON admpro.CIDPRODUCTO = admcos.CIDPRODUCTO LEFT OUTER JOIN dbo.admMovimientos as admmov ON admcos.CIDMOVIMIENTO = admmov.CIDMOVIMIENTO LEFT OUTER JOIN dbo.admDocumentos as admdoc ON admmov.CIDDOCUMENTO = admdoc.CIDDOCUMENTO WHERE YEAR(admcos.CFECHACOSTOH) IN($meses) AND admmov.CIDDOCUMENTODE = '19' and admcos.CIDPRODUCTO = $idProducto and admdoc.CIDCLIENTEPROVEEDOR != 5714 and admdoc.CIDCLIENTEPROVEEDOR != 5667 and admcos.CULTIMOCOSTOH != 0 )
 
-     select TOP(1) CFECHACOSTOH,CULTIMOCOSTOH,CIDDOCUMENTO from consulta where filtro1 = 1 ORDER BY AÑO DESC,MES DESC";
+    select TOP(1) CFECHACOSTOH,CULTIMOCOSTOH,CIDDOCUMENTO from consulta where filtro1 = 1 ORDER BY YEAR(CFECHACOSTOH) DESC,MONTH(CFECHACOSTOH) DESC,CFECHACOSTOH DESC";
 
         $query = $this->mysqli->query($sql);
         $query = $query->fetch();

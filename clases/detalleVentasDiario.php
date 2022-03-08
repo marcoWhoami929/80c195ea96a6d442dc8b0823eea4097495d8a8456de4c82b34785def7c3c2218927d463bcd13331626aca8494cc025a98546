@@ -1,5 +1,4 @@
 <?php
-
 include("../models/db_conexion.php");
 $agenteListPinturas = "CASE SUBSTRING(adoc.CSERIEDOCUMENTO,3,4)
 WHEN 'CP'
@@ -4110,6 +4109,7 @@ SELECT *,IsNull([$arreglo[0]],0) + IsNull([$arreglo[1]],0) + IsNull([$arreglo[2]
                 SELECT *,IsNull([$arreglo[0]],0) + IsNull([$arreglo[1]],0) + IsNull([$arreglo[2]],0) + IsNull([$arreglo[3]],0) + IsNull([$arreglo[4]],0) + IsNull([$arreglo[5]],0) Totales FROM VentasDiariasOrdenadas PIVOT(SUM(Desglose) FOR Day in([$arreglo[0]],[$arreglo[1]],[$arreglo[2]],[$arreglo[3]],[$arreglo[4]],[$arreglo[5]])) as pivotTable order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
 
           $query = $this->mysqli->query($sql);
+
 
           $sql1 = "WITH ventasDiarias AS(SELECT 
                         adoc.CIDDOCUMENTO,
