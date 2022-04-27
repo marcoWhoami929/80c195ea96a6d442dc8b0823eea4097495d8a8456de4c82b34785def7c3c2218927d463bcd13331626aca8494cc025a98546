@@ -15951,3 +15951,21 @@ input:checked + .slider:before {
   width: 80px;
 }
 */
+
+.verticalText {
+  -webkit-transform: rotate(-65deg);
+  -moz-transform: rotate(-65deg);
+}
+.btnSalesCanal {
+  cursor: pointer;
+}
+.btnDetailIndicadores {
+  cursor: pointer;
+}
+.btnDetalleEntradasSalidas {
+  cursor: pointer;
+}
+.btnDetalleEntradasSalidas:hover {
+  background: #00bcd4;
+  color: #ffffff;
+}

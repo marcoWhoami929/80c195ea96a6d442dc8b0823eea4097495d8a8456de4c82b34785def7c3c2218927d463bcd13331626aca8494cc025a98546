@@ -35,7 +35,7 @@
                                             <span class="text-inverse">Ventas</span>
                                         </label>
                                     </div>
-                                    <!--
+
                                     <div class="checkbox-fade fade-in-primary d-">
                                         <label>
                                             <input type="checkbox" class="form-control" value="2" name="accion">
@@ -43,7 +43,7 @@
                                             <span class="text-inverse">Inventarios</span>
                                         </label>
                                     </div>
--->
+
                                 </div>
                             </div>
 

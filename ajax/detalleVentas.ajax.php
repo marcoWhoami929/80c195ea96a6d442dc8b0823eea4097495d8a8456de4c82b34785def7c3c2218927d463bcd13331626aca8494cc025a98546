@@ -31,7 +31,7 @@ if ($action == 'detalleVentasCliente') {
     $row = $countAll;
 
     if ($row > 0) {
-        $numrows = $countAll;;
+        $numrows = $countAll;
     } else {
         $numrows = 0;
     }
@@ -148,7 +148,7 @@ if ($action == 'detalleVentasProductos') {
     $row = $countAll;
 
     if ($row > 0) {
-        $numrows = $countAll;;
+        $numrows = $countAll;
     } else {
         $numrows = 0;
     }
@@ -275,7 +275,7 @@ if ($action == 'detalleVentasClienteProducto') {
     $row = $countAll;
 
     if ($row > 0) {
-        $numrows = $countAll;;
+        $numrows = $countAll;
     } else {
         $numrows = 0;
     }
@@ -397,7 +397,7 @@ if ($action == 'detalleVentasMarca') {
     $row = $countAll;
 
     if ($row > 0) {
-        $numrows = $countAll;;
+        $numrows = $countAll;
     } else {
         $numrows = 0;
     }
@@ -507,7 +507,7 @@ if ($action == 'detalleVentasProductosMarca') {
     $row = $countAll;
 
     if ($row > 0) {
-        $numrows = $countAll;;
+        $numrows = $countAll;
     } else {
         $numrows = 0;
     }

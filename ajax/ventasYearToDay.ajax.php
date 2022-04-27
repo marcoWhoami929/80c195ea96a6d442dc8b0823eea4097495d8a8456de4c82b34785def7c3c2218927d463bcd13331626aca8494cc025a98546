@@ -24,7 +24,7 @@ if ($action == 'ventasYearToDay') {
     $row = $countAll;
 
     if ($row > 0) {
-        $numrows = $countAll;;
+        $numrows = $countAll;
     } else {
         $numrows = 0;
     }
@@ -158,7 +158,7 @@ if ($action == 'ventasYearToWeek') {
     $row = $countAll;
 
     if ($row > 0) {
-        $numrows = $countAll;;
+        $numrows = $countAll;
     } else {
         $numrows = 0;
     }
@@ -311,7 +311,7 @@ if ($action == 'ventasYearToMonth') {
     $row = $countAll;
 
     if ($row > 0) {
-        $numrows = $countAll;;
+        $numrows = $countAll;
     } else {
         $numrows = 0;
     }

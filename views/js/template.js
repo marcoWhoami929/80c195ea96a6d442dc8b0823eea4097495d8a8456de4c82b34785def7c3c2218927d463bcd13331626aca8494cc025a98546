@@ -39,281 +39,277 @@ $(function () {
   mesCurrent = currentdate.getMonth() + 1;
   url = window.location.pathname;
   ruta = url.split("/");
-  if(ruta[1] == ""){
+  if (ruta[2] == "" && localStorage.tipoModulo == "Ventas") {
+    $("#numSemana").html(resultWeek);
+    $("#semanaDashboard").val(resultWeek);
+    var arregloAcciones = JSON.parse(localStorage.accionesTablero);
+    dataDashboard();
+    setDiasSemana();
+    if (arregloAcciones["ventasDay"] == 1) {
+    }
+    if (arregloAcciones["ventasYearToDay"] == 1) {
+      cargarVentasYearToDay(1);
+      graficoVentasYearToDay();
+    }
+    if (arregloAcciones["ventasYearToWeek"] == 1) {
+      cargarVentasYearToWeek(1);
+      graficoVentasYearToWeek();
+    }
+    if (arregloAcciones["ventasYearToMonth"] == 1) {
+      cargarVentasYearToMonth(1);
+      graficoVentasYearToMonth();
+    }
 
-     $("#numSemana").html(resultWeek);
-      $("#semanaDashboard").val(resultWeek);
-      var arregloAcciones = JSON.parse(localStorage.accionesTablero);
-      dataDashboard();
-      setDiasSemana();
-      if (arregloAcciones["ventasDay"] == 1) {
-      }
-      if (arregloAcciones["ventasYearToDay"] == 1) {
-        cargarVentasYearToDay(1);
-        graficoVentasYearToDay();
-      }
-      if (arregloAcciones["ventasYearToWeek"] == 1) {
-        cargarVentasYearToWeek(1);
-        graficoVentasYearToWeek();
-      }
-      if (arregloAcciones["ventasYearToMonth"] == 1) {
-        cargarVentasYearToMonth(1);
-        graficoVentasYearToMonth();
-      }
+    agregarEvento("Visualizo El Tablero Principal", 4);
+  } else {
+    switch (ruta[2]) {
+      case "login":
+        $('input[type="checkbox"]').on("change", function () {
+          $('input[name="' + this.name + '"]')
+            .not(this)
+            .prop("checked", false);
+        });
+        break;
+      case "":
+        $('input[type="checkbox"]').on("change", function () {
+          $('input[name="' + this.name + '"]')
+            .not(this)
+            .prop("checked", false);
+        });
+        break;
+      case "conceptosPinturas":
+        cargarConceptosPinturas(1);
+        $(".selectorCentroTrabajo").select2();
+        $(".selectorCanalComercial").select2();
+        break;
+      case "conceptosFlex":
+        cargarConceptosFlex(1);
+        $(".selectorCentroTrabajo").select2();
+        $(".selectorCanalComercial").select2();
+        break;
+      case "ultimosCostos":
+        cargarUltimosCostos(1);
+        loadProductosVenta(1);
 
-      agregarEvento("Visualizo El Tablero Principal", 4);
+        break;
+      case "ventasClienteDiario":
+        cargarVentasClienteDiario(1, "");
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Cliente Diario", 4);
+        $("#semana").val(resultWeek);
 
-  }else{
-      switch (ruta[1]) {
-    case "login":
-      $('input[type="checkbox"]').on("change", function () {
-        $('input[name="' + this.name + '"]')
-          .not(this)
-          .prop("checked", false);
-      });
-      break;
-    case "":
-      $('input[type="checkbox"]').on("change", function () {
-        $('input[name="' + this.name + '"]')
-          .not(this)
-          .prop("checked", false);
-      });
-      break;
-    case "conceptosPinturas":
-      cargarConceptosPinturas(1);
-      $(".selectorCentroTrabajo").select2();
-      $(".selectorCanalComercial").select2();
-      break;
-    case "conceptosFlex":
-      cargarConceptosFlex(1);
-      $(".selectorCentroTrabajo").select2();
-      $(".selectorCanalComercial").select2();
-      break;
-    case "ultimosCostos":
-      cargarUltimosCostos(1);
-      loadProductosVenta(1);
+        break;
+      case "detalleVentas":
+        cargarDetalleVentasCliente(1, "");
+        agregarEvento("Visualizo Detalle De Ventas", 4);
+        if (
+          localStorage.fechaDetalle === undefined ||
+          localStorage.fechaDetalle === ""
+        ) {
+          $("#fecha").val(today);
+        } else {
+          $("#fecha").val(localStorage.fechaDetalle);
+        }
+        break;
+      case "detalleVentasProductos":
+        cargarDetalleVentasClienteProducto(1, "");
+        agregarEvento("Visualizo Detalle De Ventas", 4);
+        if (
+          localStorage.fechaDetalle === undefined ||
+          localStorage.fechaDetalle === ""
+        ) {
+          $("#fecha").val(today);
+        } else {
+          $("#fecha").val(localStorage.fechaDetalle);
+        }
+        break;
+      case "detalleVentasMarca":
+        if (
+          localStorage.marcaDetalle === undefined ||
+          localStorage.marcaDetalle === ""
+        ) {
+          $("#nameMarca").html("Detalle de ventas todas las Marcas");
+        } else {
+          $("#nameMarca").html(
+            "Detalle de ventas de la Marca " + localStorage.marcaDetalle
+          );
+        }
+        cargarDetalleVentasClienteProducto(1, "/");
+        agregarEvento("Visualizo Detalle De Ventas", 4);
+        if (
+          localStorage.fechaDetalle === undefined ||
+          localStorage.fechaDetalle === ""
+        ) {
+          $("#fecha").val(today);
+        } else {
+          $("#fecha").val(localStorage.fechaDetalle);
+        }
+        break;
+      case "ventasCanalDiario":
+        cargarVentasCanalDiario(1);
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Canal Diario", 4);
+        $("#semana").val(resultWeek);
 
-      break;
-    case "ventasClienteDiario":
-      cargarVentasClienteDiario(1, "");
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Cliente Diario", 4);
-      $("#semana").val(resultWeek);
+        break;
+      case "ventasAgenteDiario":
+        cargarVentasAgenteDiario(1);
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Agente Diario", 4);
+        $("#semana").val(resultWeek);
 
-      break;
-    case "detalleVentas":
-      cargarDetalleVentasCliente(1, "");
-      agregarEvento("Visualizo Detalle De Ventas", 4);
-      if (
-        localStorage.fechaDetalle === undefined ||
-        localStorage.fechaDetalle === ""
-      ) {
-        $("#fecha").val(today);
-      } else {
-        $("#fecha").val(localStorage.fechaDetalle);
-      }
-      break;
-    case "detalleVentasProductos":
-      cargarDetalleVentasClienteProducto(1, "");
-      agregarEvento("Visualizo Detalle De Ventas", 4);
-      if (
-        localStorage.fechaDetalle === undefined ||
-        localStorage.fechaDetalle === ""
-      ) {
-        $("#fecha").val(today);
-      } else {
-        $("#fecha").val(localStorage.fechaDetalle);
-      }
-      break;
-    case "detalleVentasMarca":
-      if (
-        localStorage.marcaDetalle === undefined ||
-        localStorage.marcaDetalle === ""
-      ) {
-        $("#nameMarca").html("Detalle de ventas todas las Marcas");
-      } else {
-        $("#nameMarca").html(
-          "Detalle de ventas de la Marca " + localStorage.marcaDetalle
-        );
-      }
-      cargarDetalleVentasClienteProducto(1, "/");
-      agregarEvento("Visualizo Detalle De Ventas", 4);
-      if (
-        localStorage.fechaDetalle === undefined ||
-        localStorage.fechaDetalle === ""
-      ) {
-        $("#fecha").val(today);
-      } else {
-        $("#fecha").val(localStorage.fechaDetalle);
-      }
-      break;
-    case "ventasCanalDiario":
-      cargarVentasCanalDiario(1);
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Canal Diario", 4);
-      $("#semana").val(resultWeek);
+        break;
+      case "ventasProductoDiario":
+        cargarVentasProductoMontoDiario(1, "", "");
+        cargarVentasProductoUnidadesDiario(1, "", "");
+        loadClients(1);
+        loadProductosVenta(1);
+        agregarEvento("Visualizo Ventas Por Producto Diario", 4);
+        $("#semana").val(resultWeek);
 
-      break;
-    case "ventasAgenteDiario":
-      cargarVentasAgenteDiario(1);
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Agente Diario", 4);
-      $("#semana").val(resultWeek);
+        break;
+      case "ventasLitreadoDiario":
+        cargarVentasLitreadoMontoDiario(1, "", "");
+        cargarVentasLitreadoUnidadesDiario(1, "", "");
+        loadClients(1);
+        loadProductosVenta(1);
+        agregarEvento("Visualizo Ventas Por Litreado Diario", 4);
+        $("#semana").val(resultWeek);
 
-      break;
-    case "ventasProductoDiario":
-      cargarVentasProductoMontoDiario(1, "", "");
-      cargarVentasProductoUnidadesDiario(1, "", "");
-      loadClients(1);
-      loadProductosVenta(1);
-      agregarEvento("Visualizo Ventas Por Producto Diario", 4);
-      $("#semana").val(resultWeek);
+        break;
+      case "ventasMarcaDiario":
+        cargarVentasMarcaDiario(1, "");
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Marca Diario", 4);
+        $("#semana").val(resultWeek);
 
-      break;
-    case "ventasLitreadoDiario":
-      cargarVentasLitreadoMontoDiario(1, "", "");
-      cargarVentasLitreadoUnidadesDiario(1, "", "");
-      loadClients(1);
-      loadProductosVenta(1);
-      agregarEvento("Visualizo Ventas Por Litreado Diario", 4);
-      $("#semana").val(resultWeek);
+        break;
+      case "ventasClienteMensual":
+        cargarVentasCliente(1, "");
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Cliente Mensual", 4);
+        break;
+      case "ventasCanalMensual":
+        cargarVentasCanal(1);
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Canal Mensual", 4);
+        break;
+      case "ventasAgenteMensual":
+        cargarVentasAgente(1);
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Agente Mensual", 4);
+        break;
+      case "ventasProductoMensual":
+        cargarVentasProductoMonto(1, "", "");
+        cargarVentasProductoUnidades(1, "", "");
+        loadProductosVenta(1);
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Producto Mensual", 4);
+        break;
+      case "ventasLitreadoMensual":
+        cargarVentasLitreadoMonto(1, "", "");
+        cargarVentasLitreadoUnidades(1, "", "");
+        loadProductosVenta(1);
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Litreado Mensual", 4);
+        break;
+      case "ventasMarcaMensual":
+        cargarVentasMarcaMensual(1, "");
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Marca Mensual", 4);
+        break;
+      case "ventasClienteAnual":
+        cargarVentasClienteAnual(1, "");
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Cliente Anual", 4);
+        break;
+      case "ventasCanalAnual":
+        cargarVentasCanalAnual(1);
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Canal Anual", 4);
+        break;
+      case "ventasAgenteAnual":
+        cargarVentasAgenteAnual(1);
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Agente Anual", 4);
+        break;
+      case "ventasProductoAnual":
+        cargarVentasProductoMontoAnual(1, "", "");
+        cargarVentasProductoUnidadesAnual(1, "", "");
+        loadProductosVenta(1);
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Producto Anual", 4);
+        break;
+      case "ventasLitreadoAnual":
+        cargarVentasLitreadoMontoAnual(1, "", "");
+        cargarVentasLitreadoUnidadesAnual(1, "", "");
+        loadClients(1);
+        loadProductosVenta(1);
+        agregarEvento("Visualizo Ventas Por Litreado Anual", 4);
+        break;
+      case "ventasMarcaAnual":
+        cargarVentasMarcaAnual(1, "");
+        loadClients(1);
+        agregarEvento("Visualizo Ventas Por Marca Anual", 4);
+        break;
+      case "dashboard":
+        $("#numSemana").html(resultWeek);
+        $("#semanaDashboard").val(resultWeek);
+        var arregloAcciones = JSON.parse(localStorage.accionesTablero);
+        dataDashboard();
+        setDiasSemana();
+        if (arregloAcciones["ventasDay"] == 1) {
+        }
+        if (arregloAcciones["ventasYearToDay"] == 1) {
+          cargarVentasYearToDay(1);
+          graficoVentasYearToDay();
+        }
+        if (arregloAcciones["ventasYearToWeek"] == 1) {
+          cargarVentasYearToWeek(1);
+          graficoVentasYearToWeek();
+        }
+        if (arregloAcciones["ventasYearToMonth"] == 1) {
+          cargarVentasYearToMonth(1);
+          graficoVentasYearToMonth();
+        }
 
-      break;
-    case "ventasMarcaDiario":
-      cargarVentasMarcaDiario(1, "");
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Marca Diario", 4);
-      $("#semana").val(resultWeek);
+        agregarEvento("Visualizo El Tablero Principal", 4);
 
-      break;
-    case "ventasClienteMensual":
-      cargarVentasCliente(1, "");
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Cliente Mensual", 4);
-      break;
-    case "ventasCanalMensual":
-      cargarVentasCanal(1);
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Canal Mensual", 4);
-      break;
-    case "ventasAgenteMensual":
-      cargarVentasAgente(1);
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Agente Mensual", 4);
-      break;
-    case "ventasProductoMensual":
-      cargarVentasProductoMonto(1, "", "");
-      cargarVentasProductoUnidades(1, "", "");
-      loadProductosVenta(1);
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Producto Mensual", 4);
-      break;
-    case "ventasLitreadoMensual":
-      cargarVentasLitreadoMonto(1, "", "");
-      cargarVentasLitreadoUnidades(1, "", "");
-      loadProductosVenta(1);
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Litreado Mensual", 4);
-      break;
-    case "ventasMarcaMensual":
-      cargarVentasMarcaMensual(1, "");
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Marca Mensual", 4);
-      break;
-    case "ventasClienteAnual":
-      cargarVentasClienteAnual(1, "");
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Cliente Anual", 4);
-      break;
-    case "ventasCanalAnual":
-      cargarVentasCanalAnual(1);
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Canal Anual", 4);
-      break;
-    case "ventasAgenteAnual":
-      cargarVentasAgenteAnual(1);
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Agente Anual", 4);
-      break;
-    case "ventasProductoAnual":
-      cargarVentasProductoMontoAnual(1, "", "");
-      cargarVentasProductoUnidadesAnual(1, "", "");
-      loadProductosVenta(1);
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Producto Anual", 4);
-      break;
-    case "ventasLitreadoAnual":
-      cargarVentasLitreadoMontoAnual(1, "", "");
-      cargarVentasLitreadoUnidadesAnual(1, "", "");
-      loadClients(1);
-      loadProductosVenta(1);
-      agregarEvento("Visualizo Ventas Por Litreado Anual", 4);
-      break;
-    case "ventasMarcaAnual":
-      cargarVentasMarcaAnual(1, "");
-      loadClients(1);
-      agregarEvento("Visualizo Ventas Por Marca Anual", 4);
-      break;
-    case "dashboard":
-      $("#numSemana").html(resultWeek);
-      $("#semanaDashboard").val(resultWeek);
-      var arregloAcciones = JSON.parse(localStorage.accionesTablero);
-      dataDashboard();
-      setDiasSemana();
-      if (arregloAcciones["ventasDay"] == 1) {
-      }
-      if (arregloAcciones["ventasYearToDay"] == 1) {
-        cargarVentasYearToDay(1);
-        graficoVentasYearToDay();
-      }
-      if (arregloAcciones["ventasYearToWeek"] == 1) {
-        cargarVentasYearToWeek(1);
-        graficoVentasYearToWeek();
-      }
-      if (arregloAcciones["ventasYearToMonth"] == 1) {
-        cargarVentasYearToMonth(1);
-        graficoVentasYearToMonth();
-      }
+        break;
+      case "detalleDocumentos":
+        $("#mesDetalle").val(mesCurrent);
+        accionBusqueda();
+        cargarDetalleDocumentos(1);
+        cargarVentasCliente(1, "");
+        loadClients(1);
+        agregarEvento("Visualizo Detalle Documentos", 4);
+        break;
+      case "usuarios":
+        cargarUsuarios();
+        agregarEvento("Visualizo La Lista de Usuarios Actual", 4);
+        break;
+      case "miPerfil":
+        let userId = $("#userId").val();
+        miPerfil(userId);
+        break;
+      case "bitacora":
+        cargarBitacora(1);
+        break;
+      case "utilidad":
+        $("#mesDetalle").val(mesCurrent);
+        cargarMargenesUtilidad(1);
+        loadClients(1);
 
-      agregarEvento("Visualizo El Tablero Principal", 4);
+        if (localStorage.mes === undefined) {
+          localStorage.setItem("mes", mesCurrent);
+          localStorage.setItem("año", 2022);
+        } else {
+        }
 
-      break;
-    case "detalleDocumentos":
-      $("#mesDetalle").val(mesCurrent);
-      accionBusqueda();
-      cargarDetalleDocumentos(1);
-      cargarVentasCliente(1, "");
-      loadClients(1);
-      agregarEvento("Visualizo Detalle Documentos", 4);
-      break;
-    case "usuarios":
-      cargarUsuarios();
-      agregarEvento("Visualizo La Lista de Usuarios Actual", 4);
-      break;
-    case "miPerfil":
-      let userId = $("#userId").val();
-      miPerfil(userId);
-      break;
-    case "bitacora":
-      cargarBitacora(1);
-      break;
-    case "utilidad":
-      $("#mesDetalle").val(mesCurrent);
-      cargarMargenesUtilidad(1);
-      loadClients(1);
-
-      if (localStorage.mes === undefined) {
-        localStorage.setItem("mes", mesCurrent);
-        localStorage.setItem("año", 2022);
-      } else {
-      }
-
-      break;
-   
-    
+        break;
+    }
   }
-  }
-  
+
   $(".selectorAgentes").select2();
   var agenteVenta = JSON.parse(localStorage.getItem("arrayAgentes"));
   $(".selectorAgentes").val(agenteVenta).trigger("change");
@@ -3723,7 +3719,7 @@ function removeItemFromArregloBusqueda(array, item, nombreArreglo) {
       break;
     }
   }
-  switch (ruta[1]) {
+  switch (ruta[2]) {
     case "ventasClienteDiario":
       cargarVentasClienteDiario(1, "");
       break;
@@ -3793,6 +3789,15 @@ function removeItemFromArregloBusqueda(array, item, nombreArreglo) {
     case "ultimosCostos":
       cargarUltimosCostos(1);
       break;
+    case "ecommerce":
+      cargarListaProductosEcommerce(1);
+      break;
+    case "miAlmacen":
+      productosAlmacenes();
+      break;
+    case "agotarse":
+      productosPorAgotarse();
+      break;
   }
 }
 function validateItemArray(array, item, nombreArreglo) {
@@ -3850,7 +3855,7 @@ function validateItemArray(array, item, nombreArreglo) {
         break;
     }
 
-    switch (ruta[1]) {
+    switch (ruta[2]) {
       case "ventasClienteDiario":
         cargarVentasClienteDiario(1, "");
         break;
@@ -3919,6 +3924,15 @@ function validateItemArray(array, item, nombreArreglo) {
         break;
       case "ultimosCostos":
         cargarUltimosCostos(1);
+        break;
+      case "ecommerce":
+        cargarListaProductosEcommerce(1);
+        break;
+      case "miAlmacen":
+        productosAlmacenes();
+        break;
+      case "agotarse":
+        productosPorAgotarse();
         break;
     }
   } else if (array.indexOf(item) > -1) {
@@ -4573,7 +4587,7 @@ function limpiarFiltros(tipo) {
 
       break;
   }
-  switch (ruta[1]) {
+  switch (ruta[2]) {
     case "ventasClienteDiario":
       cargarVentasClienteDiario(1, "");
       break;
@@ -4642,6 +4656,15 @@ function limpiarFiltros(tipo) {
       break;
     case "ultimosCostos":
       cargarUltimosCostos(1);
+      break;
+    case "ecommerce":
+      cargarListaProductosEcommerce(1);
+      break;
+    case "miAlmacen":
+      productosAlmacenes();
+      break;
+    case "agotarse":
+      productosPorAgotarse();
       break;
   }
 }

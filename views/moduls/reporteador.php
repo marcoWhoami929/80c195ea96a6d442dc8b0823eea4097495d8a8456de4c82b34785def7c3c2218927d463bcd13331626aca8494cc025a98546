@@ -35,6 +35,7 @@ class loadReports
     public $tipo;
     public $fechaInicio;
     public $fechaFin;
+    public $ejercicio;
     public function reportUltimosCostos()
     {
         $empresa = $this->empresa;
@@ -187,6 +188,54 @@ class loadReports
         $obtenerReporteVentas = new ControllerReports();
         $obtenerReporteVentas->ctrDescargarReporteMargenesUtilidad($search);
     }
+    public function reporteIndicadoresMensual()
+    {
+
+        //Recibir variables enviadas
+        $estatus = $this->estatus;
+        $año = $this->año;
+        $per_page = $this->per_page;
+        $page = $this->page;
+        $campo = $this->campo;
+        $orden = $this->orden;
+        $vista = $this->vista;
+        //Variables de paginación
+        $page = (isset($page) && !empty($page)) ? $page : 1;
+        $offset = ($page - 1) * $per_page;
+        $search = array("año" => $año, "estatus" => $estatus, "per_page" => $per_page, "offset" => $offset, "campo" => $campo, "orden" => $orden, "vista" => $vista);
+        //consulta principal para recuperar los datos
+        $obtenerReporteIndicadores = new ControllerReports();
+        $obtenerReporteIndicadores->ctrDescargarReporteIndicadoresMensual($search);
+    }
+    public function reporteDetalladoIndicadoresMensual()
+    {
+
+        //Recibir variables enviadas
+        $estatus = $this->estatus;
+        $año = $this->año;
+        $per_page = $this->per_page;
+        $page = $this->page;
+        $campo = $this->campo;
+        $orden = $this->orden;
+        $vista = $this->vista;
+        //Variables de paginación
+        $page = (isset($page) && !empty($page)) ? $page : 1;
+        $offset = ($page - 1) * $per_page;
+        $search = array("año" => $año, "estatus" => $estatus, "per_page" => $per_page, "offset" => $offset, "campo" => $campo, "orden" => $orden, "vista" => $vista);
+        //consulta principal para recuperar los datos
+        $obtenerReporteIndicadores = new ControllerReports();
+        $obtenerReporteIndicadores->ctrDescargarReporteDetalladoIndicadoresMensual($search);
+    }
+    public function reporteInventarioActual()
+    {
+
+        $empresa = $this->empresa;
+        $ejercicio = $this->ejercicio;
+        $vista = $this->vista;
+        $search = array("empresa" => $empresa, "ejercicio" => $ejercicio, "vista" => $vista);
+        $inventarioActual = new ControllerReports();
+        $inventarioActual->ctrDescargarReporteInventarioActual($search);
+    }
 }
 
 if (isset($_GET["reporteUltimosCostos"])) {
@@ -280,4 +329,33 @@ if (isset($_GET["reporteMargenesUtilidad"])) {
     $reporteMargenesUtilidad->vista = $_GET["vista"];
     $reporteMargenesUtilidad->clientes = $_GET["clientes"];
     $reporteMargenesUtilidad->reporteMargenesUtilidad();
+}
+if (isset($_GET["reporteIndicadoresMensual"])) {
+    $reporteIndicadoresMensual = new loadReports();
+    $reporteIndicadoresMensual->estatus = $_GET["estatus"];
+    $reporteIndicadoresMensual->año = $_GET["año"];
+    $reporteIndicadoresMensual->per_page = $_GET["per_page"];
+    $reporteIndicadoresMensual->page = $_GET["page"];
+    $reporteIndicadoresMensual->campo = $_GET["campo"];
+    $reporteIndicadoresMensual->orden = $_GET["orden"];
+    $reporteIndicadoresMensual->vista = $_GET["vista"];
+    $reporteIndicadoresMensual->reporteIndicadoresMensual();
+}
+if (isset($_GET["reporteDetalladoIndicadoresMensual"])) {
+    $reporteDetalladoIndicadoresMensual = new loadReports();
+    $reporteDetalladoIndicadoresMensual->estatus = $_GET["estatus"];
+    $reporteDetalladoIndicadoresMensual->año = $_GET["año"];
+    $reporteDetalladoIndicadoresMensual->per_page = $_GET["per_page"];
+    $reporteDetalladoIndicadoresMensual->page = $_GET["page"];
+    $reporteDetalladoIndicadoresMensual->campo = $_GET["campo"];
+    $reporteDetalladoIndicadoresMensual->orden = $_GET["orden"];
+    $reporteDetalladoIndicadoresMensual->vista = $_GET["vista"];
+    $reporteDetalladoIndicadoresMensual->reporteDetalladoIndicadoresMensual();
+}
+if (isset($_GET["reporteInventarioActual"])) {
+    $reporteInventarioActual = new loadReports();
+    $reporteInventarioActual->empresa = $_GET["empresa"];
+    $reporteInventarioActual->ejercicio = $_GET["ejercicio"];
+    $reporteInventarioActual->vista = $_GET["vista"];
+    $reporteInventarioActual->reporteInventarioActual();
 }

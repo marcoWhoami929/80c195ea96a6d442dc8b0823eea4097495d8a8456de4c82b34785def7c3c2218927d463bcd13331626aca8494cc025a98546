@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(0);
 include("../models/db_conexion.php");
 $agenteListPinturas = "CASE SUBSTRING(adoc.CSERIEDOCUMENTO,3,4)
 WHEN 'CP'
@@ -20122,6 +20122,4122 @@ FROM productosVendidos $condicional
 SELECT CCODIGOPRODUCTO,CNOMBREPRODUCTO,SUM(Venta) as Ventas,SUM(CostoVenta) as Costos,Sum(Venta-CostoVenta) as Ingresos,ISNULL((NULLIF(SUM(Venta),0)-NULLIF(SUM(CostoVenta),0))/SUM(Venta)*100, 0) as Utilidad FROM DesgloseProductos  GROUP BY CCODIGOPRODUCTO,CNOMBREPRODUCTO ORDER BY CNOMBREPRODUCTO ASC ";
 
           $nums_row = $this->countAll($sql1);
+
+          //Set counter
+          $this->setCounter($nums_row);
+
+          $query = $query->fetchAll();
+          return $query;
+     }
+     public function getIndicadoresInventarios($search)
+     {
+
+          global $agenteListPinturas;
+          global $agenteListDekkerlab;
+
+
+          $offset = $search['offset'];
+          $per_page = $search['per_page'];
+          $año = $search['año'];
+          $estatus = $search['estatus'];
+
+          $orden = $search['orden'];
+
+          $campoOrden = "canalComercial";
+          $sWhere = " adoc.CCANCELADO  = '" . $estatus . "'  and YEAR(adoc.CFECHA) = '" . $año . "' ";
+
+
+          $condicional = "WHERE indicador = 1  and canalComercial != 'PROPIAS' and canalComercial IN('TIENDAS')";
+
+          $sql = "WITH ventasData AS(SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListPinturas as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'NOTA DE CR'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adPINTURAS2020SADEC].[dbo].[admDocumentos] as adoc INNER JOIN [adPINTURAS2020SADEC].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adPINTURAS2020SADEC].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adPINTURAS2020SADEC].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adPINTURAS2020SADEC].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adPINTURAS2020SADEC].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere  and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO in(4,
+5,
+3001,
+3002,
+3003,
+3023,
+3030,
+3076,
+3096,
+3108,
+3115,
+3128,
+3148,
+3172,
+3173,
+3174,
+3175,
+3176,
+3177,
+3178,
+3179,
+3180,
+3181,
+3212,
+3233,
+3146,
+3234,
+3182,
+3183,
+3184,
+3185,
+3186,
+3187,
+3188,
+3189,
+3190,
+3191,
+3126,
+3116,
+3106,
+3078,
+3094,
+3060,
+3024,
+3013,
+3014,
+3015,
+6,
+8,
+3016,
+3125,
+3194,
+3195,
+3196,
+3215,
+3229,
+3207,
+3208,
+3139
+)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION
+  UNION
+  SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListPinturas as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'NOTA DE CR'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adFLEX2020SADEC].[dbo].[admDocumentos] as adoc INNER JOIN [adFLEX2020SADEC].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adFLEX2020SADEC].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adFLEX2020SADEC].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adFLEX2020SADEC].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adFLEX2020SADEC].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere   and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(4,
+5,
+3001,
+3048,
+3061,
+3052,
+3012,
+3004,
+6,
+8,
+3007,
+3017,
+3053,
+3056,
+14
+)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION
+  UNION
+  SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListPinturas as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'NOTA DE CR'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adPinturas_y_Complemen].[dbo].[admDocumentos] as adoc INNER JOIN [adPinturas_y_Complemen].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adPinturas_y_Complemen].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adPinturas_y_Complemen].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adPinturas_y_Complemen].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adPinturas_y_Complemen].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3106,
+3105,
+3111)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION
+  UNION
+  SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListDekkerlab as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListDekkerlab,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListDekkerlab,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListDekkerlab,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListDekkerlab,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'Devolución'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'Nota de Cr'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'Factura Pr'
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+3046,
+3047,
+6,
+3049,
+3050,
+3051,
+3052,
+3053,
+3039,
+3042,
+4,
+5,
+3040,
+3043,
+3044,
+3041,
+3045,
+3080,
+3072,
+3071,
+3070,
+8,
+3054,
+3055,
+3056
+)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION),
+
+ventasOrdenadas As(
+    SELECT
+        canalComercial,
+        centroTrabajo,
+        Total,
+        Mes
+    FROM ventasData  $condicional
+    
+    )
+SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull([5],0) + IsNull([6],0) + IsNull([7],0) + IsNull([8],0) + IsNull([9],0) + IsNull([10],0) + IsNull([11],0) + IsNull([12],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Mes in([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12])) as pivotTable  order by $campoOrden $orden  OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+
+
+          $query = $this->mysqli->query($sql);
+
+          $sql1 = "WITH ventasData AS(SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListPinturas as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'NOTA DE CR'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adPINTURAS2020SADEC].[dbo].[admDocumentos] as adoc INNER JOIN [adPINTURAS2020SADEC].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adPINTURAS2020SADEC].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adPINTURAS2020SADEC].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adPINTURAS2020SADEC].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adPINTURAS2020SADEC].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere  and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO in(4,
+5,
+3001,
+3002,
+3003,
+3023,
+3030,
+3076,
+3096,
+3108,
+3115,
+3128,
+3148,
+3172,
+3173,
+3174,
+3175,
+3176,
+3177,
+3178,
+3179,
+3180,
+3181,
+3212,
+3233,
+3146,
+3234,
+3182,
+3183,
+3184,
+3185,
+3186,
+3187,
+3188,
+3189,
+3190,
+3191,
+3126,
+3116,
+3106,
+3078,
+3094,
+3060,
+3024,
+3013,
+3014,
+3015,
+6,
+8,
+3016,
+3125,
+3194,
+3195,
+3196,
+3215,
+3229,
+3207,
+3208,
+3139
+)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION
+  UNION
+  SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListPinturas as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'NOTA DE CR'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adFLEX2020SADEC].[dbo].[admDocumentos] as adoc INNER JOIN [adFLEX2020SADEC].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adFLEX2020SADEC].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adFLEX2020SADEC].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adFLEX2020SADEC].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adFLEX2020SADEC].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere   and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(4,
+5,
+3001,
+3048,
+3061,
+3052,
+3012,
+3004,
+6,
+8,
+3007,
+3017,
+3053,
+3056,
+14
+)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION
+  UNION
+  SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListPinturas as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'NOTA DE CR'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adPinturas_y_Complemen].[dbo].[admDocumentos] as adoc INNER JOIN [adPinturas_y_Complemen].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adPinturas_y_Complemen].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adPinturas_y_Complemen].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adPinturas_y_Complemen].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adPinturas_y_Complemen].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3106,
+3105,
+3111)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION
+  UNION
+  SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListDekkerlab as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListDekkerlab,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListDekkerlab,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListDekkerlab,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListDekkerlab,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'Devolución'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'Nota de Cr'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'Factura Pr'
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+3046,
+3047,
+6,
+3049,
+3050,
+3051,
+3052,
+3053,
+3039,
+3042,
+4,
+5,
+3040,
+3043,
+3044,
+3041,
+3045,
+3080,
+3072,
+3071,
+3070,
+8,
+3054,
+3055,
+3056
+)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION),
+
+ventasOrdenadas As(
+    SELECT
+        canalComercial,
+        centroTrabajo,
+        Total,
+        Mes
+    FROM ventasData  $condicional
+    
+    )
+SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull([5],0) + IsNull([6],0) + IsNull([7],0) + IsNull([8],0) + IsNull([9],0) + IsNull([10],0) + IsNull([11],0) + IsNull([12],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Mes in([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12])) as pivotTable  order by $campoOrden $orden";
+
+          $nums_row = $this->countAll($sql1);
+
+          //Set counter
+          $this->setCounter($nums_row);
+
+          $query = $query->fetchAll();
+          return $query;
+     }
+     public function getIndicadoresEntradasSalidas($search)
+     {
+
+          $offset = $search['offset'];
+          $per_page = $search['per_page'];
+          $año = $search['año'];
+          $estatus = $search['estatus'];
+          $campoOrden = 'CANAL';
+          $orden = "asc";
+
+          $sWhere = "adoc.CCANCELADO  = '" . $estatus . "' and YEAR(adoc.CFECHA) = '" . $año . "' and amov.CIDDOCUMENTODE IN (34) and adoc.CIDCONCEPTODOCUMENTO IN(36,
+          3031,
+          3032,
+          3033,
+          3034,
+          3035,
+          3038,
+          3066,
+          3067,
+          3068)";
+          $sWhere2 = "adoc.CCANCELADO  = '" . $estatus . "' and YEAR(adoc.CFECHA) = '" . $año . "'  and amov.CIDDOCUMENTODE IN (34) and adoc.CIDCONCEPTODOCUMENTO IN(36,
+          3031,
+          3032,
+          3033,
+          3034,
+          3035,
+          3038,
+          3066,
+          3067,
+          3068)";
+
+          $sql = "WITH indicadores As (SELECT amov.CIDALMACEN,
+          adoc.CSERIEDOCUMENTO,
+          adoc.CFOLIO,
+          amov.CIDDOCUMENTO,
+          -SUM(amov.CTOTAL) as TOTAL,
+          -SUM(CASE
+                    WHEN aprod.CIDVALORCLASIFICACION1 = 44 
+                    THEN
+                         CASE
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FLEX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                             END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                              END
+                         ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                        END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                         END * amov.CUNIDADES) AS 'COSTO',
+          'SALIDAS' as 'ESTATUS'
+          ,MONTH(amov.CFECHA) As Mes
+          ,CASE 
+            WHEN amov.CIDALMACEN = 1 OR amov.CIDALMACEN = 3
+          THEN
+          'GENERAL'
+          WHEN amov.CIDALMACEN = 4 OR amov.CIDALMACEN = 5
+          THEN
+          '7 TIENDA CAPU'
+          WHEN amov.CIDALMACEN = 6 OR amov.CIDALMACEN = 7
+          THEN
+          '3 TIENDA REFORMA'
+           WHEN amov.CIDALMACEN = 8 OR amov.CIDALMACEN = 9
+          THEN
+          '1 TIENDA SAN MANUEL'
+           WHEN amov.CIDALMACEN = 10 OR amov.CIDALMACEN = 11
+          THEN
+          '6 TIENDA SANTIAGO'
+           WHEN amov.CIDALMACEN = 12 OR amov.CIDALMACEN = 13
+          THEN
+          '9 TIENDA TORRES'
+          ELSE
+          'OTRO'
+          END as 'CANAL'
+        FROM [adDEKKERLAB].[dbo].[admMovimientos] as amov LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admMovimientos] as amov2 ON amov2.CIDMOVTOOWNER = amov.CIDMOVIMIENTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] AS aprod ON aprod.CIDPRODUCTO = amov.CIDPRODUCTO WHERE $sWhere GROUP BY amov.CIDALMACEN,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,amov.CIDDOCUMENTO,amov.CFECHA, aprod.CIDVALORCLASIFICACION1,
+                   aprod.CNOMBREPRODUCTO,
+                   aprod.CCODIGOPRODUCTO,
+                   amov.CUNIDADES
+      UNION ALL
+      SELECT amov2.CIDALMACEN
+             ,adoc.CSERIEDOCUMENTO
+             ,adoc.CFOLIO
+             ,amov2.CIDDOCUMENTO
+             ,SUM(amov2.CTOTAL) as TOTAL
+             ,SUM(CASE
+                    WHEN aprod.CIDVALORCLASIFICACION1 = 44 
+                    THEN
+                         CASE
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FLEX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                             END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                              END
+                         ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                        END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                         END * amov2.CUNIDADES) AS 'COSTO'
+             ,'ENTRADAS' as 'ESTATUS'
+             ,MONTH(amov2.CFECHA) As Mes
+             ,CASE 
+               WHEN amov2.CIDALMACEN = 1 OR amov2.CIDALMACEN = 3
+              THEN
+              'GENERAL'
+              WHEN amov2.CIDALMACEN = 4 OR amov2.CIDALMACEN = 5
+              THEN
+              '7 TIENDA CAPU'
+              WHEN amov2.CIDALMACEN = 6 OR amov2.CIDALMACEN = 7
+              THEN
+              '3 TIENDA REFORMA'
+               WHEN amov2.CIDALMACEN = 8 OR amov2.CIDALMACEN = 9
+              THEN
+              '1 TIENDA SAN MANUEL'
+               WHEN amov2.CIDALMACEN = 10 OR amov2.CIDALMACEN = 11
+              THEN
+              '6 TIENDA SANTIAGO'
+               WHEN amov2.CIDALMACEN = 12 OR amov2.CIDALMACEN = 13
+              THEN
+              '9 TIENDA TORRES'
+              ELSE
+              'OTRO'
+              END as 'CANAL'
+        FROM [adDEKKERLAB].[dbo].[admMovimientos] as amov LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admMovimientos] as amov2 ON amov2.CIDMOVTOOWNER = amov.CIDMOVIMIENTO  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] AS aprod ON aprod.CIDPRODUCTO = amov2.CIDPRODUCTO  WHERE $sWhere2 GROUP BY amov2.CIDALMACEN,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,amov2.CIDDOCUMENTO,amov2.CFECHA, aprod.CIDVALORCLASIFICACION1,
+                   aprod.CNOMBREPRODUCTO,
+                   aprod.CCODIGOPRODUCTO,
+                   amov2.CUNIDADES),
+      indicadoresData As(
+          SELECT
+              CANAL,
+              COSTO,
+              Mes   
+          FROM indicadores  WHERE CANAL != 'GENERAL'
+          )
+      
+      SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull([5],0) + IsNull([6],0) + IsNull([7],0) + IsNull([8],0) + IsNull([9],0) + IsNull([10],0) + IsNull([11],0) + IsNull([12],0) Totales FROM indicadoresData PIVOT(SUM(COSTO) FOR Mes in([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12])) as pivotTable order by $campoOrden $orden  OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+
+          $query = $this->mysqli->query($sql);
+
+          $nums_row = $this->countAll($sql);
+
+          //Set counter
+          $this->setCounter($nums_row);
+
+          $query = $query->fetchAll();
+          return $query;
+     }
+     public function getIndicadoresDetalladoEntradasSalidas($canal, $año)
+     {
+
+
+          $sql = "WITH indicadores As (SELECT 
+          aalm.CNOMBREALMACEN as 'ALMORIGEN',
+          aalm2.CNOMBREALMACEN  as 'ALMDESTINO',
+          adoc.CSERIEDOCUMENTO,
+          adoc.CFOLIO,
+          adoc.CFECHA,
+          adoc.CREFERENCIA,
+          amov.CIDDOCUMENTO,
+          SUM(amov.CTOTAL) as TOTAL ,
+          SUM(CASE
+                    WHEN aprod.CIDVALORCLASIFICACION1 = 44 
+                    THEN
+                         CASE
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FLEX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                             END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                              END
+                         ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                        END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                         END * amov.CUNIDADES) AS 'COSTO'
+
+          ,'SALIDAS' as 'ESTATUS'
+          ,MONTH(amov.CFECHA) As Mes
+          ,CASE 
+            WHEN amov.CIDALMACEN = 1 OR amov.CIDALMACEN = 3
+          THEN
+          'GENERAL'
+          WHEN amov.CIDALMACEN = 4 OR amov.CIDALMACEN = 5
+          THEN
+          '7 TIENDA CAPU'
+          WHEN amov.CIDALMACEN = 6 OR amov.CIDALMACEN = 7
+          THEN
+          '3 TIENDA REFORMA'
+           WHEN amov.CIDALMACEN = 8 OR amov.CIDALMACEN = 9
+          THEN
+          '1 TIENDA SAN MANUEL'
+           WHEN amov.CIDALMACEN = 10 OR amov.CIDALMACEN = 11
+          THEN
+          '6 TIENDA SANTIAGO'
+           WHEN amov.CIDALMACEN = 12 OR amov.CIDALMACEN = 13
+          THEN
+          '9 TIENDA TORRES'
+          ELSE
+          'OTRO'
+          END as 'CANAL',
+          CASE 
+            WHEN amov2.CIDALMACEN = 1 OR amov2.CIDALMACEN = 3
+          THEN
+          '0 GENERAL'
+          WHEN amov2.CIDALMACEN = 4 OR amov2.CIDALMACEN = 5
+          THEN
+          '7 TIENDA CAPU'
+          WHEN amov2.CIDALMACEN = 6 OR amov2.CIDALMACEN = 7
+          THEN
+          '3 TIENDA REFORMA'
+           WHEN amov2.CIDALMACEN = 8 OR amov2.CIDALMACEN = 9
+          THEN
+          '1 TIENDA SAN MANUEL'
+           WHEN amov2.CIDALMACEN = 10 OR amov2.CIDALMACEN = 11
+          THEN
+          '6 TIENDA SANTIAGO'
+           WHEN amov2.CIDALMACEN = 12 OR amov2.CIDALMACEN = 13
+          THEN
+          '9 TIENDA TORRES'
+          ELSE
+          'OTRO'
+          END as 'CANALORIGEN'
+        FROM [adDEKKERLAB].[dbo].[admMovimientos] as amov LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admMovimientos] as amov2 ON amov2.CIDMOVTOOWNER = amov.CIDMOVIMIENTO INNER JOIN  [adDEKKERLAB].[dbo].[admAlmacenes] as aalm ON amov.CIDALMACEN = aalm.CIDALMACEN INNER JOIN  [adDEKKERLAB].[dbo].[admAlmacenes] as aalm2 ON amov2.CIDALMACEN = aalm2.CIDALMACEN LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] AS aprod ON aprod.CIDPRODUCTO = amov.CIDPRODUCTO WHERE  adoc.CCANCELADO  = '0' and YEAR(adoc.CFECHA) = '" . $año . "' and amov.CIDDOCUMENTODE IN (34) and adoc.CIDCONCEPTODOCUMENTO IN(36,
+                3031,
+                3032,
+                3033,
+                3034,
+                3035,
+                3038,
+                3066,
+                3067,
+                3068)  GROUP BY amov.CIDALMACEN,amov2.CIDALMACEN,aalm.CNOMBREALMACEN,aalm2.CNOMBREALMACEN,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CFECHA,adoc.CREFERENCIA,amov.CIDDOCUMENTO,amov.CFECHA, aprod.CIDVALORCLASIFICACION1,
+                aprod.CNOMBREPRODUCTO,
+                aprod.CCODIGOPRODUCTO,
+                amov.CUNIDADES
+      UNION ALL
+      SELECT 
+              aalm.CNOMBREALMACEN as 'ALMORIGEN',
+              aalm2.CNOMBREALMACEN  as 'ALMDESTINO'
+             ,adoc.CSERIEDOCUMENTO
+             ,adoc.CFOLIO
+              ,adoc.CFECHA
+              ,adoc.CREFERENCIA
+             ,amov2.CIDDOCUMENTO
+             ,SUM(amov2.CTOTAL) as TOTAL
+             ,SUM(CASE
+             WHEN aprod.CIDVALORCLASIFICACION1 = 44 
+             THEN
+                  CASE
+                       WHEN aprod.CNOMBREPRODUCTO LIKE '%FX%' 
+                            THEN 
+                            dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                       WHEN aprod.CNOMBREPRODUCTO LIKE '%FLEX%' 
+                            THEN 
+                            dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                       ELSE
+                       CASE
+                            WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                            THEN
+                                 CASE
+                                      WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                           THEN 
+                                           dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                      ELSE 
+                                           dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                      END
+                            ELSE 
+                                 dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                            END
+                       END
+                  ELSE
+                       CASE
+                            WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                            THEN
+                                 CASE
+                                      WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                           THEN 
+                                           dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                      ELSE 
+                                           dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                 END
+                            ELSE 
+                                 dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                            END
+                  END * amov2.CUNIDADES) AS 'COSTO'
+             ,'ENTRADAS' as 'ESTATUS'
+             ,MONTH(amov2.CFECHA) As Mes
+             ,CASE 
+               WHEN amov2.CIDALMACEN = 1 OR amov2.CIDALMACEN = 3
+              THEN
+              'GENERAL'
+              WHEN amov2.CIDALMACEN = 4 OR amov2.CIDALMACEN = 5
+              THEN
+              '7 TIENDA CAPU'
+              WHEN amov2.CIDALMACEN = 6 OR amov2.CIDALMACEN = 7
+              THEN
+              '3 TIENDA REFORMA'
+               WHEN amov2.CIDALMACEN = 8 OR amov2.CIDALMACEN = 9
+              THEN
+              '1 TIENDA SAN MANUEL'
+               WHEN amov2.CIDALMACEN = 10 OR amov2.CIDALMACEN = 11
+              THEN
+              '6 TIENDA SANTIAGO'
+               WHEN amov2.CIDALMACEN = 12 OR amov2.CIDALMACEN = 13
+              THEN
+              '9 TIENDA TORRES'
+              ELSE
+              'OTRO'
+              END as 'CANAL',
+               CASE 
+            WHEN amov.CIDALMACEN = 1 OR amov.CIDALMACEN = 3
+          THEN
+          '0 GENERAL'
+          WHEN amov.CIDALMACEN = 4 OR amov.CIDALMACEN = 5
+          THEN
+          '7 TIENDA CAPU'
+          WHEN amov.CIDALMACEN = 6 OR amov.CIDALMACEN = 7
+          THEN
+          '3 TIENDA REFORMA'
+           WHEN amov.CIDALMACEN = 8 OR amov.CIDALMACEN = 9
+          THEN
+          '1 TIENDA SAN MANUEL'
+           WHEN amov.CIDALMACEN = 10 OR amov.CIDALMACEN = 11
+          THEN
+          '6 TIENDA SANTIAGO'
+           WHEN amov.CIDALMACEN = 12 OR amov.CIDALMACEN = 13
+          THEN
+          '9 TIENDA TORRES'
+          ELSE
+          'OTRO'
+          END as 'CANALORIGEN'
+        FROM [adDEKKERLAB].[dbo].[admMovimientos] as amov LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admMovimientos] as amov2 ON amov2.CIDMOVTOOWNER = amov.CIDMOVIMIENTO INNER JOIN  [adDEKKERLAB].[dbo].[admAlmacenes] as aalm ON amov.CIDALMACEN = aalm.CIDALMACEN INNER JOIN  [adDEKKERLAB].[dbo].[admAlmacenes] as aalm2 ON amov2.CIDALMACEN = aalm2.CIDALMACEN  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] AS aprod ON aprod.CIDPRODUCTO = amov2.CIDPRODUCTO WHERE  adoc.CCANCELADO  = '0' and YEAR(adoc.CFECHA) = '" . $año . "'  and amov.CIDDOCUMENTODE IN (34) and adoc.CIDCONCEPTODOCUMENTO IN(36,
+                3031,
+                3032,
+                3033,
+                3034,
+                3035,
+                3038,
+                3066,
+                3067,
+                3068)  GROUP BY amov.CIDALMACEN,amov2.CIDALMACEN,aalm.CNOMBREALMACEN,aalm2.CNOMBREALMACEN,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CFECHA,adoc.CREFERENCIA,amov2.CIDDOCUMENTO,amov2.CFECHA, aprod.CIDVALORCLASIFICACION1,
+                aprod.CNOMBREPRODUCTO,
+                aprod.CCODIGOPRODUCTO,
+                amov2.CUNIDADES),
+      indicadoresData As(
+          SELECT
+              CANAL,
+              Mes,
+             CANALORIGEN,
+             CASE ESTATUS 
+              WHEN 'ENTRADAS'
+              THEN
+              COSTO
+              ELSE
+              0
+              END  as 'ENTRADA',
+              CASE ESTATUS 
+              WHEN 'SALIDAS'
+              THEN
+              COSTO
+              ELSE
+              0
+              END  as 'SALIDA'
+      
+          FROM indicadores 
+          ),
+      indicadoresDataJustify As(
+          SELECT Mes,CANALORIGEN,SUM(ENTRADA)-SUM(SALIDA) AS 'TOTAL' FROM indicadoresData  WHERE  CANAL = '" . $canal . "'  GROUP BY CANALORIGEN,Mes)
+      SELECT * FROM indicadoresDataJustify PIVOT(SUM(TOTAL) FOR Mes in([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12])) as pivotTable ORDER BY CANALORIGEN asc";
+
+
+          $query = $this->mysqli->query($sql);
+
+          $query = $query->fetchAll();
+          return $query;
+     }
+     public function getInventarioActual($search)
+     {
+
+          $empresa = $search['empresa'];
+          $ejercicio = $search['ejercicio'];
+          $ejercicio2 = $ejercicio - 5;
+
+
+          $sWhere = " aexis.CIDEJERCICIO = '" . $ejercicio . "' and aexis.CIDALMACEN != 0";
+          $sWhere2 = " aexis.CIDEJERCICIO = '" . $ejercicio . "' and aexis.CIDALMACEN != 0 and aprod.CIDPRODUCTO != 2195";
+          $sWhere3 = " aexis.CIDEJERCICIO = '" . $ejercicio2 . "' and aexis.CIDALMACEN != 0";
+          if ($empresa === 'DEKKERLAB') {
+
+               $sql = "WITH inventario AS(SELECT  
+          CASE 
+              WHEN CIDALMACEN = 1 OR CIDALMACEN = 3
+            THEN
+            '1 - ALMACEN GENERAL'
+            WHEN CIDALMACEN = 4 OR CIDALMACEN = 5
+            THEN
+            '5 - CAPU'
+            WHEN CIDALMACEN = 6 OR CIDALMACEN = 7
+            THEN
+            '3 - REFORMA'
+             WHEN CIDALMACEN = 8 OR CIDALMACEN = 9
+            THEN
+            '2 - SAN MANUEL'
+             WHEN CIDALMACEN = 10 OR CIDALMACEN = 11
+            THEN
+            '4 - SANTIAGO'
+             WHEN CIDALMACEN = 12 OR CIDALMACEN = 13
+            THEN
+            '6 - LAS TORRES'
+            ELSE
+            'OTRO'
+            END as 'CANAL'
+            /*
+          aprod.CIDPRODUCTO,
+          aprod.CCODIGOPRODUCTO,
+          aprod.CNOMBREPRODUCTO
+          */
+          ,aexis.CCOSTOINICIALENTRADAS-aexis.CCOSTOINICIALSALIDAS as 'INVINI'
+       ,aexis.CCOSTOENTRADASPERIODO1-aexis.CCOSTOINICIALENTRADAS as 'ENT1'
+      ,aexis.CCOSTOSALIDASPERIODO1-aexis.CCOSTOINICIALSALIDAS as 'SAL1'
+      ,aexis.CCOSTOENTRADASPERIODO1-aexis.CCOSTOSALIDASPERIODO1 as 'EXIS1'
+      ,aexis.CCOSTOENTRADASPERIODO1-aexis.CCOSTOSALIDASPERIODO1 as 'INVINI2'
+      ,aexis.CCOSTOENTRADASPERIODO2-aexis.CCOSTOENTRADASPERIODO1 as 'ENT2'
+      ,aexis.CCOSTOSALIDASPERIODO2-aexis.CCOSTOSALIDASPERIODO1 as 'SAL2'
+      ,aexis.CCOSTOENTRADASPERIODO2-aexis.CCOSTOSALIDASPERIODO2 as 'EXIS2'
+       ,aexis.CCOSTOENTRADASPERIODO2-aexis.CCOSTOSALIDASPERIODO2 as 'INVINI3'
+      ,aexis.CCOSTOENTRADASPERIODO3-aexis.CCOSTOENTRADASPERIODO2 as 'ENT3'
+      ,aexis.CCOSTOSALIDASPERIODO3-aexis.CCOSTOSALIDASPERIODO2 as 'SAL3'
+      ,aexis.CCOSTOENTRADASPERIODO3-aexis.CCOSTOSALIDASPERIODO3 as 'EXIS3'
+      ,aexis.CCOSTOENTRADASPERIODO3-aexis.CCOSTOSALIDASPERIODO3 as 'INVINI4'
+      ,aexis.CCOSTOENTRADASPERIODO4-aexis.CCOSTOENTRADASPERIODO3 as 'ENT4'
+      ,aexis.CCOSTOSALIDASPERIODO4-aexis.CCOSTOSALIDASPERIODO3 as 'SAL4'
+      ,aexis.CCOSTOENTRADASPERIODO4-aexis.CCOSTOSALIDASPERIODO4 as 'EXIS4'
+      ,aexis.CCOSTOENTRADASPERIODO4-aexis.CCOSTOSALIDASPERIODO4 as 'INVINI5'
+      ,aexis.CCOSTOENTRADASPERIODO5-aexis.CCOSTOENTRADASPERIODO4 as 'ENT5'
+      ,aexis.CCOSTOSALIDASPERIODO5-aexis.CCOSTOSALIDASPERIODO4 as 'SAL5'
+      ,aexis.CCOSTOENTRADASPERIODO5-aexis.CCOSTOSALIDASPERIODO5 as 'EXIS5'
+      ,aexis.CCOSTOENTRADASPERIODO5-aexis.CCOSTOSALIDASPERIODO5 as 'INVINI6'
+      ,aexis.CCOSTOENTRADASPERIODO6-aexis.CCOSTOENTRADASPERIODO5 as 'ENT6'
+      ,aexis.CCOSTOSALIDASPERIODO6-aexis.CCOSTOSALIDASPERIODO5 as 'SAL6'
+      ,aexis.CCOSTOENTRADASPERIODO6-aexis.CCOSTOSALIDASPERIODO6 as 'EXIS6'
+      ,aexis.CCOSTOENTRADASPERIODO6-aexis.CCOSTOSALIDASPERIODO6 as 'INVINI7'
+      ,aexis.CCOSTOENTRADASPERIODO7-aexis.CCOSTOENTRADASPERIODO6 as 'ENT7'
+      ,aexis.CCOSTOSALIDASPERIODO7-aexis.CCOSTOSALIDASPERIODO6 as 'SAL7'
+      ,aexis.CCOSTOENTRADASPERIODO7-aexis.CCOSTOSALIDASPERIODO7 as 'EXIS7'
+      ,aexis.CCOSTOENTRADASPERIODO7-aexis.CCOSTOSALIDASPERIODO7 as 'INVINI8'
+      ,aexis.CCOSTOENTRADASPERIODO8-aexis.CCOSTOENTRADASPERIODO7 as 'ENT8'
+      ,aexis.CCOSTOSALIDASPERIODO8-aexis.CCOSTOSALIDASPERIODO7 as 'SAL8'
+      ,aexis.CCOSTOENTRADASPERIODO8-aexis.CCOSTOSALIDASPERIODO8 as 'EXIS8'
+      ,aexis.CCOSTOENTRADASPERIODO8-aexis.CCOSTOSALIDASPERIODO8 as 'INVINI9'
+      ,aexis.CCOSTOENTRADASPERIODO9-aexis.CCOSTOENTRADASPERIODO8 as 'ENT9'
+      ,aexis.CCOSTOSALIDASPERIODO9-aexis.CCOSTOSALIDASPERIODO8 as 'SAL9'
+      ,aexis.CCOSTOENTRADASPERIODO9-aexis.CCOSTOSALIDASPERIODO9 as 'EXIS9'
+      ,aexis.CCOSTOENTRADASPERIODO9-aexis.CCOSTOSALIDASPERIODO9 as 'INVINI10'
+      ,aexis.CCOSTOENTRADASPERIODO10-aexis.CCOSTOENTRADASPERIODO9 as 'ENT10'
+      ,aexis.CCOSTOSALIDASPERIODO10-aexis.CCOSTOSALIDASPERIODO9 as 'SAL10'
+      ,aexis.CCOSTOENTRADASPERIODO10-aexis.CCOSTOSALIDASPERIODO10 as 'EXIS10'
+      ,aexis.CCOSTOENTRADASPERIODO10-aexis.CCOSTOSALIDASPERIODO10 as 'INVINI11'
+      ,aexis.CCOSTOENTRADASPERIODO11-aexis.CCOSTOENTRADASPERIODO10 as 'ENT11'
+      ,aexis.CCOSTOSALIDASPERIODO11-aexis.CCOSTOSALIDASPERIODO10 as 'SAL11'
+      ,aexis.CCOSTOENTRADASPERIODO11-aexis.CCOSTOSALIDASPERIODO11 as 'EXIS11'
+      ,aexis.CCOSTOENTRADASPERIODO11-aexis.CCOSTOSALIDASPERIODO11 as 'INVINI12'
+      ,aexis.CCOSTOENTRADASPERIODO12-aexis.CCOSTOENTRADASPERIODO11 as 'ENT12'
+      ,aexis.CCOSTOSALIDASPERIODO12-aexis.CCOSTOSALIDASPERIODO11 as 'SAL12'
+       ,aexis.CCOSTOENTRADASPERIODO12-aexis.CCOSTOSALIDASPERIODO12 as 'EXIS12'
+  
+    FROM [adDEKKERLAB].[dbo].[admExistenciaCosto] as aexis INNER JOIN [adDEKKERLAB].[dbo].[admProductos] as aprod ON aexis.CIDPRODUCTO = aprod.CIDPRODUCTO  WHERE $sWhere)
+    SELECT CANAL,
+  SUM(INVINI) as 'INVINI',	
+  SUM(ENT1) as 'ENT1',	
+  SUM(SAL1) as 'SAL1',	
+  SUM(EXIS1) as 'EXIS1',	
+  SUM(INVINI2) as 'INVINI2',	
+  SUM(ENT2) as 'ENT2',	
+  SUM(SAL2) as 'SAL2',	
+  SUM(EXIS2) as 'EXIS2',	
+  SUM(INVINI3) as 'INVINI3',	
+  SUM(ENT3) as 'ENT3',	
+  SUM(SAL3) as 'SAL3',	
+  SUM(EXIS3) as 'EXIS3',	
+  SUM(INVINI4) as 'INVINI4',	
+  SUM(ENT4) as 'ENT4',	
+  SUM(SAL4) as 'SAL4',	
+  SUM(EXIS4) as 'EXIS4',	
+  SUM(INVINI5) as 'INVINI5',	
+  SUM(ENT5) as 'ENT5',	
+  SUM(SAL5) as 'SAL5',	
+  SUM(EXIS5) as 'EXIS5',	
+  SUM(INVINI6) as 'INVINI6',	
+  SUM(ENT6) as 'ENT6',	
+  SUM(SAL6) as 'SAL6',	
+  SUM(EXIS6) as 'EXIS6',	
+  SUM(INVINI7) as 'INVINI7',	
+  SUM(ENT7) as 'ENT7',	
+  SUM(SAL7) as 'SAL7',	
+  SUM(EXIS7) as 'EXIS7',	
+  SUM(INVINI8) as 'INVINI8',	
+  SUM(ENT8) as 'ENT8',	
+  SUM(SAL8) as 'SAL8',	
+  SUM(EXIS8) as 'EXIS8',	
+  SUM(INVINI9) as 'INVINI9',	
+  SUM(ENT9) as 'ENT9',	
+  SUM(SAL9) as 'SAL9',	
+  SUM(EXIS9) as 'EXIS9',	
+  SUM(INVINI10) as 'INVINI10',	
+  SUM(ENT10) as 'ENT10',	
+  SUM(SAL10) as 'SAL10',	
+  SUM(EXIS10) as 'EXIS10',	
+  SUM(INVINI11) as 'INVINI11',	
+  SUM(ENT11) as 'ENT11',	
+  SUM(SAL11) as 'SAL11',	
+  SUM(EXIS11) as 'EXIS11',	
+  SUM(INVINI12) as 'INVINI12',	
+  SUM(ENT12) as 'ENT12',	
+  SUM(SAL12) as 'SAL12',	
+  SUM(EXIS12) as 'EXIS12'
+   FROM inventario WHERE CANAL != 'OTRO' GROUP BY CANAL ORDER BY CANAL ASC";
+          } else {
+               $sql = "WITH inventario AS(SELECT  
+               CASE 
+                   WHEN CIDALMACEN = 21 OR CIDALMACEN = 22
+                 THEN
+                   '6 - LAS TORRES'
+               
+                 ELSE
+                 'OTRO'
+                 END as 'CANAL'
+                 /*
+               aprod.CIDPRODUCTO,
+               aprod.CCODIGOPRODUCTO,
+               aprod.CNOMBREPRODUCTO
+               */
+              ,aexis.CCOSTOINICIALENTRADAS-aexis.CCOSTOINICIALSALIDAS as 'INVINI'
+       ,aexis.CCOSTOENTRADASPERIODO1-aexis.CCOSTOINICIALENTRADAS as 'ENT1'
+      ,aexis.CCOSTOSALIDASPERIODO1-aexis.CCOSTOINICIALSALIDAS as 'SAL1'
+      ,aexis.CCOSTOENTRADASPERIODO1-aexis.CCOSTOSALIDASPERIODO1 as 'EXIS1'
+      ,aexis.CCOSTOENTRADASPERIODO1-aexis.CCOSTOSALIDASPERIODO1 as 'INVINI2'
+      ,aexis.CCOSTOENTRADASPERIODO2-aexis.CCOSTOENTRADASPERIODO1 as 'ENT2'
+      ,aexis.CCOSTOSALIDASPERIODO2-aexis.CCOSTOSALIDASPERIODO1 as 'SAL2'
+      ,aexis.CCOSTOENTRADASPERIODO2-aexis.CCOSTOSALIDASPERIODO2 as 'EXIS2'
+       ,aexis.CCOSTOENTRADASPERIODO2-aexis.CCOSTOSALIDASPERIODO2 as 'INVINI3'
+      ,aexis.CCOSTOENTRADASPERIODO3-aexis.CCOSTOENTRADASPERIODO2 as 'ENT3'
+      ,aexis.CCOSTOSALIDASPERIODO3-aexis.CCOSTOSALIDASPERIODO2 as 'SAL3'
+      ,aexis.CCOSTOENTRADASPERIODO3-aexis.CCOSTOSALIDASPERIODO3 as 'EXIS3'
+      ,aexis.CCOSTOENTRADASPERIODO3-aexis.CCOSTOSALIDASPERIODO3 as 'INVINI4'
+      ,aexis.CCOSTOENTRADASPERIODO4-aexis.CCOSTOENTRADASPERIODO3 as 'ENT4'
+      ,aexis.CCOSTOSALIDASPERIODO4-aexis.CCOSTOSALIDASPERIODO3 as 'SAL4'
+      ,aexis.CCOSTOENTRADASPERIODO4-aexis.CCOSTOSALIDASPERIODO4 as 'EXIS4'
+      ,aexis.CCOSTOENTRADASPERIODO4-aexis.CCOSTOSALIDASPERIODO4 as 'INVINI5'
+      ,aexis.CCOSTOENTRADASPERIODO5-aexis.CCOSTOENTRADASPERIODO4 as 'ENT5'
+      ,aexis.CCOSTOSALIDASPERIODO5-aexis.CCOSTOSALIDASPERIODO4 as 'SAL5'
+      ,aexis.CCOSTOENTRADASPERIODO5-aexis.CCOSTOSALIDASPERIODO5 as 'EXIS5'
+      ,aexis.CCOSTOENTRADASPERIODO5-aexis.CCOSTOSALIDASPERIODO5 as 'INVINI6'
+      ,aexis.CCOSTOENTRADASPERIODO6-aexis.CCOSTOENTRADASPERIODO5 as 'ENT6'
+      ,aexis.CCOSTOSALIDASPERIODO6-aexis.CCOSTOSALIDASPERIODO5 as 'SAL6'
+      ,aexis.CCOSTOENTRADASPERIODO6-aexis.CCOSTOSALIDASPERIODO6 as 'EXIS6'
+      ,aexis.CCOSTOENTRADASPERIODO6-aexis.CCOSTOSALIDASPERIODO6 as 'INVINI7'
+      ,aexis.CCOSTOENTRADASPERIODO7-aexis.CCOSTOENTRADASPERIODO6 as 'ENT7'
+      ,aexis.CCOSTOSALIDASPERIODO7-aexis.CCOSTOSALIDASPERIODO6 as 'SAL7'
+      ,aexis.CCOSTOENTRADASPERIODO7-aexis.CCOSTOSALIDASPERIODO7 as 'EXIS7'
+      ,aexis.CCOSTOENTRADASPERIODO7-aexis.CCOSTOSALIDASPERIODO7 as 'INVINI8'
+      ,aexis.CCOSTOENTRADASPERIODO8-aexis.CCOSTOENTRADASPERIODO7 as 'ENT8'
+      ,aexis.CCOSTOSALIDASPERIODO8-aexis.CCOSTOSALIDASPERIODO7 as 'SAL8'
+      ,aexis.CCOSTOENTRADASPERIODO8-aexis.CCOSTOSALIDASPERIODO8 as 'EXIS8'
+      ,aexis.CCOSTOENTRADASPERIODO8-aexis.CCOSTOSALIDASPERIODO8 as 'INVINI9'
+      ,aexis.CCOSTOENTRADASPERIODO9-aexis.CCOSTOENTRADASPERIODO8 as 'ENT9'
+      ,aexis.CCOSTOSALIDASPERIODO9-aexis.CCOSTOSALIDASPERIODO8 as 'SAL9'
+      ,aexis.CCOSTOENTRADASPERIODO9-aexis.CCOSTOSALIDASPERIODO9 as 'EXIS9'
+      ,aexis.CCOSTOENTRADASPERIODO9-aexis.CCOSTOSALIDASPERIODO9 as 'INVINI10'
+      ,aexis.CCOSTOENTRADASPERIODO10-aexis.CCOSTOENTRADASPERIODO9 as 'ENT10'
+      ,aexis.CCOSTOSALIDASPERIODO10-aexis.CCOSTOSALIDASPERIODO9 as 'SAL10'
+      ,aexis.CCOSTOENTRADASPERIODO10-aexis.CCOSTOSALIDASPERIODO10 as 'EXIS10'
+      ,aexis.CCOSTOENTRADASPERIODO10-aexis.CCOSTOSALIDASPERIODO10 as 'INVINI11'
+      ,aexis.CCOSTOENTRADASPERIODO11-aexis.CCOSTOENTRADASPERIODO10 as 'ENT11'
+      ,aexis.CCOSTOSALIDASPERIODO11-aexis.CCOSTOSALIDASPERIODO10 as 'SAL11'
+      ,aexis.CCOSTOENTRADASPERIODO11-aexis.CCOSTOSALIDASPERIODO11 as 'EXIS11'
+      ,aexis.CCOSTOENTRADASPERIODO11-aexis.CCOSTOSALIDASPERIODO11 as 'INVINI12'
+      ,aexis.CCOSTOENTRADASPERIODO12-aexis.CCOSTOENTRADASPERIODO11 as 'ENT12'
+      ,aexis.CCOSTOSALIDASPERIODO12-aexis.CCOSTOSALIDASPERIODO11 as 'SAL12'
+       ,aexis.CCOSTOENTRADASPERIODO12-aexis.CCOSTOSALIDASPERIODO12 as 'EXIS12'
+       
+       
+       
+         FROM [adPinturas_y_Complemen].[dbo].[admExistenciaCosto] as aexis INNER JOIN [adPinturas_y_Complemen].[dbo].[admProductos] as aprod ON aexis.CIDPRODUCTO = aprod.CIDPRODUCTO  WHERE  $sWhere3
+               UNION ALL SELECT  
+               CASE 
+                   WHEN CIDALMACEN = 1 OR CIDALMACEN = 5
+                 THEN
+                 '1 - ALMACEN GENERAL'
+                 WHEN CIDALMACEN = 18 OR CIDALMACEN = 19
+                 THEN
+                 '5 - CAPU'
+                 WHEN CIDALMACEN = 4 OR CIDALMACEN = 8
+                 THEN
+                 '3 - REFORMA'
+                  WHEN CIDALMACEN = 2 OR CIDALMACEN = 6
+                 THEN
+                 '2 - SAN MANUEL'
+                  WHEN CIDALMACEN = 16 OR CIDALMACEN = 17
+                 THEN
+                 '4 - SANTIAGO' 
+                 ELSE
+                 'OTRO'
+                 END as 'CANAL'
+            /*
+          aprod.CIDPRODUCTO,
+          aprod.CCODIGOPRODUCTO,
+          aprod.CNOMBREPRODUCTO
+          */
+          ,aexis.CCOSTOINICIALENTRADAS-aexis.CCOSTOINICIALSALIDAS as 'INVINI'
+       ,aexis.CCOSTOENTRADASPERIODO1-aexis.CCOSTOINICIALENTRADAS as 'ENT1'
+      ,aexis.CCOSTOSALIDASPERIODO1-aexis.CCOSTOINICIALSALIDAS as 'SAL1'
+      ,aexis.CCOSTOENTRADASPERIODO1-aexis.CCOSTOSALIDASPERIODO1 as 'EXIS1'
+      ,aexis.CCOSTOENTRADASPERIODO1-aexis.CCOSTOSALIDASPERIODO1 as 'INVINI2'
+      ,aexis.CCOSTOENTRADASPERIODO2-aexis.CCOSTOENTRADASPERIODO1 as 'ENT2'
+      ,aexis.CCOSTOSALIDASPERIODO2-aexis.CCOSTOSALIDASPERIODO1 as 'SAL2'
+      ,aexis.CCOSTOENTRADASPERIODO2-aexis.CCOSTOSALIDASPERIODO2 as 'EXIS2'
+       ,aexis.CCOSTOENTRADASPERIODO2-aexis.CCOSTOSALIDASPERIODO2 as 'INVINI3'
+      ,aexis.CCOSTOENTRADASPERIODO3-aexis.CCOSTOENTRADASPERIODO2 as 'ENT3'
+      ,aexis.CCOSTOSALIDASPERIODO3-aexis.CCOSTOSALIDASPERIODO2 as 'SAL3'
+      ,aexis.CCOSTOENTRADASPERIODO3-aexis.CCOSTOSALIDASPERIODO3 as 'EXIS3'
+      ,aexis.CCOSTOENTRADASPERIODO3-aexis.CCOSTOSALIDASPERIODO3 as 'INVINI4'
+      ,aexis.CCOSTOENTRADASPERIODO4-aexis.CCOSTOENTRADASPERIODO3 as 'ENT4'
+      ,aexis.CCOSTOSALIDASPERIODO4-aexis.CCOSTOSALIDASPERIODO3 as 'SAL4'
+      ,aexis.CCOSTOENTRADASPERIODO4-aexis.CCOSTOSALIDASPERIODO4 as 'EXIS4'
+      ,aexis.CCOSTOENTRADASPERIODO4-aexis.CCOSTOSALIDASPERIODO4 as 'INVINI5'
+      ,aexis.CCOSTOENTRADASPERIODO5-aexis.CCOSTOENTRADASPERIODO4 as 'ENT5'
+      ,aexis.CCOSTOSALIDASPERIODO5-aexis.CCOSTOSALIDASPERIODO4 as 'SAL5'
+      ,aexis.CCOSTOENTRADASPERIODO5-aexis.CCOSTOSALIDASPERIODO5 as 'EXIS5'
+      ,aexis.CCOSTOENTRADASPERIODO5-aexis.CCOSTOSALIDASPERIODO5 as 'INVINI6'
+      ,aexis.CCOSTOENTRADASPERIODO6-aexis.CCOSTOENTRADASPERIODO5 as 'ENT6'
+      ,aexis.CCOSTOSALIDASPERIODO6-aexis.CCOSTOSALIDASPERIODO5 as 'SAL6'
+      ,aexis.CCOSTOENTRADASPERIODO6-aexis.CCOSTOSALIDASPERIODO6 as 'EXIS6'
+      ,aexis.CCOSTOENTRADASPERIODO6-aexis.CCOSTOSALIDASPERIODO6 as 'INVINI7'
+      ,aexis.CCOSTOENTRADASPERIODO7-aexis.CCOSTOENTRADASPERIODO6 as 'ENT7'
+      ,aexis.CCOSTOSALIDASPERIODO7-aexis.CCOSTOSALIDASPERIODO6 as 'SAL7'
+      ,aexis.CCOSTOENTRADASPERIODO7-aexis.CCOSTOSALIDASPERIODO7 as 'EXIS7'
+      ,aexis.CCOSTOENTRADASPERIODO7-aexis.CCOSTOSALIDASPERIODO7 as 'INVINI8'
+      ,aexis.CCOSTOENTRADASPERIODO8-aexis.CCOSTOENTRADASPERIODO7 as 'ENT8'
+      ,aexis.CCOSTOSALIDASPERIODO8-aexis.CCOSTOSALIDASPERIODO7 as 'SAL8'
+      ,aexis.CCOSTOENTRADASPERIODO8-aexis.CCOSTOSALIDASPERIODO8 as 'EXIS8'
+      ,aexis.CCOSTOENTRADASPERIODO8-aexis.CCOSTOSALIDASPERIODO8 as 'INVINI9'
+      ,aexis.CCOSTOENTRADASPERIODO9-aexis.CCOSTOENTRADASPERIODO8 as 'ENT9'
+      ,aexis.CCOSTOSALIDASPERIODO9-aexis.CCOSTOSALIDASPERIODO8 as 'SAL9'
+      ,aexis.CCOSTOENTRADASPERIODO9-aexis.CCOSTOSALIDASPERIODO9 as 'EXIS9'
+      ,aexis.CCOSTOENTRADASPERIODO9-aexis.CCOSTOSALIDASPERIODO9 as 'INVINI10'
+      ,aexis.CCOSTOENTRADASPERIODO10-aexis.CCOSTOENTRADASPERIODO9 as 'ENT10'
+      ,aexis.CCOSTOSALIDASPERIODO10-aexis.CCOSTOSALIDASPERIODO9 as 'SAL10'
+      ,aexis.CCOSTOENTRADASPERIODO10-aexis.CCOSTOSALIDASPERIODO10 as 'EXIS10'
+      ,aexis.CCOSTOENTRADASPERIODO10-aexis.CCOSTOSALIDASPERIODO10 as 'INVINI11'
+      ,aexis.CCOSTOENTRADASPERIODO11-aexis.CCOSTOENTRADASPERIODO10 as 'ENT11'
+      ,aexis.CCOSTOSALIDASPERIODO11-aexis.CCOSTOSALIDASPERIODO10 as 'SAL11'
+      ,aexis.CCOSTOENTRADASPERIODO11-aexis.CCOSTOSALIDASPERIODO11 as 'EXIS11'
+      ,aexis.CCOSTOENTRADASPERIODO11-aexis.CCOSTOSALIDASPERIODO11 as 'INVINI12'
+      ,aexis.CCOSTOENTRADASPERIODO12-aexis.CCOSTOENTRADASPERIODO11 as 'ENT12'
+      ,aexis.CCOSTOSALIDASPERIODO12-aexis.CCOSTOSALIDASPERIODO11 as 'SAL12'
+       ,aexis.CCOSTOENTRADASPERIODO12-aexis.CCOSTOSALIDASPERIODO12 as 'EXIS12'
+  
+    FROM [adPINTURAS2020SADEC].[dbo].[admExistenciaCosto] as aexis INNER JOIN [adPINTURAS2020SADEC].[dbo].[admProductos] as aprod ON aexis.CIDPRODUCTO = aprod.CIDPRODUCTO  WHERE $sWhere2)
+    SELECT CANAL,
+  SUM(INVINI) as 'INVINI',	
+  SUM(ENT1) as 'ENT1',	
+  SUM(SAL1) as 'SAL1',	
+  SUM(EXIS1) as 'EXIS1',	
+  SUM(INVINI2) as 'INVINI2',	
+  SUM(ENT2) as 'ENT2',	
+  SUM(SAL2) as 'SAL2',	
+  SUM(EXIS2) as 'EXIS2',	
+  SUM(INVINI3) as 'INVINI3',	
+  SUM(ENT3) as 'ENT3',	
+  SUM(SAL3) as 'SAL3',	
+  SUM(EXIS3) as 'EXIS3',	
+  SUM(INVINI4) as 'INVINI4',	
+  SUM(ENT4) as 'ENT4',	
+  SUM(SAL4) as 'SAL4',	
+  SUM(EXIS4) as 'EXIS4',	
+  SUM(INVINI5) as 'INVINI5',	
+  SUM(ENT5) as 'ENT5',	
+  SUM(SAL5) as 'SAL5',	
+  SUM(EXIS5) as 'EXIS5',	
+  SUM(INVINI6) as 'INVINI6',	
+  SUM(ENT6) as 'ENT6',	
+  SUM(SAL6) as 'SAL6',	
+  SUM(EXIS6) as 'EXIS6',	
+  SUM(INVINI7) as 'INVINI7',	
+  SUM(ENT7) as 'ENT7',	
+  SUM(SAL7) as 'SAL7',	
+  SUM(EXIS7) as 'EXIS7',	
+  SUM(INVINI8) as 'INVINI8',	
+  SUM(ENT8) as 'ENT8',	
+  SUM(SAL8) as 'SAL8',	
+  SUM(EXIS8) as 'EXIS8',	
+  SUM(INVINI9) as 'INVINI9',	
+  SUM(ENT9) as 'ENT9',	
+  SUM(SAL9) as 'SAL9',	
+  SUM(EXIS9) as 'EXIS9',	
+  SUM(INVINI10) as 'INVINI10',	
+  SUM(ENT10) as 'ENT10',	
+  SUM(SAL10) as 'SAL10',	
+  SUM(EXIS10) as 'EXIS10',	
+  SUM(INVINI11) as 'INVINI11',	
+  SUM(ENT11) as 'ENT11',	
+  SUM(SAL11) as 'SAL11',	
+  SUM(EXIS11) as 'EXIS11',	
+  SUM(INVINI12) as 'INVINI12',	
+  SUM(ENT12) as 'ENT12',	
+  SUM(SAL12) as 'SAL12',	
+  SUM(EXIS12) as 'EXIS12'
+   FROM inventario WHERE CANAL != 'OTRO' GROUP BY CANAL ORDER BY CANAL ASC";
+          }
+
+
+          $query = $this->mysqli->query($sql);
+
+          $nums_row = $this->countAll($sql);
+
+          //Set counter
+          $this->setCounter($nums_row);
+
+          $query = $query->fetchAll();
+          return $query;
+     }
+     public function getInventarioActualUnidades($search)
+     {
+          $empresa = $search['empresa'];
+          $ejercicio = $search['ejercicio'];
+          $ejercicio2 = $ejercicio - 5;
+
+
+          $sWhere = " aexis.CIDEJERCICIO = '" . $ejercicio . "' and aexis.CIDALMACEN != 0";
+          $sWhere2 = " aexis.CIDEJERCICIO = '" . $ejercicio . "' and aexis.CIDALMACEN != 0 and aprod.CIDPRODUCTO != 2195";
+          $sWhere3 = " aexis.CIDEJERCICIO = '" . $ejercicio2 . "' and aexis.CIDALMACEN != 0";
+
+          if ($empresa === 'DEKKERLAB') {
+               $sql = "WITH inventario AS(SELECT  
+          CASE 
+              WHEN CIDALMACEN = 1 OR CIDALMACEN = 3
+            THEN
+            '1 - ALMACEN GENERAL'
+            WHEN CIDALMACEN = 4 OR CIDALMACEN = 5
+            THEN
+            '5 - CAPU'
+            WHEN CIDALMACEN = 6 OR CIDALMACEN = 7
+            THEN
+            '3 - REFORMA'
+             WHEN CIDALMACEN = 8 OR CIDALMACEN = 9
+            THEN
+            '2 - SAN MANUEL'
+             WHEN CIDALMACEN = 10 OR CIDALMACEN = 11
+            THEN
+            '4 - SANTIAGO'
+             WHEN CIDALMACEN = 12 OR CIDALMACEN = 13
+            THEN
+            '6 - LAS TORRES'
+            ELSE
+            'OTRO'
+            END as 'CANAL'
+            /*
+          aprod.CIDPRODUCTO,
+          aprod.CCODIGOPRODUCTO,
+          aprod.CNOMBREPRODUCTO
+          */
+         ,aexis.CENTRADASINICIALES-aexis.CSALIDASINICIALES as 'INVINI'
+         ,aexis.CENTRADASPERIODO1-aexis.CENTRADASINICIALES as 'ENT1'
+        ,aexis.CSALIDASPERIODO1-aexis.CSALIDASINICIALES as 'SAL1'
+        ,aexis.CENTRADASPERIODO1-aexis.CSALIDASPERIODO1 as 'EXIS1'
+        ,aexis.CENTRADASPERIODO1-aexis.CSALIDASPERIODO1 as 'INVINI2'
+        ,aexis.CENTRADASPERIODO2-aexis.CENTRADASPERIODO1 as 'ENT2'
+        ,aexis.CSALIDASPERIODO2-aexis.CSALIDASPERIODO1 as 'SAL2'
+        ,aexis.CENTRADASPERIODO2-aexis.CSALIDASPERIODO2 as 'EXIS2'
+         ,aexis.CENTRADASPERIODO2-aexis.CSALIDASPERIODO2 as 'INVINI3'
+        ,aexis.CENTRADASPERIODO3-aexis.CENTRADASPERIODO2 as 'ENT3'
+        ,aexis.CSALIDASPERIODO3-aexis.CSALIDASPERIODO2 as 'SAL3'
+        ,aexis.CENTRADASPERIODO3-aexis.CSALIDASPERIODO3 as 'EXIS3'
+        ,aexis.CENTRADASPERIODO3-aexis.CSALIDASPERIODO3 as 'INVINI4'
+        ,aexis.CENTRADASPERIODO4-aexis.CENTRADASPERIODO3 as 'ENT4'
+        ,aexis.CSALIDASPERIODO4-aexis.CSALIDASPERIODO3 as 'SAL4'
+        ,aexis.CENTRADASPERIODO4-aexis.CSALIDASPERIODO4 as 'EXIS4'
+        ,aexis.CENTRADASPERIODO4-aexis.CSALIDASPERIODO4 as 'INVINI5'
+        ,aexis.CENTRADASPERIODO5-aexis.CENTRADASPERIODO4 as 'ENT5'
+        ,aexis.CSALIDASPERIODO5-aexis.CSALIDASPERIODO4 as 'SAL5'
+        ,aexis.CENTRADASPERIODO5-aexis.CSALIDASPERIODO5 as 'EXIS5'
+        ,aexis.CENTRADASPERIODO5-aexis.CSALIDASPERIODO5 as 'INVINI6'
+        ,aexis.CENTRADASPERIODO6-aexis.CENTRADASPERIODO5 as 'ENT6'
+        ,aexis.CSALIDASPERIODO6-aexis.CSALIDASPERIODO5 as 'SAL6'
+        ,aexis.CENTRADASPERIODO6-aexis.CSALIDASPERIODO6 as 'EXIS6'
+        ,aexis.CENTRADASPERIODO6-aexis.CSALIDASPERIODO6 as 'INVINI7'
+        ,aexis.CENTRADASPERIODO7-aexis.CENTRADASPERIODO6 as 'ENT7'
+        ,aexis.CSALIDASPERIODO7-aexis.CSALIDASPERIODO6 as 'SAL7'
+        ,aexis.CENTRADASPERIODO7-aexis.CSALIDASPERIODO7 as 'EXIS7'
+        ,aexis.CENTRADASPERIODO7-aexis.CSALIDASPERIODO7 as 'INVINI8'
+        ,aexis.CENTRADASPERIODO8-aexis.CENTRADASPERIODO7 as 'ENT8'
+        ,aexis.CSALIDASPERIODO8-aexis.CSALIDASPERIODO7 as 'SAL8'
+        ,aexis.CENTRADASPERIODO8-aexis.CSALIDASPERIODO8 as 'EXIS8'
+        ,aexis.CENTRADASPERIODO8-aexis.CSALIDASPERIODO8 as 'INVINI9'
+        ,aexis.CENTRADASPERIODO9-aexis.CENTRADASPERIODO8 as 'ENT9'
+        ,aexis.CSALIDASPERIODO9-aexis.CSALIDASPERIODO8 as 'SAL9'
+        ,aexis.CENTRADASPERIODO9-aexis.CSALIDASPERIODO9 as 'EXIS9'
+        ,aexis.CENTRADASPERIODO9-aexis.CSALIDASPERIODO9 as 'INVINI10'
+        ,aexis.CENTRADASPERIODO10-aexis.CENTRADASPERIODO9 as 'ENT10'
+        ,aexis.CSALIDASPERIODO10-aexis.CSALIDASPERIODO9 as 'SAL10'
+        ,aexis.CENTRADASPERIODO10-aexis.CSALIDASPERIODO10 as 'EXIS10'
+        ,aexis.CENTRADASPERIODO10-aexis.CSALIDASPERIODO10 as 'INVINI11'
+        ,aexis.CENTRADASPERIODO11-aexis.CENTRADASPERIODO10 as 'ENT11'
+        ,aexis.CSALIDASPERIODO11-aexis.CSALIDASPERIODO10 as 'SAL11'
+        ,aexis.CENTRADASPERIODO11-aexis.CSALIDASPERIODO11 as 'EXIS11'
+        ,aexis.CENTRADASPERIODO11-aexis.CSALIDASPERIODO11 as 'INVINI12'
+        ,aexis.CENTRADASPERIODO12-aexis.CENTRADASPERIODO11 as 'ENT12'
+        ,aexis.CSALIDASPERIODO12-aexis.CSALIDASPERIODO11 as 'SAL12'
+         ,aexis.CENTRADASPERIODO12-aexis.CSALIDASPERIODO12 as 'EXIS12'
+  
+    FROM [adDEKKERLAB].[dbo].[admExistenciaCosto] as aexis INNER JOIN [adDEKKERLAB].[dbo].[admProductos] as aprod ON aexis.CIDPRODUCTO = aprod.CIDPRODUCTO  WHERE $sWhere)
+    SELECT CANAL,
+  SUM(INVINI) as 'INVINI',	
+  SUM(ENT1) as 'ENT1',	
+  SUM(SAL1) as 'SAL1',	
+  SUM(EXIS1) as 'EXIS1',	
+  SUM(INVINI2) as 'INVINI2',	
+  SUM(ENT2) as 'ENT2',	
+  SUM(SAL2) as 'SAL2',	
+  SUM(EXIS2) as 'EXIS2',	
+  SUM(INVINI3) as 'INVINI3',	
+  SUM(ENT3) as 'ENT3',	
+  SUM(SAL3) as 'SAL3',	
+  SUM(EXIS3) as 'EXIS3',	
+  SUM(INVINI4) as 'INVINI4',	
+  SUM(ENT4) as 'ENT4',	
+  SUM(SAL4) as 'SAL4',	
+  SUM(EXIS4) as 'EXIS4',	
+  SUM(INVINI5) as 'INVINI5',	
+  SUM(ENT5) as 'ENT5',	
+  SUM(SAL5) as 'SAL5',	
+  SUM(EXIS5) as 'EXIS5',	
+  SUM(INVINI6) as 'INVINI6',	
+  SUM(ENT6) as 'ENT6',	
+  SUM(SAL6) as 'SAL6',	
+  SUM(EXIS6) as 'EXIS6',	
+  SUM(INVINI7) as 'INVINI7',	
+  SUM(ENT7) as 'ENT7',	
+  SUM(SAL7) as 'SAL7',	
+  SUM(EXIS7) as 'EXIS7',	
+  SUM(INVINI8) as 'INVINI8',	
+  SUM(ENT8) as 'ENT8',	
+  SUM(SAL8) as 'SAL8',	
+  SUM(EXIS8) as 'EXIS8',	
+  SUM(INVINI9) as 'INVINI9',	
+  SUM(ENT9) as 'ENT9',	
+  SUM(SAL9) as 'SAL9',	
+  SUM(EXIS9) as 'EXIS9',	
+  SUM(INVINI10) as 'INVINI10',	
+  SUM(ENT10) as 'ENT10',	
+  SUM(SAL10) as 'SAL10',	
+  SUM(EXIS10) as 'EXIS10',	
+  SUM(INVINI11) as 'INVINI11',	
+  SUM(ENT11) as 'ENT11',	
+  SUM(SAL11) as 'SAL11',	
+  SUM(EXIS11) as 'EXIS11',	
+  SUM(INVINI12) as 'INVINI12',	
+  SUM(ENT12) as 'ENT12',	
+  SUM(SAL12) as 'SAL12',	
+  SUM(EXIS12) as 'EXIS12'
+   FROM inventario WHERE CANAL != 'OTRO' GROUP BY CANAL ORDER BY CANAL ASC";
+          } else {
+
+               $sql = "WITH inventario AS(SELECT  
+               CASE 
+                   WHEN CIDALMACEN = 21 OR CIDALMACEN = 22
+                 THEN
+                   '6 - LAS TORRES'
+               
+                 ELSE
+                 'OTRO'
+                 END as 'CANAL'
+                 /*
+               aprod.CIDPRODUCTO,
+               aprod.CCODIGOPRODUCTO,
+               aprod.CNOMBREPRODUCTO
+               */
+              ,aexis.CENTRADASINICIALES-aexis.CSALIDASINICIALES as 'INVINI'
+              ,aexis.CENTRADASPERIODO1-aexis.CENTRADASINICIALES as 'ENT1'
+             ,aexis.CSALIDASPERIODO1-aexis.CSALIDASINICIALES as 'SAL1'
+             ,aexis.CENTRADASPERIODO1-aexis.CSALIDASPERIODO1 as 'EXIS1'
+             ,aexis.CENTRADASPERIODO1-aexis.CSALIDASPERIODO1 as 'INVINI2'
+             ,aexis.CENTRADASPERIODO2-aexis.CENTRADASPERIODO1 as 'ENT2'
+             ,aexis.CSALIDASPERIODO2-aexis.CSALIDASPERIODO1 as 'SAL2'
+             ,aexis.CENTRADASPERIODO2-aexis.CSALIDASPERIODO2 as 'EXIS2'
+              ,aexis.CENTRADASPERIODO2-aexis.CSALIDASPERIODO2 as 'INVINI3'
+             ,aexis.CENTRADASPERIODO3-aexis.CENTRADASPERIODO2 as 'ENT3'
+             ,aexis.CSALIDASPERIODO3-aexis.CSALIDASPERIODO2 as 'SAL3'
+             ,aexis.CENTRADASPERIODO3-aexis.CSALIDASPERIODO3 as 'EXIS3'
+             ,aexis.CENTRADASPERIODO3-aexis.CSALIDASPERIODO3 as 'INVINI4'
+             ,aexis.CENTRADASPERIODO4-aexis.CENTRADASPERIODO3 as 'ENT4'
+             ,aexis.CSALIDASPERIODO4-aexis.CSALIDASPERIODO3 as 'SAL4'
+             ,aexis.CENTRADASPERIODO4-aexis.CSALIDASPERIODO4 as 'EXIS4'
+             ,aexis.CENTRADASPERIODO4-aexis.CSALIDASPERIODO4 as 'INVINI5'
+             ,aexis.CENTRADASPERIODO5-aexis.CENTRADASPERIODO4 as 'ENT5'
+             ,aexis.CSALIDASPERIODO5-aexis.CSALIDASPERIODO4 as 'SAL5'
+             ,aexis.CENTRADASPERIODO5-aexis.CSALIDASPERIODO5 as 'EXIS5'
+             ,aexis.CENTRADASPERIODO5-aexis.CSALIDASPERIODO5 as 'INVINI6'
+             ,aexis.CENTRADASPERIODO6-aexis.CENTRADASPERIODO5 as 'ENT6'
+             ,aexis.CSALIDASPERIODO6-aexis.CSALIDASPERIODO5 as 'SAL6'
+             ,aexis.CENTRADASPERIODO6-aexis.CSALIDASPERIODO6 as 'EXIS6'
+             ,aexis.CENTRADASPERIODO6-aexis.CSALIDASPERIODO6 as 'INVINI7'
+             ,aexis.CENTRADASPERIODO7-aexis.CENTRADASPERIODO6 as 'ENT7'
+             ,aexis.CSALIDASPERIODO7-aexis.CSALIDASPERIODO6 as 'SAL7'
+             ,aexis.CENTRADASPERIODO7-aexis.CSALIDASPERIODO7 as 'EXIS7'
+             ,aexis.CENTRADASPERIODO7-aexis.CSALIDASPERIODO7 as 'INVINI8'
+             ,aexis.CENTRADASPERIODO8-aexis.CENTRADASPERIODO7 as 'ENT8'
+             ,aexis.CSALIDASPERIODO8-aexis.CSALIDASPERIODO7 as 'SAL8'
+             ,aexis.CENTRADASPERIODO8-aexis.CSALIDASPERIODO8 as 'EXIS8'
+             ,aexis.CENTRADASPERIODO8-aexis.CSALIDASPERIODO8 as 'INVINI9'
+             ,aexis.CENTRADASPERIODO9-aexis.CENTRADASPERIODO8 as 'ENT9'
+             ,aexis.CSALIDASPERIODO9-aexis.CSALIDASPERIODO8 as 'SAL9'
+             ,aexis.CENTRADASPERIODO9-aexis.CSALIDASPERIODO9 as 'EXIS9'
+             ,aexis.CENTRADASPERIODO9-aexis.CSALIDASPERIODO9 as 'INVINI10'
+             ,aexis.CENTRADASPERIODO10-aexis.CENTRADASPERIODO9 as 'ENT10'
+             ,aexis.CSALIDASPERIODO10-aexis.CSALIDASPERIODO9 as 'SAL10'
+             ,aexis.CENTRADASPERIODO10-aexis.CSALIDASPERIODO10 as 'EXIS10'
+             ,aexis.CENTRADASPERIODO10-aexis.CSALIDASPERIODO10 as 'INVINI11'
+             ,aexis.CENTRADASPERIODO11-aexis.CENTRADASPERIODO10 as 'ENT11'
+             ,aexis.CSALIDASPERIODO11-aexis.CSALIDASPERIODO10 as 'SAL11'
+             ,aexis.CENTRADASPERIODO11-aexis.CSALIDASPERIODO11 as 'EXIS11'
+             ,aexis.CENTRADASPERIODO11-aexis.CSALIDASPERIODO11 as 'INVINI12'
+             ,aexis.CENTRADASPERIODO12-aexis.CENTRADASPERIODO11 as 'ENT12'
+             ,aexis.CSALIDASPERIODO12-aexis.CSALIDASPERIODO11 as 'SAL12'
+              ,aexis.CENTRADASPERIODO12-aexis.CSALIDASPERIODO12 as 'EXIS12'
+       
+       
+       
+         FROM [adPinturas_y_Complemen].[dbo].[admExistenciaCosto] as aexis INNER JOIN [adPinturas_y_Complemen].[dbo].[admProductos] as aprod ON aexis.CIDPRODUCTO = aprod.CIDPRODUCTO  WHERE  $sWhere3
+               UNION ALL SELECT  
+               CASE 
+                   WHEN CIDALMACEN = 1 OR CIDALMACEN = 5
+                 THEN
+                 '1 - ALMACEN GENERAL'
+                 WHEN CIDALMACEN = 18 OR CIDALMACEN = 19
+                 THEN
+                 '5 - CAPU'
+                 WHEN CIDALMACEN = 4 OR CIDALMACEN = 8
+                 THEN
+                 '3 - REFORMA'
+                  WHEN CIDALMACEN = 2 OR CIDALMACEN = 6
+                 THEN
+                 '2 - SAN MANUEL'
+                  WHEN CIDALMACEN = 16 OR CIDALMACEN = 17
+                 THEN
+                 '4 - SANTIAGO' 
+                 ELSE
+                 'OTRO'
+                 END as 'CANAL'
+                 /*
+               aprod.CIDPRODUCTO,
+               aprod.CCODIGOPRODUCTO,
+               aprod.CNOMBREPRODUCTO
+               */
+              ,aexis.CENTRADASINICIALES-aexis.CSALIDASINICIALES as 'INVINI'
+              ,aexis.CENTRADASPERIODO1-aexis.CENTRADASINICIALES as 'ENT1'
+             ,aexis.CSALIDASPERIODO1-aexis.CSALIDASINICIALES as 'SAL1'
+             ,aexis.CENTRADASPERIODO1-aexis.CSALIDASPERIODO1 as 'EXIS1'
+             ,aexis.CENTRADASPERIODO1-aexis.CSALIDASPERIODO1 as 'INVINI2'
+             ,aexis.CENTRADASPERIODO2-aexis.CENTRADASPERIODO1 as 'ENT2'
+             ,aexis.CSALIDASPERIODO2-aexis.CSALIDASPERIODO1 as 'SAL2'
+             ,aexis.CENTRADASPERIODO2-aexis.CSALIDASPERIODO2 as 'EXIS2'
+              ,aexis.CENTRADASPERIODO2-aexis.CSALIDASPERIODO2 as 'INVINI3'
+             ,aexis.CENTRADASPERIODO3-aexis.CENTRADASPERIODO2 as 'ENT3'
+             ,aexis.CSALIDASPERIODO3-aexis.CSALIDASPERIODO2 as 'SAL3'
+             ,aexis.CENTRADASPERIODO3-aexis.CSALIDASPERIODO3 as 'EXIS3'
+             ,aexis.CENTRADASPERIODO3-aexis.CSALIDASPERIODO3 as 'INVINI4'
+             ,aexis.CENTRADASPERIODO4-aexis.CENTRADASPERIODO3 as 'ENT4'
+             ,aexis.CSALIDASPERIODO4-aexis.CSALIDASPERIODO3 as 'SAL4'
+             ,aexis.CENTRADASPERIODO4-aexis.CSALIDASPERIODO4 as 'EXIS4'
+             ,aexis.CENTRADASPERIODO4-aexis.CSALIDASPERIODO4 as 'INVINI5'
+             ,aexis.CENTRADASPERIODO5-aexis.CENTRADASPERIODO4 as 'ENT5'
+             ,aexis.CSALIDASPERIODO5-aexis.CSALIDASPERIODO4 as 'SAL5'
+             ,aexis.CENTRADASPERIODO5-aexis.CSALIDASPERIODO5 as 'EXIS5'
+             ,aexis.CENTRADASPERIODO5-aexis.CSALIDASPERIODO5 as 'INVINI6'
+             ,aexis.CENTRADASPERIODO6-aexis.CENTRADASPERIODO5 as 'ENT6'
+             ,aexis.CSALIDASPERIODO6-aexis.CSALIDASPERIODO5 as 'SAL6'
+             ,aexis.CENTRADASPERIODO6-aexis.CSALIDASPERIODO6 as 'EXIS6'
+             ,aexis.CENTRADASPERIODO6-aexis.CSALIDASPERIODO6 as 'INVINI7'
+             ,aexis.CENTRADASPERIODO7-aexis.CENTRADASPERIODO6 as 'ENT7'
+             ,aexis.CSALIDASPERIODO7-aexis.CSALIDASPERIODO6 as 'SAL7'
+             ,aexis.CENTRADASPERIODO7-aexis.CSALIDASPERIODO7 as 'EXIS7'
+             ,aexis.CENTRADASPERIODO7-aexis.CSALIDASPERIODO7 as 'INVINI8'
+             ,aexis.CENTRADASPERIODO8-aexis.CENTRADASPERIODO7 as 'ENT8'
+             ,aexis.CSALIDASPERIODO8-aexis.CSALIDASPERIODO7 as 'SAL8'
+             ,aexis.CENTRADASPERIODO8-aexis.CSALIDASPERIODO8 as 'EXIS8'
+             ,aexis.CENTRADASPERIODO8-aexis.CSALIDASPERIODO8 as 'INVINI9'
+             ,aexis.CENTRADASPERIODO9-aexis.CENTRADASPERIODO8 as 'ENT9'
+             ,aexis.CSALIDASPERIODO9-aexis.CSALIDASPERIODO8 as 'SAL9'
+             ,aexis.CENTRADASPERIODO9-aexis.CSALIDASPERIODO9 as 'EXIS9'
+             ,aexis.CENTRADASPERIODO9-aexis.CSALIDASPERIODO9 as 'INVINI10'
+             ,aexis.CENTRADASPERIODO10-aexis.CENTRADASPERIODO9 as 'ENT10'
+             ,aexis.CSALIDASPERIODO10-aexis.CSALIDASPERIODO9 as 'SAL10'
+             ,aexis.CENTRADASPERIODO10-aexis.CSALIDASPERIODO10 as 'EXIS10'
+             ,aexis.CENTRADASPERIODO10-aexis.CSALIDASPERIODO10 as 'INVINI11'
+             ,aexis.CENTRADASPERIODO11-aexis.CENTRADASPERIODO10 as 'ENT11'
+             ,aexis.CSALIDASPERIODO11-aexis.CSALIDASPERIODO10 as 'SAL11'
+             ,aexis.CENTRADASPERIODO11-aexis.CSALIDASPERIODO11 as 'EXIS11'
+             ,aexis.CENTRADASPERIODO11-aexis.CSALIDASPERIODO11 as 'INVINI12'
+             ,aexis.CENTRADASPERIODO12-aexis.CENTRADASPERIODO11 as 'ENT12'
+             ,aexis.CSALIDASPERIODO12-aexis.CSALIDASPERIODO11 as 'SAL12'
+              ,aexis.CENTRADASPERIODO12-aexis.CSALIDASPERIODO12 as 'EXIS12'
+       
+         FROM [adPINTURAS2020SADEC].[dbo].[admExistenciaCosto] as aexis INNER JOIN [adPINTURAS2020SADEC].[dbo].[admProductos] as aprod ON aexis.CIDPRODUCTO = aprod.CIDPRODUCTO  WHERE $sWhere2)
+         SELECT CANAL,
+       SUM(INVINI) as 'INVINI',	
+       SUM(ENT1) as 'ENT1',	
+       SUM(SAL1) as 'SAL1',	
+       SUM(EXIS1) as 'EXIS1',	
+       SUM(INVINI2) as 'INVINI2',	
+       SUM(ENT2) as 'ENT2',	
+       SUM(SAL2) as 'SAL2',	
+       SUM(EXIS2) as 'EXIS2',	
+       SUM(INVINI3) as 'INVINI3',	
+       SUM(ENT3) as 'ENT3',	
+       SUM(SAL3) as 'SAL3',	
+       SUM(EXIS3) as 'EXIS3',	
+       SUM(INVINI4) as 'INVINI4',	
+       SUM(ENT4) as 'ENT4',	
+       SUM(SAL4) as 'SAL4',	
+       SUM(EXIS4) as 'EXIS4',	
+       SUM(INVINI5) as 'INVINI5',	
+       SUM(ENT5) as 'ENT5',	
+       SUM(SAL5) as 'SAL5',	
+       SUM(EXIS5) as 'EXIS5',	
+       SUM(INVINI6) as 'INVINI6',	
+       SUM(ENT6) as 'ENT6',	
+       SUM(SAL6) as 'SAL6',	
+       SUM(EXIS6) as 'EXIS6',	
+       SUM(INVINI7) as 'INVINI7',	
+       SUM(ENT7) as 'ENT7',	
+       SUM(SAL7) as 'SAL7',	
+       SUM(EXIS7) as 'EXIS7',	
+       SUM(INVINI8) as 'INVINI8',	
+       SUM(ENT8) as 'ENT8',	
+       SUM(SAL8) as 'SAL8',	
+       SUM(EXIS8) as 'EXIS8',	
+       SUM(INVINI9) as 'INVINI9',	
+       SUM(ENT9) as 'ENT9',	
+       SUM(SAL9) as 'SAL9',	
+       SUM(EXIS9) as 'EXIS9',	
+       SUM(INVINI10) as 'INVINI10',	
+       SUM(ENT10) as 'ENT10',	
+       SUM(SAL10) as 'SAL10',	
+       SUM(EXIS10) as 'EXIS10',	
+       SUM(INVINI11) as 'INVINI11',	
+       SUM(ENT11) as 'ENT11',	
+       SUM(SAL11) as 'SAL11',	
+       SUM(EXIS11) as 'EXIS11',	
+       SUM(INVINI12) as 'INVINI12',	
+       SUM(ENT12) as 'ENT12',	
+       SUM(SAL12) as 'SAL12',	
+       SUM(EXIS12) as 'EXIS12'
+        FROM inventario WHERE CANAL != 'OTRO' GROUP BY CANAL ORDER BY CANAL ASC";
+          }
+
+
+          $query = $this->mysqli->query($sql);
+
+          $nums_row = $this->countAll($sql);
+
+          //Set counter
+          $this->setCounter($nums_row);
+
+          $query = $query->fetchAll();
+          return $query;
+     }
+     public function getIndicadoresVentas($search)
+     {
+
+          global $agenteListPinturas;
+          global $agenteListDekkerlab;
+
+
+          $offset = $search['offset'];
+          $per_page = $search['per_page'];
+          $año = $search['año'];
+          $estatus = $search['estatus'];
+
+          $orden = $search['orden'];
+          switch ($search["campo"]) {
+               case 'centro':
+                    $campoOrden = "centroTrabajo";
+                    break;
+          }
+          $campoOrden = "centroTrabajo";
+          $sWhere = " adoc.CCANCELADO  = '" . $estatus . "'  and YEAR(adoc.CFECHA) = '" . $año . "' ";
+
+
+          $condicional = "WHERE indicador = 1  and canalComercial NOT IN('PROPIAS','SIN ASIGNAR') ";
+
+          $sql = "WITH ventasData AS(SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListPinturas as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'NOTA DE CR'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adPINTURAS2020SADEC].[dbo].[admDocumentos] as adoc INNER JOIN [adPINTURAS2020SADEC].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adPINTURAS2020SADEC].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adPINTURAS2020SADEC].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adPINTURAS2020SADEC].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adPINTURAS2020SADEC].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere  and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO in(4,
+5,
+3001,
+3002,
+3003,
+3023,
+3030,
+3076,
+3096,
+3108,
+3115,
+3128,
+3148,
+3172,
+3173,
+3174,
+3175,
+3176,
+3177,
+3178,
+3179,
+3180,
+3181,
+3212,
+3233,
+3146,
+3234,
+3182,
+3183,
+3184,
+3185,
+3186,
+3187,
+3188,
+3189,
+3190,
+3191,
+3126,
+3116,
+3106,
+3078,
+3094,
+3060,
+3024,
+3013,
+3014,
+3015,
+6,
+8,
+3016,
+3125,
+3194,
+3195,
+3196,
+3215,
+3229,
+3207,
+3208,
+3139
+)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION
+  UNION
+  SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListPinturas as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'NOTA DE CR'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adFLEX2020SADEC].[dbo].[admDocumentos] as adoc INNER JOIN [adFLEX2020SADEC].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adFLEX2020SADEC].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adFLEX2020SADEC].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adFLEX2020SADEC].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adFLEX2020SADEC].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere   and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(4,
+5,
+3001,
+3048,
+3061,
+3052,
+3012,
+3004,
+6,
+8,
+3007,
+3017,
+3053,
+3056,
+14
+)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION
+  UNION
+  SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListPinturas as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'NOTA DE CR'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adPinturas_y_Complemen].[dbo].[admDocumentos] as adoc INNER JOIN [adPinturas_y_Complemen].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adPinturas_y_Complemen].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adPinturas_y_Complemen].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adPinturas_y_Complemen].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adPinturas_y_Complemen].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3106,
+3105,
+3111)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION
+  UNION
+  SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListDekkerlab as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListDekkerlab,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListDekkerlab,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListDekkerlab,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListDekkerlab,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'Devolución'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'Nota de Cr'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'Factura Pr'
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+3046,
+3047,
+6,
+3049,
+3050,
+3051,
+3052,
+3053,
+3039,
+3042,
+4,
+5,
+3040,
+3043,
+3044,
+3041,
+3045,
+3080,
+3072,
+3071,
+3070,
+8,
+3054,
+3055,
+3056
+)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION),
+
+ventasOrdenadas As(
+    SELECT
+        canalComercial,
+        centroTrabajo,
+        Total,
+        Mes
+    FROM ventasData  $condicional
+    
+    )
+SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull([5],0) + IsNull([6],0) + IsNull([7],0) + IsNull([8],0) + IsNull([9],0) + IsNull([10],0) + IsNull([11],0) + IsNull([12],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Mes in([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12])) as pivotTable  order by $campoOrden $orden  OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+
+
+          $query = $this->mysqli->query($sql);
+
+          $sql1 = "WITH ventasData AS(SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListPinturas as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'NOTA DE CR'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adPINTURAS2020SADEC].[dbo].[admDocumentos] as adoc INNER JOIN [adPINTURAS2020SADEC].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adPINTURAS2020SADEC].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adPINTURAS2020SADEC].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adPINTURAS2020SADEC].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adPINTURAS2020SADEC].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere  and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO in(4,
+5,
+3001,
+3002,
+3003,
+3023,
+3030,
+3076,
+3096,
+3108,
+3115,
+3128,
+3148,
+3172,
+3173,
+3174,
+3175,
+3176,
+3177,
+3178,
+3179,
+3180,
+3181,
+3212,
+3233,
+3146,
+3234,
+3182,
+3183,
+3184,
+3185,
+3186,
+3187,
+3188,
+3189,
+3190,
+3191,
+3126,
+3116,
+3106,
+3078,
+3094,
+3060,
+3024,
+3013,
+3014,
+3015,
+6,
+8,
+3016,
+3125,
+3194,
+3195,
+3196,
+3215,
+3229,
+3207,
+3208,
+3139
+)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION
+  UNION
+  SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListPinturas as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'NOTA DE CR'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adFLEX2020SADEC].[dbo].[admDocumentos] as adoc INNER JOIN [adFLEX2020SADEC].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adFLEX2020SADEC].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adFLEX2020SADEC].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adFLEX2020SADEC].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adFLEX2020SADEC].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere   and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(4,
+5,
+3001,
+3048,
+3061,
+3052,
+3012,
+3004,
+6,
+8,
+3007,
+3017,
+3053,
+3056,
+14
+)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION
+  UNION
+  SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListPinturas as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListPinturas,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListPinturas,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListPinturas,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'NOTA DE CR'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adPinturas_y_Complemen].[dbo].[admDocumentos] as adoc INNER JOIN [adPinturas_y_Complemen].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adPinturas_y_Complemen].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adPinturas_y_Complemen].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adPinturas_y_Complemen].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adPinturas_y_Complemen].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3106,
+3105,
+3111)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION
+  UNION
+  SELECT 
+        adoc.CSERIEDOCUMENTO,
+        adoc.CFOLIO,
+        adoc.CRAZONSOCIAL As NombreCliente,
+        MONTH(adoc.CFECHA) As Mes,
+        $agenteListDekkerlab as Agente,
+                CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.centro($agenteListDekkerlab,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.centro($agenteListDekkerlab,'FLEX')
+                        ELSE
+                        dbo.centro($agenteListDekkerlab,'PINTURAS')
+                    END
+             
+                 END As centroTrabajo,
+                 CASE adoc.CRAZONSOCIAL
+                 WHEN 'CIPSA INDUSTRIAS S.A DE C.V.'
+                 THEN
+                    dbo.canal($agenteListDekkerlab,'PINTURAS')
+                 ELSE
+                    CASE acon.CNOMBRECONCEPTO
+                        WHEN 'DEVOLUCIÓN FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Devolución Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA FX PUEBLA V 3.'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'FACTURA MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Factura Prueba'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO AL CLIENTE FX V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CARGO CLIENTE MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Cargo Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'Nota de Crédito Mayoreo'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CRÉDITO FX PUEBLA V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'NOTA DE CREDITO MAYOREO V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        WHEN 'DOCUMENTO PRUEBA V 3.3'
+                        THEN
+                             dbo.canal($agenteListDekkerlab,'FLEX')
+                        ELSE
+                        dbo.canal($agenteListDekkerlab,'PINTURAS')
+                    END
+             
+                 END As canalComercial,
+         adoc.CNETO As Importe,
+         adoc.CDESCUENTOMOV As Descuento,
+         adoc.CIMPUESTO1 As IVA,
+         adoc.CTOTAL As Totals,
+         CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'Devolución'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'Nota de Cr'
+         THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+         WHEN 'Factura Pr'
+         THEN SUM(adoc.CTOTAL)
+         ELSE
+         SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
+         '1' As indicador
+  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+3046,
+3047,
+6,
+3049,
+3050,
+3051,
+3052,
+3053,
+3039,
+3042,
+4,
+5,
+3040,
+3043,
+3044,
+3041,
+3045,
+3080,
+3072,
+3071,
+3070,
+8,
+3054,
+3055,
+3056
+)
+  GROUP BY aclien.CIDAGENTEVENTA,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CRAZONSOCIAL,adoc.CFECHA,agen.CNOMBREAGENTE,adoc.CNETO,adoc.CDESCUENTOMOV,adoc.CIMPUESTO1,adoc.CTOTAL,acon.CNOMBRECONCEPTO,agen2.CNOMBREAGENTE,acla.CVALORCLASIFICACION),
+
+ventasOrdenadas As(
+    SELECT
+        canalComercial,
+        centroTrabajo,
+        Total,
+        Mes
+    FROM ventasData  $condicional
+    
+    )
+SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull([5],0) + IsNull([6],0) + IsNull([7],0) + IsNull([8],0) + IsNull([9],0) + IsNull([10],0) + IsNull([11],0) + IsNull([12],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Mes in([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12])) as pivotTable  order by $campoOrden $orden";
+
+          $nums_row = $this->countAll($sql1);
+
+          //Set counter
+          $this->setCounter($nums_row);
+
+          $query = $query->fetchAll();
+          return $query;
+     }
+     public function getIndicadoresUtilidad($search)
+     {
+
+          global $agenteListPinturas;
+          global $agenteListDekkerlab;
+
+
+          $offset = $search['offset'];
+          $per_page = $search['per_page'];
+          $año = $search['año'];
+          $estatus = $search['estatus'];
+          $sWhere = " adoc.CCANCELADO  = '" . $estatus . "'  and YEAR(adoc.CFECHA) = '" . $año . "' ";
+
+
+          $condicional = "WHERE indicador = 1  and NombreCliente NOT IN('PINTURAS Y COMPLEMENTOS DE PUEBLA S.A. DE C.V.','FLEX FINISHES MEXICO, S.A. DE C.V.')";
+
+          $sql = "WITH indicadores
+          AS (SELECT
+            adoc.CSERIEDOCUMENTO,
+            adoc.CFOLIO,
+            adoc.CRAZONSOCIAL AS NombreCliente,
+            amov.CIDPRODUCTO,
+            CASE SUBSTRING(adoc.CSERIEDOCUMENTO, 3, 4)
+  WHEN 'ND'
+  THEN
+  'CUENTAS CORPORATIVAS'
+   WHEN 'PB'
+  THEN
+  'CEDIS'
+   WHEN 'SM'
+  THEN
+  '1 TIENDA SAN MANUEL'
+  WHEN 'CA'
+  THEN
+  '7 TIENDA CAPU'
+   WHEN 'EC'
+  THEN
+  'E-COMMERCE'
+    WHEN 'IN'
+  THEN
+  'CUENTAS CORPORATIVAS'
+   WHEN 'MY'
+  THEN
+  'CEDIS'
+    WHEN 'RM'
+  THEN
+  '3 TIENDA REFORMA'
+  WHEN 'SN'
+  THEN
+  '1 TIENDA SAN MANUEL'
+   WHEN 'ST'
+  THEN
+  '6 TIENDA SANTIAGO'
+  WHEN 'TO'
+  THEN
+  '9 TIENDA TORRES'
+  WHEN 'PR'
+  THEN
+  'CEDIS'
+  ELSE
+  'OTRO'
+  END as 'centro',
+            CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+           THEN -SUM(CCOSTOESPECIFICO)
+         WHEN 'NOTA DE CR'
+           THEN -SUM(CCOSTOESPECIFICO)
+         WHEN 'DOCUMENTO '
+         THEN SUM(CCOSTOESPECIFICO)
+         ELSE
+        SUM(CCOSTOESPECIFICO) END AS CCOSTOESPECIFICO,
+  CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+           THEN -SUM(amov.CNETO-amov.CDESCUENTO1)
+         WHEN 'NOTA DE CR'
+           THEN -SUM(amov.CNETO-amov.CDESCUENTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(amov.CTOTAL)
+         ELSE
+        SUM(amov.CNETO-amov.CDESCUENTO1) END AS TotalPrecio,
+            MONTH(adoc.CFECHA) AS Mes,
+            '1' AS indicador,
+            CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+                   WHEN 'DEVOLUCIÓN'
+                   THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+                   WHEN 'NOTA DE CR'
+                   THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+                   WHEN 'DOCUMENTO '
+                   THEN SUM(adoc.CTOTAL)
+                   ELSE
+                   SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total
+          FROM [adPINTURAS2020SADEC].[dbo].[admDocumentos] AS adoc
+          INNER JOIN [adPINTURAS2020SADEC].[dbo].[admClientes] AS aclien
+            ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR
+          INNER JOIN [adPINTURAS2020SADEC].[dbo].[admAgentes] AS agen
+            ON adoc.CIDAGENTE = agen.CIDAGENTE
+          INNER JOIN [adPINTURAS2020SADEC].[dbo].[admConceptos] AS acon
+            ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE
+            AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO
+          INNER JOIN [adPINTURAS2020SADEC].[dbo].[admAgentes] AS agen2
+            ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE
+          LEFT OUTER JOIN [adPINTURAS2020SADEC].[dbo].[admClasificacionesValores] AS acla
+            ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION
+          LEFT OUTER JOIN [adPINTURAS2020SADEC].[dbo].[admMovimientos]  AS amov
+            ON adoc.CIDDOCUMENTO = amov.CIDDOCUMENTO
+          WHERE $sWhere
+          
+          AND adoc.CIDDOCUMENTODE IN (4, 5)
+          AND adoc.CIDCONCEPTODOCUMENTO IN (4, 5, 3001, 3002, 3003, 3023, 3030, 3076, 3096, 3108, 3115, 3128, 3148, 3172, 3173, 3174, 3175, 3176, 3177, 3178, 3179, 3180, 3181, 3212, 3233, 3146, 3234, 3182, 3183, 3184, 3185, 3186, 3187, 3188, 3189, 3190, 3191, 3126, 3116, 3106, 3078, 3094, 3060, 3024, 3013, 3014, 3015, 6, 8, 3016, 3125, 3194, 3195, 3196, 3215, 3229, 3207, 3208, 3139)
+          GROUP BY aclien.CIDAGENTEVENTA,
+                   adoc.CSERIEDOCUMENTO,
+                   adoc.CFOLIO,
+                   adoc.CRAZONSOCIAL,
+                   adoc.CFECHA,
+                   agen.CNOMBREAGENTE,
+                   adoc.CNETO,
+                   adoc.CDESCUENTOMOV,
+                   adoc.CIMPUESTO1,
+                   adoc.CTOTAL,
+                   acon.CNOMBRECONCEPTO,
+                   agen2.CNOMBREAGENTE,
+                   acla.CVALORCLASIFICACION,
+                   amov.CIDPRODUCTO,
+                   amov.CCOSTOESPECIFICO,
+                   amov.CNETO
+          UNION
+          SELECT
+            adoc.CSERIEDOCUMENTO,
+            adoc.CFOLIO,
+            adoc.CRAZONSOCIAL AS NombreCliente,
+            amov.CIDPRODUCTO,
+            CASE SUBSTRING(adoc.CSERIEDOCUMENTO, 3, 4)
+  WHEN 'ND'
+  THEN
+  'CUENTAS CORPORATIVAS'
+   WHEN 'PB'
+  THEN
+  'CEDIS'
+   WHEN 'SM'
+  THEN
+  '1 TIENDA SAN MANUEL'
+  WHEN 'CA'
+  THEN
+  '7 TIENDA CAPU'
+   WHEN 'EC'
+  THEN
+  'E-COMMERCE'
+    WHEN 'IN'
+  THEN
+  'CUENTAS CORPORATIVAS'
+   WHEN 'MY'
+  THEN
+  'CEDIS'
+    WHEN 'RM'
+  THEN
+  '3 TIENDA REFORMA'
+  WHEN 'SN'
+  THEN
+  '1 TIENDA SAN MANUEL'
+   WHEN 'ST'
+  THEN
+  '6 TIENDA SANTIAGO'
+  WHEN 'TO'
+  THEN
+  '9 TIENDA TORRES'
+  WHEN 'PR'
+  THEN
+  'CEDIS'
+  ELSE
+  'OTRO'
+  END as 'centro',
+            CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+           THEN -SUM(CCOSTOESPECIFICO)
+         WHEN 'NOTA DE CR'
+           THEN -SUM(CCOSTOESPECIFICO)
+         WHEN 'DOCUMENTO '
+         THEN SUM(CCOSTOESPECIFICO)
+         ELSE
+        SUM(CCOSTOESPECIFICO) END AS CCOSTOESPECIFICO,
+   CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+           THEN -SUM(amov.CNETO-amov.CDESCUENTO1)
+         WHEN 'NOTA DE CR'
+           THEN -SUM(amov.CNETO-amov.CDESCUENTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(amov.CTOTAL)
+         ELSE
+        SUM(amov.CNETO-amov.CDESCUENTO1) END AS TotalPrecio,
+            MONTH(adoc.CFECHA) AS Mes,
+            '1' AS indicador,
+           CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+                   WHEN 'DEVOLUCIÓN'
+                   THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+                   WHEN 'NOTA DE CR'
+                   THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+                   WHEN 'DOCUMENTO '
+                   THEN SUM(adoc.CTOTAL)
+                   ELSE
+                   SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total
+          FROM [adFLEX2020SADEC].[dbo].[admDocumentos] AS adoc
+          INNER JOIN [adFLEX2020SADEC].[dbo].[admClientes] AS aclien
+            ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR
+          INNER JOIN [adFLEX2020SADEC].[dbo].[admAgentes] AS agen
+            ON adoc.CIDAGENTE = agen.CIDAGENTE
+          INNER JOIN [adFLEX2020SADEC].[dbo].[admConceptos] AS acon
+            ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE
+            AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO
+          INNER JOIN [adFLEX2020SADEC].[dbo].[admAgentes] AS agen2
+            ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE
+          LEFT OUTER JOIN [adFLEX2020SADEC].[dbo].[admClasificacionesValores] AS acla
+            ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION
+          LEFT OUTER JOIN [adFLEX2020SADEC].[dbo].[admMovimientos]  AS amov
+            ON adoc.CIDDOCUMENTO = amov.CIDDOCUMENTO
+          WHERE $sWhere
+          
+          AND adoc.CIDDOCUMENTODE IN (4, 5)
+          AND adoc.CIDCONCEPTODOCUMENTO IN (4, 5, 3001, 3048, 3061, 3052, 3012, 3004, 6, 8, 3007, 3017, 3053, 3056, 14)
+          GROUP BY aclien.CIDAGENTEVENTA,
+                   adoc.CSERIEDOCUMENTO,
+                   adoc.CFOLIO,
+                   adoc.CRAZONSOCIAL,
+                   adoc.CFECHA,
+                   agen.CNOMBREAGENTE,
+                   adoc.CNETO,
+                   adoc.CDESCUENTOMOV,
+                   adoc.CIMPUESTO1,
+                   adoc.CTOTAL,
+                   acon.CNOMBRECONCEPTO,
+                   agen2.CNOMBREAGENTE,
+                   acla.CVALORCLASIFICACION,
+                   amov.CIDPRODUCTO,
+                   amov.CCOSTOESPECIFICO,
+                   amov.CNETO
+          UNION
+          SELECT
+            adoc.CSERIEDOCUMENTO,
+            adoc.CFOLIO,
+            adoc.CRAZONSOCIAL AS NombreCliente,
+            amov.CIDPRODUCTO,
+            CASE SUBSTRING(adoc.CSERIEDOCUMENTO, 3, 4)
+  WHEN 'ND'
+  THEN
+  'CUENTAS CORPORATIVAS'
+   WHEN 'PB'
+  THEN
+  'CEDIS'
+   WHEN 'SM'
+  THEN
+  '1 TIENDA SAN MANUEL'
+  WHEN 'CA'
+  THEN
+  '7 TIENDA CAPU'
+   WHEN 'EC'
+  THEN
+  'E-COMMERCE'
+    WHEN 'IN'
+  THEN
+  'CUENTAS CORPORATIVAS'
+   WHEN 'MY'
+  THEN
+  'CEDIS'
+    WHEN 'RM'
+  THEN
+  '3 TIENDA REFORMA'
+  WHEN 'SN'
+  THEN
+  '1 TIENDA SAN MANUEL'
+   WHEN 'ST'
+  THEN
+  '6 TIENDA SANTIAGO'
+  WHEN 'TO'
+  THEN
+  '9 TIENDA TORRES'
+  WHEN 'PR'
+  THEN
+  'CEDIS'
+  ELSE
+  'OTRO'
+  END as 'centro',
+            CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+           THEN -SUM(CCOSTOESPECIFICO)
+         WHEN 'NOTA DE CR'
+           THEN -SUM(CCOSTOESPECIFICO)
+         WHEN 'DOCUMENTO '
+         THEN SUM(CCOSTOESPECIFICO)
+         ELSE
+        SUM(CCOSTOESPECIFICO) END AS CCOSTOESPECIFICO,
+    CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'DEVOLUCIÓN'
+           THEN -SUM(amov.CNETO-amov.CDESCUENTO1)
+         WHEN 'NOTA DE CR'
+           THEN -SUM(amov.CNETO-amov.CDESCUENTO1)
+         WHEN 'DOCUMENTO '
+         THEN SUM(amov.CTOTAL)
+         ELSE
+        SUM(amov.CNETO-amov.CDESCUENTO1) END AS TotalPrecio,
+            MONTH(adoc.CFECHA) AS Mes,
+            '1' AS indicador,
+            CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+                   WHEN 'DEVOLUCIÓN'
+                   THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+                   WHEN 'NOTA DE CR'
+                   THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+                   WHEN 'DOCUMENTO '
+                   THEN SUM(adoc.CTOTAL)
+                   ELSE
+                   SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total
+          FROM [adPinturas_y_Complemen].[dbo].[admDocumentos] AS adoc
+          INNER JOIN [adPinturas_y_Complemen].[dbo].[admClientes] AS aclien
+            ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR
+          INNER JOIN [adPinturas_y_Complemen].[dbo].[admAgentes] AS agen
+            ON adoc.CIDAGENTE = agen.CIDAGENTE
+          INNER JOIN [adPinturas_y_Complemen].[dbo].[admConceptos] AS acon
+            ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE
+            AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO
+          INNER JOIN [adPinturas_y_Complemen].[dbo].[admAgentes] AS agen2
+            ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE
+          LEFT OUTER JOIN [adPinturas_y_Complemen].[dbo].[admClasificacionesValores] AS acla
+            ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION
+            LEFT OUTER JOIN [adPinturas_y_Complemen].[dbo].[admMovimientos]  AS amov
+            ON adoc.CIDDOCUMENTO = amov.CIDDOCUMENTO
+          WHERE $sWhere
+          
+          AND adoc.CIDDOCUMENTODE IN (4, 5)
+          AND adoc.CIDCONCEPTODOCUMENTO IN (3106, 3105, 3111)
+          GROUP BY aclien.CIDAGENTEVENTA,
+                   adoc.CSERIEDOCUMENTO,
+                   adoc.CFOLIO,
+                   adoc.CRAZONSOCIAL,
+                   adoc.CFECHA,
+                   agen.CNOMBREAGENTE,
+                   adoc.CNETO,
+                   adoc.CDESCUENTOMOV,
+                   adoc.CIMPUESTO1,
+                   adoc.CTOTAL,
+                   acon.CNOMBRECONCEPTO,
+                   agen2.CNOMBREAGENTE,
+                   acla.CVALORCLASIFICACION,
+                   amov.CIDPRODUCTO,
+                   amov.CCOSTOESPECIFICO,
+                   amov.CNETO
+          UNION
+          SELECT
+            adoc.CSERIEDOCUMENTO,
+            adoc.CFOLIO,
+            adoc.CRAZONSOCIAL AS NombreCliente,
+            amov.CIDPRODUCTO,
+            CASE SUBSTRING(adoc.CSERIEDOCUMENTO, 3, 4)
+  WHEN 'ND'
+  THEN
+  'CUENTAS CORPORATIVAS'
+   WHEN 'PB'
+  THEN
+  'CEDIS'
+   WHEN 'SM'
+  THEN
+  '1 TIENDA SAN MANUEL'
+  WHEN 'CA'
+  THEN
+  '7 TIENDA CAPU'
+   WHEN 'EC'
+  THEN
+  'E-COMMERCE'
+    WHEN 'IN'
+  THEN
+  'CUENTAS CORPORATIVAS'
+   WHEN 'MY'
+  THEN
+  'CEDIS'
+    WHEN 'RM'
+  THEN
+  '3 TIENDA REFORMA'
+  WHEN 'SN'
+  THEN
+  '1 TIENDA SAN MANUEL'
+   WHEN 'ST'
+  THEN
+  '6 TIENDA SANTIAGO'
+  WHEN 'TO'
+  THEN
+  '9 TIENDA TORRES'
+  WHEN 'PR'
+  THEN
+  'CEDIS'
+  ELSE
+  'OTRO'
+  END as 'centro',
+            CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'Devolución'
+           THEN -SUM(CCOSTOESPECIFICO)
+         WHEN 'Nota de Cr'
+           THEN -SUM(CCOSTOESPECIFICO)
+         WHEN 'Factura Pr'
+         THEN SUM(CCOSTOESPECIFICO)
+         ELSE
+        SUM(CCOSTOESPECIFICO) END AS CCOSTOESPECIFICO,
+   CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+         WHEN 'Devolución'
+           THEN -SUM(amov.CNETO-amov.CDESCUENTO1)
+         WHEN 'Nota de Cr'
+           THEN -SUM(amov.CNETO-amov.CDESCUENTO1)
+         WHEN 'Factura Pr'
+         THEN SUM(amov.CTOTAL)
+         ELSE
+        SUM(amov.CNETO-amov.CDESCUENTO1) END AS TotalPrecio,
+            MONTH(adoc.CFECHA) AS Mes,
+            '1' AS indicador,
+            CASE SUBSTRING(acon.CNOMBRECONCEPTO,1,10)
+                   WHEN 'Devolución'
+                   THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+                   WHEN 'Nota de Cr'
+                   THEN (SUM(adoc.CTOTAL-adoc.CIMPUESTO1)*0) -SUM(adoc.CTOTAL-adoc.CIMPUESTO1)
+                   WHEN 'Factura Pr'
+                   THEN SUM(adoc.CTOTAL)
+                   ELSE
+                   SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total
+          FROM [adDEKKERLAB].[dbo].[admDocumentos] AS adoc
+          INNER JOIN [adDEKKERLAB].[dbo].[admClientes] AS aclien
+            ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR
+          INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] AS agen
+            ON adoc.CIDAGENTE = agen.CIDAGENTE
+          INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] AS acon
+            ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE
+            AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO
+          INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] AS agen2
+            ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE
+          LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] AS acla
+            ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION
+          LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos]  AS amov
+            ON adoc.CIDDOCUMENTO = amov.CIDDOCUMENTO
+          WHERE $sWhere
+          
+          AND adoc.CIDDOCUMENTODE IN (4, 5)
+          AND adoc.CIDCONCEPTODOCUMENTO IN (3048, 3046, 3047, 6, 3049, 3050, 3051, 3052, 3053, 3039, 3042, 4, 5, 3040, 3043, 3044, 3041, 3045, 3080, 3072, 3071, 3070, 8, 3054, 3055, 3056)
+          GROUP BY aclien.CIDAGENTEVENTA,
+                   adoc.CSERIEDOCUMENTO,
+                   adoc.CFOLIO,
+                   adoc.CRAZONSOCIAL,
+                   adoc.CFECHA,
+                   agen.CNOMBREAGENTE,
+                   adoc.CNETO,
+                   adoc.CDESCUENTOMOV,
+                   adoc.CIMPUESTO1,
+                   adoc.CTOTAL,
+                   acon.CNOMBRECONCEPTO,
+                   agen2.CNOMBREAGENTE,
+                   acla.CVALORCLASIFICACION,
+                   amov.CIDPRODUCTO,
+                   amov.CCOSTOESPECIFICO,
+                   amov.CNETO),
+          indicadoresData
+          AS ( SELECT 
+                        centro,
+                        CCOSTOESPECIFICO,
+                        Mes
+                 FROM indicadores $condicional
+                  )
+          
+          SELECT  *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull([5],0) + IsNull([6],0) + IsNull([7],0) + IsNull([8],0) + IsNull([9],0) + IsNull([10],0) + IsNull([11],0) + IsNull([12],0) Totales
+          FROM indicadoresData PIVOT(Sum(CCOSTOESPECIFICO) FOR Mes IN([1],
+                                                               [2],
+                                                               [3],
+                                                               [4],
+                                                               [5],
+                                                               [6],
+                                                               [7],
+                                                               [8],
+                                                               [9],
+                                                               [10],
+                                                               [11],
+                                                               [12])) AS pivotTable
+          ORDER BY centro ASC OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+
+
+          $query = $this->mysqli->query($sql);
+
+          $nums_row = $this->countAll($sql);
 
           //Set counter
           $this->setCounter($nums_row);

@@ -45,6 +45,7 @@ class ControllerAdmon
                 } else {
 
                     if (isset($_POST["accion"])) {
+
                         switch ($_POST["accion"]) {
                             case '1':
                                 $modulo = "Ventas";
@@ -55,41 +56,109 @@ class ControllerAdmon
                                 $dashboard = "dashboardInventarios";
                                 break;
                         }
+
                         if ($respuesta["email"] == $_POST["email"] && $respuesta["password"] == $encriptar) {
 
-                            $_SESSION["validarSesionBackend"] = "ok";
-                            $_SESSION["id"] = $respuesta["id"];
-                            $_SESSION["nombre"] = $respuesta["nombre"];
-                            $_SESSION["foto"] = $respuesta["foto"];
-                            $_SESSION["email"] = $respuesta["email"];
-                            $_SESSION["grupo"] = $respuesta["grupo"];
-                            $_SESSION["perfil"] = $respuesta["perfil"];
-                            $_SESSION["modulo"] = $modulo;
+                            if ($modulo == "Ventas" && $respuesta["ventas"] == 1) {
 
-                            $datos = array(
-                                "usuario" => $_SESSION['nombre'],
-                                "perfil" => $_SESSION['perfil'],
-                                "accion" => $_SESSION['nombre'] . " ha iniciado sesión en el módulo " . " " . $modulo,
-                                "idAccion" => 1
-                            );
 
-                            $respuesta = ModelAdmon::mdlRegistroBitacora("bitacora", $datos);
-                            if ($_SESSION["grupo"] != 'Administracion') {
+                                $_SESSION["validarSesionBackend"] = "ok";
+                                $_SESSION["id"] = $respuesta["id"];
+                                $_SESSION["nombre"] = $respuesta["nombre"];
+                                $_SESSION["foto"] = $respuesta["foto"];
+                                $_SESSION["email"] = $respuesta["email"];
+                                $_SESSION["grupo"] = $respuesta["grupo"];
+                                $_SESSION["perfil"] = $respuesta["perfil"];
+                                $_SESSION["idGrupo"] = $respuesta["idGrupo"];
+                                $_SESSION["modulo"] = $modulo;
 
-                                echo '<script>
-                           
-                                window.location = "ultimosCostos";
-                                /*window.location = "ultimosCostos";*/
+                                $datos = array(
+                                    "usuario" => $_SESSION['nombre'],
+                                    "perfil" => $_SESSION['perfil'],
+                                    "accion" => $_SESSION['nombre'] . " ha iniciado sesión en el módulo " . " " . $modulo,
+                                    "idAccion" => 1
+                                );
+
+                                $respuesta2 = ModelAdmon::mdlRegistroBitacora("bitacora", $datos);
+                                if ($_SESSION["grupo"] != 'Administracion' && $_SESSION["grupo"] != 'Tiendas') {
+
+                                    echo '<script>
+                                    localStorage.setItem("tipoModulo","Ventas");
+                                    localStorage.setItem("grupoUsuario","' . $respuesta["grupo"] . '");
+                                    localStorage.setItem("idUsuarioInventarios","' . $respuesta["id"] . '");
+                                    window.location = "ultimosCostos";
+                              
     
                             </script>';
+                                } else {
+
+                                    echo '<script>
+                                    localStorage.setItem("tipoModulo","Ventas");
+                                    localStorage.setItem("grupoUsuario","' . $respuesta["grupo"] . '");
+                                    localStorage.setItem("idUsuarioInventarios","' . $respuesta["id"] . '");
+                                    window.location = "' . $dashboard . '";
+                               
+    
+                            </script>';
+                                }
+                            } else if ($modulo == "Inventarios" && $respuesta["inventarios"] == 1) {
+
+
+                                $_SESSION["validarSesionBackend"] = "ok";
+                                $_SESSION["id"] = $respuesta["id"];
+                                $_SESSION["nombre"] = $respuesta["nombre"];
+                                $_SESSION["foto"] = $respuesta["foto"];
+                                $_SESSION["email"] = $respuesta["email"];
+                                $_SESSION["grupo"] = $respuesta["grupo"];
+                                $_SESSION["perfil"] = $respuesta["perfil"];
+                                $_SESSION["idGrupo"] = $respuesta["idGrupo"];
+                                $_SESSION["modulo"] = $modulo;
+
+                                $datos = array(
+                                    "usuario" => $_SESSION['nombre'],
+                                    "perfil" => $_SESSION['perfil'],
+                                    "accion" => $_SESSION['nombre'] . " ha iniciado sesión en el módulo " . " " . $modulo,
+                                    "idAccion" => 1
+                                );
+
+                                $respuesta2 = ModelAdmon::mdlRegistroBitacora("bitacora", $datos);
+                                if ($_SESSION["grupo"] != 'Administracion' && $_SESSION["grupo"] != 'Tiendas' && $_SESSION["grupo"] != 'Ecommerce') {
+
+                                    echo '<script>
+                                    localStorage.setItem("tipoModulo","Inventarios");
+                                    localStorage.setItem("grupoUsuario","' . $respuesta["grupo"] . '");
+                                    localStorage.setItem("idUsuarioInventarios","' . $respuesta["id"] . '");
+                                    window.location = "ultimosCostos";
+                              
+    
+                            </script>';
+                                } else {
+
+                                    if ($_SESSION["grupo"] == 'Ecommerce') {
+                                        echo '<script>
+                                        localStorage.setItem("tipoModulo","Inventarios");
+                                        localStorage.setItem("grupoUsuario","' . $respuesta["grupo"] . '");
+                                        localStorage.setItem("idUsuarioInventarios","' . $respuesta["id"] . '");
+                                        window.location = "ecommerce";
+                                        </script>';
+                                    } else {
+                                        echo '<script>
+                                        localStorage.setItem("tipoModulo","Inventarios");
+                                        localStorage.setItem("grupoUsuario","' . $respuesta["grupo"] . '");
+                                        localStorage.setItem("idUsuarioInventarios","' . $respuesta["id"] . '");
+                                        window.location = "indicadores";
+                                        </script>';
+                                    }
+                                }
                             } else {
-
                                 echo '<script>
-                           
-                                window.location = "' . $dashboard . '";
-                                /*window.location = "dashboard";*/
-    
-                            </script>';
+                                    Swal.fire({
+                                       icon: "error",
+                                       title: "¡No tienes permiso para acceder a este módulo...!",
+                                       confirmButtonText: "Cerrar"
+                                     })
+                
+                                </script>';
                             }
                         } else {
 
@@ -200,6 +269,110 @@ class ControllerAdmon
     {
 
         $respuesta = ModelAdmon::mdlActualizacionPasswordUsuarioAdmin($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrListarSolicitantes($idAdministrador)
+    {
+        $tabla = "solicitantes";
+
+        $respuesta = ModelAdmon::mdlListarSolicitantes($tabla, $idAdministrador);
+
+        return $respuesta;
+    }
+    static public function ctrInsertarProductosTemporales($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlInsertarProductosTemporales($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrActualizarProductosTemporales($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlActualizarProductosTemporales($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrBuscarProductosTemporales($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlBuscarProductosTemporales($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrEliminarProductosTemporales($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlEliminarProductosTemporales($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrDetalleProductosTemporales($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlDetalleProductosTemporales($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrGenerarDocumento($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlGenerarDocumento($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrUpdateFolioDocumento($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlUpdateFolioDocumento($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrEstatusDocumento($tabla, $folio)
+    {
+        $respuesta = ModelAdmon::mdlEstatusDocumento($tabla, $folio);
+
+        return $respuesta;
+    }
+    static public function ctrDetalleDocumento($tabla, $serie, $folio)
+    {
+        $respuesta = ModelAdmon::mdlDetalleDocumento($tabla, $serie, $folio);
+
+        return $respuesta;
+    }
+    static public function ctrDetalleDocumentoAutorizacion($tabla, $serie, $folio, $tipoDocumentoUnion)
+    {
+        $respuesta = ModelAdmon::mdlDetalleDocumentoAutorizacion($tabla, $serie, $folio, $tipoDocumentoUnion);
+
+        return $respuesta;
+    }
+    static public function ctrEliminarDocumento($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlEliminarDocumento($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrActualizarDocumento($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlActualizarDocumento($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrActualizarEstatusDocumento($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlActualizarEstatusDocumento($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrActualizarProductosAprobados($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlActualizarProductosAprobados($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrActualizarProductosPendientes($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlActualizarProductosPendientes($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrActualizarDocumentoAprobado($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlActualizarDocumentoAprobado($tabla, $datos);
 
         return $respuesta;
     }

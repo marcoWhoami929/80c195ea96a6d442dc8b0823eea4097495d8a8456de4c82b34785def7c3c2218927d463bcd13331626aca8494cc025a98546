@@ -30,7 +30,7 @@ if ($action == 'ventasCliente') {
     $row = $countAll;
 
     if ($row > 0) {
-        $numrows = $countAll;;
+        $numrows = $countAll;
     } else {
         $numrows = 0;
     }

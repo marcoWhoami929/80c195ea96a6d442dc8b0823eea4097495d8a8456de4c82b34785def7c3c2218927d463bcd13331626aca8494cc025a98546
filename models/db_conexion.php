@@ -3,7 +3,7 @@ class ConexionsBd
 {
     public $counter;
 
-    public static function conectar()
+    public static function conectar2()
     {
 
         $link =  new PDO(
@@ -18,7 +18,7 @@ class ConexionsBd
 
         return $link;
     }
-    public static function conectar2()
+    public static function conectar()
     {
 
         $link =  new PDO(

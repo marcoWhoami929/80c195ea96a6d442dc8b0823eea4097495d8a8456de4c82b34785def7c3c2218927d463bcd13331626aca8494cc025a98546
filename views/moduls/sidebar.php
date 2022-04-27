@@ -6,7 +6,7 @@
         session_start();
 
         if ($_SESSION["modulo"] == "Ventas") {
-            if ($_SESSION["grupo"] != 'Almacen') {
+            if ($_SESSION["grupo"] != 'Almacen' && $_SESSION["grupo"] != 'Ecommerce') {
                 echo '<div class="pcoded-navigation-label">Tablero</div>
                 <ul class="pcoded-item pcoded-left-item">
                     <li class="active">
@@ -298,82 +298,55 @@
         } else {
 
             if ($_SESSION["grupo"] == "Tiendas") {
+            } else if ($_SESSION["grupo"] == 'Ecommerce') {
+                echo '<div class="pcoded-navigation-label">Ecommerce</div>
+                <ul class="pcoded-item pcoded-left-item">
+                    <li class="">
+                        <a href="ecommerce" class="waves-effect waves-dark">
+                            <span class="pcoded-micon"><i class="fa fa-briefcase"></i><b>UC</b></span>
+                            <span class="pcoded-mtext">Precios Ecommerce</span>
+                            <span class="pcoded-mcaret"></span>
+                        </a>
+                    </li>
+                </ul>';
             } else {
+                /*
                 echo '<div class="pcoded-navigation-label">Tablero</div>
             <ul class="pcoded-item pcoded-left-item">
                 <li class="active">
                     <a href="dashboardInventarios" class="waves-effect waves-dark">
-                        <span class="pcoded-micon"><i class="ti-home"></i><b></b></span>
+                        <span class="pcoded-micon"><i class="ti-dashboard"></i><b></b></span>
                         <span class="pcoded-mtext">Tablero</span>
                         <span class="pcoded-mcaret"></span>
                     </a>
     
                 </li>
             </ul>';
-            }
-
-            echo '<ul class="pcoded-item pcoded-left-item">
+            */
+                echo '<div class="pcoded-navigation-label">Indicadores</div>
+            <ul class="pcoded-item pcoded-left-item">
                 <li class="">
-                    <a href="requisiciones" class="waves-effect waves-dark">
-                        <span class="pcoded-micon"><i class="ti-bookmark-alt"></i><b></b></span>
-                        <span class="pcoded-mtext">Requisiciones de Material</span>
+                    <a href="indicadores" class="waves-effect waves-dark">
+                        <span class="pcoded-micon"><i class="ti-bar-chart"></i><b></b></span>
+                        <span class="pcoded-mtext">Indicadores</span>
                         <span class="pcoded-mcaret"></span>
                     </a>
-
+    
                 </li>
-            </ul>';
-            echo '<ul class="pcoded-item pcoded-left-item">
                 <li class="">
-                    <a href="recordatorios" class="waves-effect waves-dark">
-                        <span class="pcoded-micon"><i class="ti-calendar"></i><b></b></span>
-                        <span class="pcoded-mtext">Recordatorios</span>
-                        <span class="pcoded-mcaret"></span>
-                    </a>
-
-                </li>
-            </ul>';
-            echo '<ul class="pcoded-item pcoded-left-item">
-            <li class="">
-                <a href="existencias" class="waves-effect waves-dark">
+                <a href="inventarioActual" class="waves-effect waves-dark">
                     <span class="pcoded-micon"><i class="ti-package"></i><b></b></span>
-                    <span class="pcoded-mtext">Existencias y costos</span>
+                    <span class="pcoded-mtext">Inventario Actual</span>
                     <span class="pcoded-mcaret"></span>
                 </a>
 
             </li>
-        </ul>';
-            if ($_SESSION["grupo"] == "Administracion") {
-                echo '<ul class="pcoded-item pcoded-left-item">
-                <li class="pcoded-hasmenu">
-                    <a href="javascript:void(0)" class="waves-effect waves-dark">
-                        <span class="pcoded-micon"><i class="ti-money"></i><b></b></span>
-                        <span class="pcoded-mtext">Compras</span>
-                        <span class="pcoded-mcaret"></span>
-                    </a>
-                    <ul class="pcoded-submenu">
-                    <li class="">
-                        <a href="compras" class="waves-effect waves-dark">
-                            <span class="pcoded-mtext">Compras</span>
-                            <span class="pcoded-mcaret"></span>
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href="ordenesCompra" class="waves-effect waves-dark">
-                            <span class="pcoded-mtext">Órdenes de compra</span>
-                            <span class="pcoded-mcaret"></span>
-                        </a>
-                    </li>
-                    <li class="">
-                    <a href="autorizacionesCompra" class="waves-effect waves-dark">
-                        <span class="pcoded-mtext">Autorizaciones de Compra</span>
-                        <span class="pcoded-mcaret"></span>
-                    </a>
-                </li>
-                   
-    
-                    </ul>
-                </li>
             </ul>';
+            }
+
+            if ($_SESSION["grupo"] == "Administracion") {
+                /*
+
                 echo '<ul class="pcoded-item pcoded-left-item">
                 <li class="pcoded-hasmenu">
                     <a href="javascript:void(0)" class="waves-effect waves-dark">
@@ -395,12 +368,6 @@
                         </a>
                     </li>
                     <li class="">
-                        <a href="existencias" class="waves-effect waves-dark">
-                            <span class="pcoded-mtext">Existencias</span>
-                            <span class="pcoded-mcaret"></span>
-                        </a>
-                    </li>
-                    <li class="">
                         <a href="traspasos" class="waves-effect waves-dark">
                
                             <span class="pcoded-mtext">Traspasos</span>
@@ -412,64 +379,166 @@
                     </ul>
                 </li>
             </ul>';
+            */
             }
-
-
-            echo '<ul class="pcoded-item pcoded-left-item">
+            if ($_SESSION["grupo"] != "Ecommerce") {
+                /*
+                echo '<ul class="pcoded-item pcoded-left-item">
                 <li class="pcoded-hasmenu">
                     <a href="javascript:void(0)" class="waves-effect waves-dark">
-                        <span class="pcoded-micon"><i class="ti-bookmark-alt"></i><b></b></span>
-                        <span class="pcoded-mtext">Pedidos</span>
+                        <span class="pcoded-micon"><i class="ti-panel"></i><b></b></span>
+                        <span class="pcoded-mtext">Mi Almacén</span>
                         <span class="pcoded-mcaret"></span>
                     </a>
                     <ul class="pcoded-submenu">
                     <li class="">
-                        <a href="pedidoSugerido" class="waves-effect waves-dark">
-                            <span class="pcoded-mtext">Pedido Sugerido</span>
+                        <a href="miAlmacen" class="waves-effect waves-dark">
+                            <span class="pcoded-mtext">Mi Almacén</span>
                             <span class="pcoded-mcaret"></span>
                         </a>
                     </li>
                     <li class="">
-                        <a href="nuevoPedido" class="waves-effect waves-dark">
-                            <span class="pcoded-mtext">Crear Pedido</span>
-                            <span class="pcoded-mcaret"></span>
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href="pedidosRealizados" class="waves-effect waves-dark">
-                            <span class="pcoded-mtext">Pedidos Realizados</span>
+                        <a href="agotarse" class="waves-effect waves-dark">
+                            <span class="pcoded-mtext">Por Agotarse</span>
                             <span class="pcoded-mcaret"></span>
                         </a>
                     </li>
                 
-  
                     </ul>
                 </li>
             </ul>';
-            echo '<ul class="pcoded-item pcoded-left-item">
+                echo '<ul class="pcoded-item pcoded-left-item">
                 <li class="pcoded-hasmenu">
                     <a href="javascript:void(0)" class="waves-effect waves-dark">
-                        <span class="pcoded-micon"><i class="ti-dropbox"></i><b></b></span>
-                        <span class="pcoded-mtext">Inventarios</span>
+                        <span class="pcoded-micon"><i class="ti-money"></i><b></b></span>
+                        <span class="pcoded-mtext">Compras</span>
                         <span class="pcoded-mcaret"></span>
                     </a>
                     <ul class="pcoded-submenu">
                     <li class="">
-                        <a href="realizarInventario" class="waves-effect waves-dark">
-                            <span class="pcoded-mtext">Realizar Inventario</span>
+                    <a href="autorizacionesCompra" class="waves-effect waves-dark">
+                        <span class="pcoded-mtext">Autorizaciones de Compra</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                    </li>
+                    <li class="">
+                        <a href="ordenesCompra" class="waves-effect waves-dark">
+                            <span class="pcoded-mtext">Órdenes de compra</span>
                             <span class="pcoded-mcaret"></span>
                         </a>
                     </li>
                     <li class="">
-                        <a href="inventariosRealizados" class="waves-effect waves-dark">
-                            <span class="pcoded-mtext">Inventarios Realizados</span>
+                        <a href="compras" class="waves-effect waves-dark">
+                            <span class="pcoded-mtext">Compras</span>
                             <span class="pcoded-mcaret"></span>
                         </a>
                     </li>
                     </ul>
                 </li>
-            </ul>
-            ';
+            </ul>';
+
+                echo '<ul class="pcoded-item pcoded-left-item">
+                <li class="pcoded-hasmenu">
+                    <a href="javascript:void(0)" class="waves-effect waves-dark">
+                        <span class="pcoded-micon"><i class="ti-bookmark-alt"></i><b></b></span>
+                        <span class="pcoded-mtext">Requisiciones</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                    <li class="">
+                        <a href="requisiciones" class="waves-effect waves-dark">
+                            <span class="pcoded-mtext">Mis Requisiciones</span>
+                            <span class="pcoded-mcaret"></span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="faltantesRequisiciones" class="waves-effect waves-dark">
+                            <span class="pcoded-mtext">Faltantes Requisiciones</span>
+                            <span class="pcoded-mcaret"></span>
+                        </a>
+                    </li>
+                
+                    </ul>
+                </li>
+            </ul>';
+                echo '<ul class="pcoded-item pcoded-left-item">
+            <li class="">
+                <a href="recordatorios" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-calendar"></i><b></b></span>
+                    <span class="pcoded-mtext">Recordatorios</span>
+                    <span class="pcoded-mcaret"></span>
+                </a>
+
+            </li>
+        </ul>';
+                echo '<ul class="pcoded-item pcoded-left-item">
+        <li class="">
+            <a href="existencias" class="waves-effect waves-dark">
+                <span class="pcoded-micon"><i class="ti-package"></i><b></b></span>
+                <span class="pcoded-mtext">Existencias y costos</span>
+                <span class="pcoded-mcaret"></span>
+            </a>
+
+        </li>
+    </ul>';
+
+                echo '<ul class="pcoded-item pcoded-left-item">
+            <li class="pcoded-hasmenu">
+                <a href="javascript:void(0)" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-bookmark-alt"></i><b></b></span>
+                    <span class="pcoded-mtext">Pedidos</span>
+                    <span class="pcoded-mcaret"></span>
+                </a>
+                <ul class="pcoded-submenu">
+                <li class="">
+                    <a href="pedidoSugerido" class="waves-effect waves-dark">
+                        <span class="pcoded-mtext">Pedido Sugerido</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="pedidos" class="waves-effect waves-dark">
+                        <span class="pcoded-mtext">Mis Pedidos</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="backorder" class="waves-effect waves-dark">
+                        <span class="pcoded-mtext">Backorder</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                </li>
+            
+
+                </ul>
+            </li>
+        </ul>';
+                echo '<ul class="pcoded-item pcoded-left-item">
+            <li class="pcoded-hasmenu">
+                <a href="javascript:void(0)" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-dropbox"></i><b></b></span>
+                    <span class="pcoded-mtext">Inventarios</span>
+                    <span class="pcoded-mcaret"></span>
+                </a>
+                <ul class="pcoded-submenu">
+                <li class="">
+                    <a href="realizarInventario" class="waves-effect waves-dark">
+                        <span class="pcoded-mtext">Realizar Inventario</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="inventariosRealizados" class="waves-effect waves-dark">
+                        <span class="pcoded-mtext">Inventarios Realizados</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                </li>
+                </ul>
+            </li>
+        </ul>
+        ';
+        */
+            }
         }
         ?>
     </div>

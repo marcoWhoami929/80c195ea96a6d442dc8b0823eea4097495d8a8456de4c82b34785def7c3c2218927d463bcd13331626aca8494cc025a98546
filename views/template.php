@@ -159,8 +159,11 @@ session_start();
                 include $class;
             }
         } else {
-
-            include "moduls/dashboard.php";
+            if ($_SESSION["modulo"] == 'Ventas') {
+                include "moduls/dashboard.php";
+            } else {
+                include "moduls/dashboardInventarios.php";
+            }
         }
     } else {
 

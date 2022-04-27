@@ -10,3 +10,11 @@ if ($action == "diasSemana") {
     }
     echo json_encode($arreglo);
 }
+if ($action == "ejercicios") {
+    if ($_REQUEST["empresa"] == "DEKKERLAB") {
+        $arreglo = array("1" => "2021", "2" => "2022");
+    } else {
+        $arreglo = array("1" => "2013", "2" => "2014", "3" => "2015", "4" => "2016", "5" => "2017", "6" => "2018", "7" => "2019", "8" => "2020", "9" => "2021");
+    }
+    echo json_encode($arreglo);
+}

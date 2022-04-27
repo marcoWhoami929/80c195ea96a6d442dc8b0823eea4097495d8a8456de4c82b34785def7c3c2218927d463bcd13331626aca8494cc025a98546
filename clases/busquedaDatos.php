@@ -195,7 +195,84 @@ class busquedaDatos extends ConexionsBd
         $query = $query->fetchAll();
         return $query;
     }
+    public function getProductosSolicitudes($search, $aColumns)
+    {
+        $offset = $search['offset'];
+        $per_page = $search['per_page'];
+        if ($search["producto"] != "") {
+            $sWhere = "and (";
+            for ($i = 0; $i < count($aColumns); $i++) {
+                $sWhere .= $aColumns[$i] . " LIKE '%" . $search["producto"] . "%' OR ";
+            }
+            $sWhere = substr_replace($sWhere, "", -3);
+            $sWhere .= ')';
+        } else {
+            $sWhere = "";
+        }
 
+        $sql = "WITH listaProductos AS(
+            SELECT
+                   aprod.CIDPRODUCTO
+                  ,aprod.CCODIGOPRODUCTO
+                  ,aprod.CNOMBREPRODUCTO
+                  ,aprod.CIDUNIDADBASE
+                  ,CASE 
+                  WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL
+                  THEN
+                  dbo.ultimoCostoPinturas(aprod.CCODIGOPRODUCTO)
+                  ELSE
+                  dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                  END as 'COSTO'
+                  ,aprod.CPRECIO1 as 'PRECIO'
+                  ,amed.CDESPLIEGUE
+                  ,'1' as CVALORMEDIDA
+        
+            FROM [adDEKKERLAB].[dbo].[admProductos] as aprod LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admUnidadesMedidaPeso] as amed ON aprod.CIDUNIDADBASE = amed.CIDUNIDAD WHERE  aprod.CIDPRODUCTO != 0 $sWhere)
+                  select * from listaProductos ORDER BY CCODIGOPRODUCTO ASC OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+
+
+        $query = $this->mysqli->query($sql);
+
+        $sql1 = "WITH listaProductos AS(
+            SELECT
+                   aprod.CIDPRODUCTO
+                  ,aprod.CCODIGOPRODUCTO
+                  ,aprod.CNOMBREPRODUCTO
+                  ,aprod.CIDUNIDADBASE
+                  ,CASE 
+                  WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL
+                  THEN
+                  dbo.ultimoCostoPinturas(aprod.CCODIGOPRODUCTO)
+                  ELSE
+                  dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                  END as 'COSTO'
+                  ,aprod.CPRECIO1 as 'PRECIO'
+                  ,amed.CDESPLIEGUE
+                  ,'1' as CVALORMEDIDA
+        
+            FROM [adDEKKERLAB].[dbo].[admProductos] as aprod LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admUnidadesMedidaPeso] as amed ON aprod.CIDUNIDADBASE = amed.CIDUNIDAD WHERE  aprod.CIDPRODUCTO != 0 $sWhere)
+                  select * from listaProductos ORDER BY CCODIGOPRODUCTO ASC";
+
+        $nums_row = $this->countAll($sql1);
+
+        //Set counter
+        $this->setCounter($nums_row);
+
+        $query = $query->fetchAll();
+        return $query;
+    }
+    public function getUnidadesMedidaProducto($codigoProducto, $idUnidad)
+    {
+
+        $sWhere = "aprod.CCODIGOPRODUCTO = '" . $codigoProducto . "'  and amed.CIDUNIDAD = '" . $idUnidad . "'";
+
+        $sql = "WITH unidades As(SELECT amed2.CABREVIATURA,ISNULL(acon.CFACTORCONVERSION,1) as CFACTORCONVERSION,acon.CIDUNIDAD2 As UnidadConversion,ROW_NUMBER() OVER(PARTITION BY aprod.CCODIGOPRODUCTO ORDER BY aprod.CIDPRODUCTO) AS NumeroFila
+        FROM [adDEKKERLAB].[dbo].[admProductos] as aprod LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admUnidadesMedidaPeso] as amed ON aprod.CIDUNIDADBASE = amed.CIDUNIDAD LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admConversionesUnidad] as acon ON aprod.CIDUNIDADBASE = acon.CIDUNIDAD1 LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admUnidadesMedidaPeso] as amed2 ON acon.CIDUNIDAD2 = amed2.CIDUNIDAD  WHERE $sWhere) 
+        SELECT * FROM unidades";
+        $query = $this->mysqli->query($sql);
+        $query = $query->fetchAll();
+        return $query;
+    }
     function setCounter($counter)
     {
         $this->counter = $counter;

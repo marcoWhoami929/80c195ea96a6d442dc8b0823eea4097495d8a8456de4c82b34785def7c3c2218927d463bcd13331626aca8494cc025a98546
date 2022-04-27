@@ -30,6 +30,11 @@ class AjaxAdmon
     public $passwordUsuario;
     public $idAccion;
     public $accionBitacora;
+    public $centro;
+    public $mes;
+    public $año;
+    public $tipo;
+    public $centroDesglose;
     public function mostrarDetalleCompra()
     {
         $id = $this->idDocumento;
@@ -186,6 +191,44 @@ class AjaxAdmon
 
         echo json_encode($respuesta);
     }
+    public function detalleIndicadores()
+    {
+        $datos = array(
+            "centro" => $this->centro,
+            "mes" => $this->mes,
+            "año" => $this->año,
+            "centroDesglose" => $this->centroDesglose
+        );
+
+        $respuesta = ModelAdmon::mdlDetalleIndicadores($datos);
+
+        echo json_encode($respuesta);
+    }
+    public function detalleEntradasSalidas()
+    {
+        $datos = array(
+            "centro" => $this->centro,
+            "mes" => $this->mes,
+            "año" => $this->año,
+            "tipo" => $this->tipo,
+            "centroDesglose" => $this->centroDesglose
+        );
+
+        $respuesta = ModelAdmon::mdlDetalleEntradasSalidas($datos);
+
+        echo json_encode($respuesta);
+    }
+    public function detalleDocumentoIndicadores()
+    {
+        $datos = array(
+            "idDocumento" => $this->idDocumento
+
+        );
+
+        $respuesta = ModelAdmon::mdlDetalleDocumentoIndicadores($datos);
+
+        echo json_encode($respuesta);
+    }
 }
 if (isset($_POST["idDocumento"])) {
     $detalleCompra = new AjaxAdmon();
@@ -268,4 +311,27 @@ if (isset($_POST["idAccion"])) {
     $eventoBitacora->idAccion = $_POST["idAccion"];
     $eventoBitacora->accionBitacora = $_POST["accionBitacora"];
     $eventoBitacora->generarEventoBitacora();
+}
+
+if (isset($_POST["accion"])) {
+    if ($_POST["accion"] == "detalleIndicadores") {
+        $detalleIndicadores = new AjaxAdmon();
+        $detalleIndicadores->centro = $_POST["centro"];
+        $detalleIndicadores->mes = $_POST["mes"];
+        $detalleIndicadores->año = $_POST["año"];
+        $detalleIndicadores->centroDesglose = $_POST["centroDesglose"];
+        $detalleIndicadores->detalleIndicadores();
+    } else if ($_POST["accion"] == "detalleEntradasSalidas") {
+        $detalleEntradasSalidas = new AjaxAdmon();
+        $detalleEntradasSalidas->centro = $_POST["centro"];
+        $detalleEntradasSalidas->mes = $_POST["mes"];
+        $detalleEntradasSalidas->año = $_POST["año"];
+        $detalleEntradasSalidas->tipo = $_POST["tipo"];
+        $detalleEntradasSalidas->centroDesglose = $_POST["centroDesglose"];
+        $detalleEntradasSalidas->detalleEntradasSalidas();
+    } else if ($_POST["accion"] == "detalleDocumento") {
+        $detalleDocumento = new AjaxAdmon();
+        $detalleDocumento->idDocumento = $_POST["idDocumentoDetalle"];
+        $detalleDocumento->detalleDocumentoIndicadores();
+    }
 }

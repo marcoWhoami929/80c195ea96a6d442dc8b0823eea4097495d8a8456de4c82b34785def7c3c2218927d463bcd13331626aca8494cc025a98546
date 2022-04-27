@@ -61,7 +61,7 @@
                                                                     <i class="fas fa-percent text-c-purple f-24"></i>
                                                                 </div>
                                                                 <div class="col-8 p-l-0">
-                                                                    <h5><?php echo number_format(rand(1, 100), 2) ?> %</h5>
+                                                                    <h5 id="surtimientoCerrado"><?php echo number_format(rand(1, 100), 2) ?> %</h5>
                                                                     <p class="text-muted m-b-0">Surtimiento</p>
                                                                 </div>
                                                             </div>
@@ -181,7 +181,7 @@
                                             </div>
                                         </div>
                                         <div class="col-xl-2 col-md-2 col-md-12">
-                                            <ul class="semaforo naranja">
+                                            <ul class="semaforo " id="semaforoAlmacen">
                                                 <li></li>
                                                 <li></li>
                                                 <li></li>
@@ -331,7 +331,7 @@
                                             </div>
                                         </div>
                                         <div class="col-xl-2 col-md-2 col-md-12">
-                                            <ul class="semaforo naranja">
+                                            <ul class="semaforo rojo">
                                                 <li></li>
                                                 <li></li>
                                                 <li></li>

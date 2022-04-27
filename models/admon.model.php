@@ -1,4 +1,5 @@
 <?php
+
 require_once "db_conexion.php";
 $agenteListPinturas = "CASE SUBSTRING(adoc.CSERIEDOCUMENTO,3,4)
 WHEN 'CP'
@@ -705,6 +706,9 @@ class ModelAdmon
 
                return $stmt->fetchAll();
           }
+          $stmt->close();
+
+          $stmt = null;
      }
      static public function mdlRegistroBitacora($tabla, $datos)
      {
@@ -722,6 +726,9 @@ class ModelAdmon
 
                return "error";
           }
+          $stmt->close();
+
+          $stmt = null;
      }
      static public function mdlListarCentroTrabajo($tabla)
      {
@@ -730,6 +737,8 @@ class ModelAdmon
           $stmt->execute();
 
           return $stmt->fetchAll();
+
+          $stmt->close();
 
           $stmt = null;
      }
@@ -740,6 +749,8 @@ class ModelAdmon
           $stmt->execute();
 
           return $stmt->fetchAll();
+
+          $stmt->close();
 
           $stmt = null;
      }
@@ -759,6 +770,8 @@ class ModelAdmon
 
           return $stmt->fetchAll();
 
+          $stmt->close();
+
           $stmt = null;
      }
      static public function mdlListarCentrosTrabajo()
@@ -776,6 +789,8 @@ class ModelAdmon
           $stmt->execute();
 
           return $stmt->fetchAll();
+
+          $stmt->close();
 
           $stmt = null;
      }
@@ -803,37 +818,44 @@ class ModelAdmon
 
           return $stmt->fetch();
 
+          $stmt->close();
+
           $stmt = null;
      }
      static public function mdlObtenerListaAgentes()
      {
           $stmt = ConexionsBd::conectarPinturas()->prepare("WITH Agentes AS(SELECT CIDAGENTE
-              ,CNOMBREAGENTE
-        
-          FROM [adPINTURAS2020SADEC].[dbo].[admAgentes]
-          UNION
-          SELECT CIDAGENTE
-              ,CNOMBREAGENTE
-        
-          FROM [adFLEX2020SADEC].[dbo].[admAgentes]
-          UNION
-          SELECT CIDAGENTE
-              ,CNOMBREAGENTE
-        
-          FROM [adPinturas_y_Complemen].[dbo].[admAgentes]
-          UNION
-          SELECT CIDAGENTE
-              ,CNOMBREAGENTE
-        
-          FROM [adDEKKERLAB].[dbo].[admAgentes]
-          ),
-          agentesLista AS(SELECT a.CNOMBREAGENTE from agentes as a)
-                  select * from agentesLista group by CNOMBREAGENTE
-        ");
+          ,CNOMBREAGENTE
+          ,CTIPOAGENTE
+    
+      FROM [adPINTURAS2020SADEC].[dbo].[admAgentes]
+      UNION
+      SELECT CIDAGENTE
+          ,CNOMBREAGENTE
+           ,CTIPOAGENTE
+    
+      FROM [adFLEX2020SADEC].[dbo].[admAgentes]
+      UNION
+      SELECT CIDAGENTE
+          ,CNOMBREAGENTE
+           ,CTIPOAGENTE
+    
+      FROM [adPinturas_y_Complemen].[dbo].[admAgentes]
+      UNION
+      SELECT CIDAGENTE
+          ,CNOMBREAGENTE
+           ,CTIPOAGENTE
+    
+      FROM [adDEKKERLAB].[dbo].[admAgentes]
+      ),
+      agentesLista AS(SELECT a.CNOMBREAGENTE from agentes as a WHERE a.CTIPOAGENTE IN(1,2))
+              select * from agentesLista  group by CNOMBREAGENTE");
 
           $stmt->execute();
 
           return $stmt->fetchAll();
+
+          $stmt->close();
 
           $stmt = null;
      }
@@ -869,6 +891,45 @@ class ModelAdmon
 
           return $stmt->fetchAll();
 
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlObtenerListaMarcasDekkerlab()
+     {
+          $stmt = ConexionsBd::conectarPinturas()->prepare("WITH Marcas As(SELECT 
+               CVALORCLASIFICACION As Marca
+             
+          FROM [adDEKKERLAB].[dbo].[admClasificacionesValores] WHERE CIDCLASIFICACION = 25),
+          marcasOrdenadas As(
+            SELECT
+                *
+            FROM Marcas)
+            SELECT * FROM marcasOrdenadas ORDER BY Marca ASC
+        ");
+
+          $stmt->execute();
+
+          return $stmt->fetchAll();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlObtenerListaCategorias()
+     {
+          $stmt = ConexionsBd::conectarDekkerlab()->prepare("SELECT 
+               CIDVALORCLASIFICACION as 'Id'
+               ,CVALORCLASIFICACION as 'Categoria'
+                
+            FROM [adDEKKERLAB].[dbo].[admClasificacionesValores] WHERE CIDCLASIFICACION = 27");
+
+          $stmt->execute();
+
+          return $stmt->fetchAll();
+
+          $stmt->close();
+
           $stmt = null;
      }
      static public function mdlRegistroConcepto($empresa, $datos)
@@ -895,6 +956,9 @@ class ModelAdmon
 
                return "error";
           }
+          $stmt->close();
+
+          $stmt = null;
      }
      static public function mdlDetallesConcepto($empresa, $id)
      {
@@ -911,6 +975,8 @@ class ModelAdmon
           $stmt->execute();
 
           return $stmt->fetch();
+
+          $stmt->close();
 
           $stmt = null;
      }
@@ -937,6 +1003,9 @@ class ModelAdmon
 
                return "error";
           }
+          $stmt->close();
+
+          $stmt = null;
      }
      static public function mdlEliminarConcepto($empresa, $id)
      {
@@ -957,6 +1026,9 @@ class ModelAdmon
 
                return "error";
           }
+          $stmt->close();
+
+          $stmt = null;
      }
      static public function mdlTotalVentasDiarias($year, $week, $day)
      {
@@ -1417,6 +1489,8 @@ VentasDiariasOrdenadas As(
           $stmt->execute();
 
           return $stmt->fetchAll();
+
+          $stmt->close();
 
           $stmt = null;
      }
@@ -1983,6 +2057,8 @@ VentasDiariasOrdenadas As(
           $stmt->execute();
 
           return $stmt->fetchAll();
+
+          $stmt->close();
 
           $stmt = null;
      }
@@ -2636,6 +2712,8 @@ SELECT *,IsNull([$arreglo2[0]],0) + IsNull([$arreglo2[1]],0) + IsNull([$arreglo2
           $stmt->execute();
 
           return $stmt->fetchAll();
+
+          $stmt->close();
 
           $stmt = null;
      }
@@ -3854,6 +3932,8 @@ ventasOrdenadas As(
 
           return $stmt->fetchAll();
 
+          $stmt->close();
+
           $stmt = null;
      }
      static public function mdlVentasYearToWeek()
@@ -4687,6 +4767,8 @@ ventasOrdenadas As(
 
           return $stmt->fetchAll();
 
+          $stmt->close();
+
           $stmt = null;
      }
      static public function mdlVentasYearToMonth()
@@ -5496,6 +5578,8 @@ ventasOrdenadas As(
 
           return $stmt->fetchAll();
 
+          $stmt->close();
+
           $stmt = null;
      }
      static public function mdlListarUsuarios($tabla, $item, $valor)
@@ -5518,6 +5602,9 @@ ventasOrdenadas As(
 
                return $stmt->fetchAll();
           }
+          $stmt->close();
+
+          $stmt = null;
      }
      /*=============================================
 	ACTIVAR USUARIO
@@ -5538,6 +5625,9 @@ ventasOrdenadas As(
 
                return "error";
           }
+          $stmt->close();
+
+          $stmt = null;
      }
      /*==============================
     CREACION DE USUARIO
@@ -5570,6 +5660,9 @@ ventasOrdenadas As(
           } else {
                return "existe";
           }
+          $stmt->close();
+
+          $stmt = null;
      }
      /*==============================
     ACTUALIZACION DE DATOS DE USUARIO
@@ -5589,6 +5682,9 @@ ventasOrdenadas As(
           } else {
                return "error";
           }
+          $stmt->close();
+
+          $stmt = null;
      }
      /*==============================
     ELIMINACION DE USUARIO
@@ -5607,6 +5703,9 @@ ventasOrdenadas As(
 
                return "error";
           }
+          $stmt->close();
+
+          $stmt = null;
      }
      /*==============================
     ACTUALIZACION PASSWORD
@@ -5631,5 +5730,1285 @@ ventasOrdenadas As(
           } else {
                return "exist";
           }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlDetalleIndicadores($datos)
+     {
+          if ($datos["centroDesglose"] === "") {
+               $sWhere = "";
+          } else {
+               $sWhere = "and CANALORIGEN = '" . $datos["centroDesglose"] . "'";
+          }
+          $stmt = ConexionsBd::conectarDekkerlab()->prepare("WITH indicadores As (SELECT amov.CIDALMACEN,
+          adoc.CSERIEDOCUMENTO,
+          adoc.CFOLIO,
+          amov.CIDDOCUMENTO,
+          SUM(amov.CTOTAL) as TOTAL
+          ,SUM(CASE
+                    WHEN aprod.CIDVALORCLASIFICACION1 = 44 
+                    THEN
+                         CASE
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FLEX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                             END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                              END
+                         ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                        END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                         END * amov.CUNIDADES) AS 'COSTO'
+          ,'SALIDAS' as 'ESTATUS'
+          ,MONTH(amov.CFECHA) As Mes
+          ,CASE 
+               WHEN amov.CIDALMACEN = 1 OR amov.CIDALMACEN = 3
+              THEN
+              'GENERAL'
+              WHEN amov.CIDALMACEN = 4 OR amov.CIDALMACEN = 5
+              THEN
+              '7 TIENDA CAPU'
+              WHEN amov.CIDALMACEN = 6 OR amov.CIDALMACEN = 7
+              THEN
+              '3 TIENDA REFORMA'
+               WHEN amov.CIDALMACEN = 8 OR amov.CIDALMACEN = 9
+              THEN
+              '1 TIENDA SAN MANUEL'
+               WHEN amov.CIDALMACEN = 10 OR amov.CIDALMACEN = 11
+              THEN
+              '6 TIENDA SANTIAGO'
+               WHEN amov.CIDALMACEN = 12 OR amov.CIDALMACEN = 13
+              THEN
+              '9 TIENDA TORRES'
+              ELSE
+              'OTRO'
+              END as 'CANAL',
+              CASE 
+            WHEN amov2.CIDALMACEN = 1 OR amov2.CIDALMACEN = 3
+          THEN
+          '0 GENERAL'
+          WHEN amov2.CIDALMACEN = 4 OR amov2.CIDALMACEN = 5
+          THEN
+          '7 TIENDA CAPU'
+          WHEN amov2.CIDALMACEN = 6 OR amov2.CIDALMACEN = 7
+          THEN
+          '3 TIENDA REFORMA'
+           WHEN amov2.CIDALMACEN = 8 OR amov2.CIDALMACEN = 9
+          THEN
+          '1 TIENDA SAN MANUEL'
+           WHEN amov2.CIDALMACEN = 10 OR amov2.CIDALMACEN = 11
+          THEN
+          '6 TIENDA SANTIAGO'
+           WHEN amov2.CIDALMACEN = 12 OR amov2.CIDALMACEN = 13
+          THEN
+          '9 TIENDA TORRES'
+          ELSE
+          'OTRO'
+          END as 'CANALORIGEN'
+        FROM [adDEKKERLAB].[dbo].[admMovimientos] as amov LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admMovimientos] as amov2 ON amov2.CIDMOVTOOWNER = amov.CIDMOVIMIENTO  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] AS aprod ON aprod.CIDPRODUCTO = amov.CIDPRODUCTO WHERE  adoc.CCANCELADO  = '0' and YEAR(adoc.CFECHA) = '" . $datos["año"] . "' and amov.CIDDOCUMENTODE IN (34) and adoc.CIDCONCEPTODOCUMENTO IN(36,
+          3031,
+          3032,
+          3033,
+          3034,
+          3035,
+          3038,
+          3066,
+          3067,
+          3068)  GROUP BY amov.CIDALMACEN,amov2.CIDALMACEN,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,amov.CIDDOCUMENTO,amov.CFECHA,aprod.CIDVALORCLASIFICACION1,
+          aprod.CNOMBREPRODUCTO,
+          aprod.CCODIGOPRODUCTO,
+          amov.CUNIDADES
+      UNION ALL
+      SELECT amov2.CIDALMACEN
+             ,adoc.CSERIEDOCUMENTO
+             ,adoc.CFOLIO
+             ,amov2.CIDDOCUMENTO
+             ,SUM(amov2.CTOTAL) as TOTAL
+             ,SUM(CASE
+             WHEN aprod.CIDVALORCLASIFICACION1 = 44 
+             THEN
+                  CASE
+                       WHEN aprod.CNOMBREPRODUCTO LIKE '%FX%' 
+                            THEN 
+                            dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                       WHEN aprod.CNOMBREPRODUCTO LIKE '%FLEX%' 
+                            THEN 
+                            dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                       ELSE
+                       CASE
+                            WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                            THEN
+                                 CASE
+                                      WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                           THEN 
+                                           dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                      ELSE 
+                                           dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                      END
+                            ELSE 
+                                 dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                            END
+                       END
+                  ELSE
+                       CASE
+                            WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                            THEN
+                                 CASE
+                                      WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                           THEN 
+                                           dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                      ELSE 
+                                           dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                 END
+                            ELSE 
+                                 dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                            END
+                  END * amov2.CUNIDADES) AS 'COSTO'
+             ,'ENTRADAS' as 'ESTATUS'
+             ,MONTH(amov2.CFECHA) As Mes
+              ,CASE 
+               WHEN amov2.CIDALMACEN = 1 OR amov2.CIDALMACEN = 3
+              THEN
+              'GENERAL'
+              WHEN amov2.CIDALMACEN = 4 OR amov2.CIDALMACEN = 5
+              THEN
+              '7 TIENDA CAPU'
+              WHEN amov2.CIDALMACEN = 6 OR amov2.CIDALMACEN = 7
+              THEN
+              '3 TIENDA REFORMA'
+               WHEN amov2.CIDALMACEN = 8 OR amov2.CIDALMACEN = 9
+              THEN
+              '1 TIENDA SAN MANUEL'
+               WHEN amov2.CIDALMACEN = 10 OR amov2.CIDALMACEN = 11
+              THEN
+              '6 TIENDA SANTIAGO'
+               WHEN amov2.CIDALMACEN = 12 OR amov2.CIDALMACEN = 13
+              THEN
+              '9 TIENDA TORRES'
+              ELSE
+              'OTRO'
+              END as 'CANAL',
+              CASE 
+            WHEN amov.CIDALMACEN = 1 OR amov.CIDALMACEN = 3
+          THEN
+          '0 GENERAL'
+          WHEN amov.CIDALMACEN = 4 OR amov.CIDALMACEN = 5
+          THEN
+          '7 TIENDA CAPU'
+          WHEN amov.CIDALMACEN = 6 OR amov.CIDALMACEN = 7
+          THEN
+          '3 TIENDA REFORMA'
+           WHEN amov.CIDALMACEN = 8 OR amov.CIDALMACEN = 9
+          THEN
+          '1 TIENDA SAN MANUEL'
+           WHEN amov.CIDALMACEN = 10 OR amov.CIDALMACEN = 11
+          THEN
+          '6 TIENDA SANTIAGO'
+           WHEN amov.CIDALMACEN = 12 OR amov.CIDALMACEN = 13
+          THEN
+          '9 TIENDA TORRES'
+          ELSE
+          'OTRO'
+          END as 'CANALORIGEN'
+        FROM [adDEKKERLAB].[dbo].[admMovimientos] as amov LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admMovimientos] as amov2 ON amov2.CIDMOVTOOWNER = amov.CIDMOVIMIENTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] AS aprod ON aprod.CIDPRODUCTO = amov2.CIDPRODUCTO WHERE  adoc.CCANCELADO  = '0' and YEAR(adoc.CFECHA) = '" . $datos["año"] . "'  and amov.CIDDOCUMENTODE IN (34) and adoc.CIDCONCEPTODOCUMENTO IN(36,
+        3031,
+        3032,
+        3033,
+        3034,
+        3035,
+        3038,
+        3066,
+        3067,
+        3068)  GROUP BY amov.CIDALMACEN,amov2.CIDALMACEN,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,amov2.CIDDOCUMENTO,amov2.CFECHA,aprod.CIDVALORCLASIFICACION1,
+        aprod.CNOMBREPRODUCTO,
+        aprod.CCODIGOPRODUCTO,
+        amov2.CUNIDADES),
+      indicadoresData As(
+          SELECT
+              CANAL,
+              CANALORIGEN,
+              ESTATUS,
+              Mes,
+              COSTO,
+              CASE ESTATUS 
+              WHEN 'ENTRADAS'
+              THEN
+              COSTO
+              ELSE
+              0
+              END  as 'ENTRADA',
+              CASE ESTATUS 
+              WHEN 'SALIDAS'
+              THEN
+              COSTO
+              ELSE
+              0
+              END  as 'SALIDA'
+      
+          FROM indicadores WHERE CANAL != 'GENERAL'
+          )
+      
+      SELECT CANAL,SUM(ENTRADA) as 'ENTRADAS',SUM(SALIDA) as 'SALIDAS',SUM(ENTRADA)-SUM(SALIDA) as 'TOTAL'
+              
+              FROM indicadoresData WHERE Mes = '" . $datos["mes"] . "' and CANAL = '" . $datos["centro"] . "' $sWhere GROUP BY CANAL");
+
+          $stmt->execute();
+
+          return $stmt->fetch();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlDetalleEntradasSalidas($datos)
+     {
+          if ($datos["centroDesglose"] === "") {
+               $sWhere = "";
+          } else {
+               $sWhere = "and CANALORIGEN = '" . $datos["centroDesglose"] . "'";
+          }
+          $stmt = ConexionsBd::conectarDekkerlab()->prepare("WITH indicadores As (SELECT 
+          aalm.CNOMBREALMACEN as 'ALMORIGEN',
+          aalm2.CNOMBREALMACEN  as 'ALMDESTINO',
+          adoc.CSERIEDOCUMENTO,
+          adoc.CFOLIO,
+          adoc.CFECHA,
+          adoc.CREFERENCIA,
+          amov.CIDDOCUMENTO,
+          -SUM(CASE
+                    WHEN aprod.CIDVALORCLASIFICACION1 = 44 
+                    THEN
+                         CASE
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FLEX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                             END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                              END
+                         ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                        END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                         END * amov.CUNIDADES) AS 'TOTAL'
+          ,'SALIDAS' as 'ESTATUS'
+          ,MONTH(amov.CFECHA) As Mes
+          ,CASE 
+            WHEN amov.CIDALMACEN = 1 OR amov.CIDALMACEN = 3
+          THEN
+          'GENERAL'
+          WHEN amov.CIDALMACEN = 4 OR amov.CIDALMACEN = 5
+          THEN
+          '7 TIENDA CAPU'
+          WHEN amov.CIDALMACEN = 6 OR amov.CIDALMACEN = 7
+          THEN
+          '3 TIENDA REFORMA'
+           WHEN amov.CIDALMACEN = 8 OR amov.CIDALMACEN = 9
+          THEN
+          '1 TIENDA SAN MANUEL'
+           WHEN amov.CIDALMACEN = 10 OR amov.CIDALMACEN = 11
+          THEN
+          '6 TIENDA SANTIAGO'
+           WHEN amov.CIDALMACEN = 12 OR amov.CIDALMACEN = 13
+          THEN
+          '9 TIENDA TORRES'
+          ELSE
+          'OTRO'
+          END as 'CANAL',
+          CASE 
+            WHEN amov2.CIDALMACEN = 1 OR amov2.CIDALMACEN = 3
+          THEN
+          '0 GENERAL'
+          WHEN amov2.CIDALMACEN = 4 OR amov2.CIDALMACEN = 5
+          THEN
+          '7 TIENDA CAPU'
+          WHEN amov2.CIDALMACEN = 6 OR amov2.CIDALMACEN = 7
+          THEN
+          '3 TIENDA REFORMA'
+           WHEN amov2.CIDALMACEN = 8 OR amov2.CIDALMACEN = 9
+          THEN
+          '1 TIENDA SAN MANUEL'
+           WHEN amov2.CIDALMACEN = 10 OR amov2.CIDALMACEN = 11
+          THEN
+          '6 TIENDA SANTIAGO'
+           WHEN amov2.CIDALMACEN = 12 OR amov2.CIDALMACEN = 13
+          THEN
+          '9 TIENDA TORRES'
+          ELSE
+          'OTRO'
+          END as 'CANALORIGEN'
+        FROM [adDEKKERLAB].[dbo].[admMovimientos] as amov LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admMovimientos] as amov2 ON amov2.CIDMOVTOOWNER = amov.CIDMOVIMIENTO INNER JOIN  [adDEKKERLAB].[dbo].[admAlmacenes] as aalm ON amov.CIDALMACEN = aalm.CIDALMACEN INNER JOIN  [adDEKKERLAB].[dbo].[admAlmacenes] as aalm2 ON amov2.CIDALMACEN = aalm2.CIDALMACEN  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] AS aprod ON aprod.CIDPRODUCTO = amov.CIDPRODUCTO WHERE  adoc.CCANCELADO  = '0' and YEAR(adoc.CFECHA) = '" . $datos["año"] . "' and amov.CIDDOCUMENTODE IN (34) and adoc.CIDCONCEPTODOCUMENTO IN(36,
+                3031,
+                3032,
+                3033,
+                3034,
+                3035,
+                3038,
+                3066,
+                3067,
+                3068)  GROUP BY amov.CIDALMACEN,amov2.CIDALMACEN,aalm.CNOMBREALMACEN,aalm2.CNOMBREALMACEN,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CFECHA,adoc.CREFERENCIA,amov.CIDDOCUMENTO,amov.CFECHA, aprod.CIDVALORCLASIFICACION1,
+                aprod.CNOMBREPRODUCTO,
+                aprod.CCODIGOPRODUCTO,
+                amov.CUNIDADES
+      UNION ALL
+      SELECT 
+              aalm.CNOMBREALMACEN as 'ALMORIGEN',
+              aalm2.CNOMBREALMACEN  as 'ALMDESTINO'
+             ,adoc.CSERIEDOCUMENTO
+             ,adoc.CFOLIO
+              ,adoc.CFECHA
+              ,adoc.CREFERENCIA
+             ,amov.CIDDOCUMENTO
+             ,SUM(CASE
+             WHEN aprod.CIDVALORCLASIFICACION1 = 44 
+             THEN
+                  CASE
+                       WHEN aprod.CNOMBREPRODUCTO LIKE '%FX%' 
+                            THEN 
+                            dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                       WHEN aprod.CNOMBREPRODUCTO LIKE '%FLEX%' 
+                            THEN 
+                            dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                       ELSE
+                       CASE
+                            WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                            THEN
+                                 CASE
+                                      WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                           THEN 
+                                           dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                      ELSE 
+                                           dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                      END
+                            ELSE 
+                                 dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                            END
+                       END
+                  ELSE
+                       CASE
+                            WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                            THEN
+                                 CASE
+                                      WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                           THEN 
+                                           dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                      ELSE 
+                                           dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                 END
+                            ELSE 
+                                 dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                            END
+                  END * amov2.CUNIDADES) AS 'TOTAL'
+             ,'ENTRADAS' as 'ESTATUS'
+             ,MONTH(amov2.CFECHA) As Mes
+             ,CASE 
+               WHEN amov2.CIDALMACEN = 1 OR amov2.CIDALMACEN = 3
+              THEN
+              'GENERAL'
+              WHEN amov2.CIDALMACEN = 4 OR amov2.CIDALMACEN = 5
+              THEN
+              '7 TIENDA CAPU'
+              WHEN amov2.CIDALMACEN = 6 OR amov2.CIDALMACEN = 7
+              THEN
+              '3 TIENDA REFORMA'
+               WHEN amov2.CIDALMACEN = 8 OR amov2.CIDALMACEN = 9
+              THEN
+              '1 TIENDA SAN MANUEL'
+               WHEN amov2.CIDALMACEN = 10 OR amov2.CIDALMACEN = 11
+              THEN
+              '6 TIENDA SANTIAGO'
+               WHEN amov2.CIDALMACEN = 12 OR amov2.CIDALMACEN = 13
+              THEN
+              '9 TIENDA TORRES'
+              ELSE
+              'OTRO'
+              END as 'CANAL',
+              CASE 
+            WHEN amov.CIDALMACEN = 1 OR amov.CIDALMACEN = 3
+          THEN
+          '0 GENERAL'
+          WHEN amov.CIDALMACEN = 4 OR amov.CIDALMACEN = 5
+          THEN
+          '7 TIENDA CAPU'
+          WHEN amov.CIDALMACEN = 6 OR amov.CIDALMACEN = 7
+          THEN
+          '3 TIENDA REFORMA'
+           WHEN amov.CIDALMACEN = 8 OR amov.CIDALMACEN = 9
+          THEN
+          '1 TIENDA SAN MANUEL'
+           WHEN amov.CIDALMACEN = 10 OR amov.CIDALMACEN = 11
+          THEN
+          '6 TIENDA SANTIAGO'
+           WHEN amov.CIDALMACEN = 12 OR amov.CIDALMACEN = 13
+          THEN
+          '9 TIENDA TORRES'
+          ELSE
+          'OTRO'
+          END as 'CANALORIGEN'
+        FROM [adDEKKERLAB].[dbo].[admMovimientos] as amov LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO LEFT OUTER JOIN  [adDEKKERLAB].[dbo].[admMovimientos] as amov2 ON amov2.CIDMOVTOOWNER = amov.CIDMOVIMIENTO INNER JOIN  [adDEKKERLAB].[dbo].[admAlmacenes] as aalm ON amov.CIDALMACEN = aalm.CIDALMACEN INNER JOIN  [adDEKKERLAB].[dbo].[admAlmacenes] as aalm2 ON amov2.CIDALMACEN = aalm2.CIDALMACEN LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] AS aprod ON aprod.CIDPRODUCTO = amov2.CIDPRODUCTO WHERE  adoc.CCANCELADO  = '0' and YEAR(adoc.CFECHA) = '" . $datos["año"] . "'  and amov.CIDDOCUMENTODE IN (34) and adoc.CIDCONCEPTODOCUMENTO IN(36,
+                3031,
+                3032,
+                3033,
+                3034,
+                3035,
+                3038,
+                3066,
+                3067,
+                3068)  GROUP BY amov.CIDALMACEN,amov2.CIDALMACEN,aalm.CNOMBREALMACEN,aalm2.CNOMBREALMACEN,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CFECHA,adoc.CREFERENCIA,amov.CIDDOCUMENTO,amov2.CFECHA, aprod.CIDVALORCLASIFICACION1,
+                aprod.CNOMBREPRODUCTO,
+                aprod.CCODIGOPRODUCTO,
+                amov2.CUNIDADES),
+      indicadoresData As(
+          SELECT
+            *
+          FROM indicadores 
+          )
+      
+      SELECT CSERIEDOCUMENTO,CFOLIO,CIDDOCUMENTO,CFECHA,CREFERENCIA,ALMORIGEN,ALMDESTINO,SUM(TOTAL) AS 'TOTAL',ESTATUS,CANAL FROM indicadoresData WHERE Mes = '" . $datos["mes"] . "' and CANAL = '" . $datos["centro"] . "' and ESTATUS = '" . $datos["tipo"] . "' $sWhere GROUP BY CSERIEDOCUMENTO,CFOLIO,CIDDOCUMENTO,CFECHA,CREFERENCIA,ALMORIGEN,ALMDESTINO,ESTATUS,CANAL ORDER BY CSERIEDOCUMENTO,CFOLIO ASC");
+
+          $stmt->execute();
+
+          return $stmt->fetchAll();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlDetalleDocumentoIndicadores($datos)
+     {
+
+          $stmt = ConexionsBd::conectarDekkerlab()->prepare("SELECT 
+               amov.CIDMOVIMIENTO
+              ,amov.CNUMEROMOVIMIENTO
+              ,amov.CIDPRODUCTO
+              ,aprod.CCODIGOPRODUCTO
+              ,aprod.CNOMBREPRODUCTO
+              ,amov.CUNIDADES
+              ,amov.CUNIDADESCAPTURADAS
+              ,amed.CNOMBREUNIDAD
+              ,CASE
+                    WHEN aprod.CIDVALORCLASIFICACION1 = 44 
+                    THEN
+                         CASE
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FLEX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                             END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                              END
+                         ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                        END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                         END * CUNIDADES as 'TOTAL'
+                    ,CASE
+                    WHEN aprod.CIDVALORCLASIFICACION1 = 44 
+                    THEN
+                         CASE
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              WHEN aprod.CNOMBREPRODUCTO LIKE '%FLEX%' 
+                                   THEN 
+                                   dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                              ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                             END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                              END
+                         ELSE
+                              CASE
+                                   WHEN dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO) IS NULL 
+                                   THEN
+                                        CASE
+                                             WHEN dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO) = '0.00000' 
+                                                  THEN 
+                                                  dbo.ultimoCostoFlex(aprod.CCODIGOPRODUCTO)
+                                             ELSE 
+                                                  dbo.costosHistoricosPinturas(aprod.CCODIGOPRODUCTO)
+                                        END
+                                   ELSE 
+                                        dbo.ultimoCostoDekkerlab(aprod.CCODIGOPRODUCTO)
+                                   END
+                         END  as 'COST'
+              ,amov.CCOSTOCAPTURADO
+              ,amov.CCOSTOESPECIFICO
+              ,amov.CNETO
+              ,amov.CTOTAL
+              
+            FROM [adDEKKERLAB].[dbo].[admMovimientos] as amov INNER JOIN [adDEKKERLAB].[dbo].[admProductos] as aprod ON amov.CIDPRODUCTO = aprod.CIDPRODUCTO INNER JOIN [adDEKKERLAB].[dbo].[admUnidadesMedidaPeso] as amed ON amov.CIDUNIDAD = amed.CIDUNIDAD where amov.CIDDOCUMENTO = '" . $datos["idDocumento"] . "'");
+
+          $stmt->execute();
+
+          return $stmt->fetchAll();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlListarSolicitantes($tabla, $idAdministrador)
+     {
+
+          if ($idAdministrador != null) {
+               $stmt = ConexionsBd::conectar()->prepare("SELECT id,nombre,cargo FROM $tabla WHERE idAdministrador = '" . $idAdministrador . "'");
+
+               $stmt->execute();
+
+               return $stmt->fetchAll();
+          } else {
+               $stmt = ConexionsBd::conectar()->prepare("SELECT id,nombre,cargo FROM $tabla ");
+
+               $stmt->execute();
+
+               return $stmt->fetchAll();
+          }
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     /********
+      * INSERTAR PRODUCTOS TEMPORALES
+      */
+     static public function mdlInsertarProductosTemporales($tabla, $datos)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("INSERT INTO $tabla(folioDocumento,idProducto,idAlmacenOrigen,codigo,descripcion,unidades,idUnidad,valorConversion,unidadesConversion,costo,importe,unidadesRecibidas,recibidasConversion,importeRecibido,idUsuario,sessionId,tipo) VALUES( 
+          :folioDocumento,
+          :idProducto,
+          '1',
+          :codigo,
+          :descripcion,
+          :unidades,
+          :idUnidad,
+          :valorConversion,
+          :unidadesConversion,
+          :costo,
+          :importe,
+          :unidades,
+          :unidadesConversion,
+          :importe,
+          :idUsuario,
+          :sesion,
+          :tipo)");
+
+          $stmt->bindParam(":idUsuario", $datos["idUsuario"], PDO::PARAM_INT);
+          $stmt->bindParam(":folioDocumento", $datos["folioDocumento"], PDO::PARAM_INT);
+          $stmt->bindParam(":idProducto", $datos["idProducto"], PDO::PARAM_INT);
+          $stmt->bindParam(":codigo", $datos["codigo"], PDO::PARAM_STR);
+          $stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
+          $stmt->bindParam(":unidades", $datos["unidades"], PDO::PARAM_STR);
+          $stmt->bindParam(":idUnidad", $datos["idUnidad"], PDO::PARAM_STR);
+          $stmt->bindParam(":valorConversion", $datos["valorConversion"], PDO::PARAM_STR);
+          $stmt->bindParam(":unidadesConversion", $datos["unidadesConversion"], PDO::PARAM_STR);
+          $stmt->bindParam(":costo", $datos["costo"], PDO::PARAM_STR);
+          $stmt->bindParam(":importe", $datos["importe"], PDO::PARAM_STR);
+          $stmt->bindParam(":sesion", $datos["sesion"], PDO::PARAM_STR);
+          $stmt->bindParam(":tipo", $datos["tipo"], PDO::PARAM_INT);
+
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     /********
+      * ACTUALIZAR PRODUCTOS TEMPORALES
+      */
+     static public function mdlActualizarProductosTemporales($tabla, $datos)
+     {
+          $folio = $datos["folioDocumento"];
+          $sesion = $datos["sesion"];
+          if ($folio != 0) {
+               $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla set idAlmacenOrigen = :idAlmacenOrigen,unidades = :unidades,idUnidad = :idUnidad,valorConversion =:valorConversion,importe =:importe,unidadesRecibidas = :unidades,importeRecibido = :importe,unidadesConversion = :unidadesConversion,recibidasConversion = :unidadesConversion WHERE id = :idProducto and folioDocumento = $folio and idUsuario = :idUsuario and tipo = :tipoDocumento");
+          } else {
+               $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla set idAlmacenOrigen = :idAlmacenOrigen,unidades = :unidades,idUnidad = :idUnidad,valorConversion =:valorConversion,importe =:importe,unidadesRecibidas = :unidades,importeRecibido = :importe,unidadesConversion = :unidadesConversion,recibidasConversion = :unidadesConversion WHERE id = :idProducto and sessionId = '" . $sesion . "' and idUsuario = :idUsuario and tipo = :tipoDocumento");
+          }
+
+          $stmt->bindParam(":idUsuario", $datos["idUsuario"], PDO::PARAM_INT);
+          $stmt->bindParam(":idProducto", $datos["idProducto"], PDO::PARAM_INT);
+          $stmt->bindParam(":unidades", $datos["unidades"], PDO::PARAM_STR);
+          $stmt->bindParam(":unidadesConversion", $datos["unidadesConversion"], PDO::PARAM_STR);
+          $stmt->bindParam(":idUnidad", $datos["idUnidad"], PDO::PARAM_STR);
+          $stmt->bindParam(":idAlmacenOrigen", $datos["idAlmacen"], PDO::PARAM_INT);
+          $stmt->bindParam(":valorConversion", $datos["valorConversion"], PDO::PARAM_STR);
+          $stmt->bindParam(":importe", $datos["importe"], PDO::PARAM_STR);
+          $stmt->bindParam(":tipoDocumento", $datos["tipoDocumento"], PDO::PARAM_INT);
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     /********
+      * BUSCAR PRODUCTOS TEMPORALES
+      */
+     static public function mdlBuscarProductosTemporales($tabla, $datos)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("SELECT * FROM $tabla WHERE idProducto = :idProducto and idUsuario = :idUsuario and sessionId = :sesion and folioDocumento = :folioDocumento");
+
+          $stmt->bindParam(":idProducto", $datos["idProducto"], PDO::PARAM_INT);
+          $stmt->bindParam(":idUsuario", $datos["idUsuario"], PDO::PARAM_INT);
+          $stmt->bindParam(":sesion", $datos["sesion"], PDO::PARAM_STR);
+          $stmt->bindParam(":folioDocumento", $datos["folioDocumento"], PDO::PARAM_STR);
+          $stmt->execute();
+          if ($stmt->rowCount() > 0) {
+
+               return "error";
+          } else {
+
+               return "ok";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     /********
+      * ELIMINAR PRODUCTOS TEMPORALES
+      */
+     static public function mdlEliminarProductosTemporales($tabla, $datos)
+     {
+          $folio = $datos["folioDocumento"];
+          if ($folio != 0) {
+               $stmt = ConexionsBd::conectar()->prepare("DELETE FROM $tabla WHERE id = :idProducto and idUsuario = :idUsuario and folioDocumento = $folio and tipo = :tipoDocumento");
+          } else {
+               $stmt = ConexionsBd::conectar()->prepare("DELETE FROM $tabla WHERE id = :idProducto and idUsuario = :idUsuario and sessionId = '" . $datos["sesion"] . "' and tipo = :tipoDocumento");
+          }
+
+
+          $stmt->bindParam(":idProducto", $datos["idProducto"], PDO::PARAM_INT);
+          $stmt->bindParam(":idUsuario", $datos["idUsuario"], PDO::PARAM_INT);
+          $stmt->bindParam(":tipoDocumento", $datos["tipoDocumento"], PDO::PARAM_INT);
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     /********
+      * DETALLE PRODUCTOS TEMPORALES
+      */
+     static public function mdlDetalleProductosTemporales($tabla, $datos)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("SELECT * FROM $tabla WHERE idUsuario = :idUsuario and sessionId = :sesion and folioDocumento = 0");
+
+          $stmt->bindParam(":idUsuario", $datos["idUsuario"], PDO::PARAM_INT);
+          $stmt->bindParam(":sesion", $datos["sesion"], PDO::PARAM_STR);
+          $stmt->execute();
+          if ($stmt->rowCount() > 0) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlListaAlmacenes($idGrupo)
+     {
+          if ($idGrupo != null) {
+               $stmt = ConexionsBd::conectar()->prepare("SELECT * FROM almacenes WHERE cidgrupo = '" . $idGrupo . "' and empresa = 'Dekkerlab'");
+
+               $stmt->execute();
+
+               return $stmt->fetchAll();
+          } else {
+
+               $stmt = ConexionsBd::conectar()->prepare("SELECT * FROM almacenes WHERE  empresa = 'Dekkerlab' and cidalmacenold != 0");
+
+               $stmt->execute();
+
+               return $stmt->fetchAll();
+          }
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     /********
+      * INSERTAR DOCUMENTO
+      */
+     static public function mdlGenerarDocumento($tabla, $datos)
+     {
+
+          $folioDisponible = ConexionsBd::conectar()->prepare("SELECT IF(max(folio+1) IS NULL,1,max(folio+1)) as folio FROM $tabla");
+          $folioDisponible->execute();
+          $folio = $folioDisponible->fetchColumn();
+
+          $stmt = ConexionsBd::conectar()->prepare("INSERT INTO $tabla(serie,folio,fechaDocumento,idAlmacen,solicitado,importeSolicitado,recibido,importeRecibido,idEstatus,areaSolicitante,idSolicitante,prioridad,observaciones) VALUES( 
+          :serie,
+          $folio,
+          :fecha,
+          :idAlmacen,
+          :solicitado,
+          :importeSolicitado,
+          :solicitado,
+          :importeSolicitado,
+          '1',
+          :areaSolicitante,
+          :idSolicitante,
+          :prioridad,
+          :observaciones)");
+
+          $stmt->bindParam(":areaSolicitante", $datos["areaSolicitante"], PDO::PARAM_INT);
+          $stmt->bindParam(":idAlmacen", $datos["idAlmacen"], PDO::PARAM_INT);
+          $stmt->bindParam(":solicitado", $datos["solicitado"], PDO::PARAM_STR);
+          $stmt->bindParam(":importeSolicitado", $datos["importeSolicitado"], PDO::PARAM_STR);
+          $stmt->bindParam(":idSolicitante", $datos["idSolicitante"], PDO::PARAM_INT);
+          $stmt->bindParam(":prioridad", $datos["prioridad"], PDO::PARAM_STR);
+          $stmt->bindParam(":observaciones", $datos["observaciones"], PDO::PARAM_STR);
+          $stmt->bindParam(":fecha", $datos["fecha"], PDO::PARAM_STR);
+          $stmt->bindParam(":serie", $datos["serie"], PDO::PARAM_STR);
+          if ($stmt->execute()) {
+
+               return $folio;
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     /*=============================================
+	UPDATE FOLIO DOCUMENTO
+	=============================================*/
+
+     static public function mdlUpdateFolioDocumento($tabla, $datos)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla SET folioDocumento = :folioDocumento WHERE idUsuario = :idUsuario and sessionId = :sesion and folioDocumento = 0");
+
+          $stmt->bindParam(":idUsuario", $datos["idUsuario"], PDO::PARAM_INT);
+          $stmt->bindParam(":sesion", $datos["sesion"], PDO::PARAM_STR);
+          $stmt->bindParam(":folioDocumento", $datos["folioDocumento"], PDO::PARAM_STR);
+
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlEstatusDocumento($tabla, $folio)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("SELECT idEstatus FROM $tabla WHERE folio = '" . $folio . "'");
+
+          $stmt->execute();
+
+          return $stmt->fetch();
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlDetalleDocumento($tabla, $serie, $folio)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("SELECT req.*,if(aut.folio IS NULL,0,aut.folio) as 'folioAutorizacion' FROM $tabla as req LEFT OUTER JOIN autorizacionescompra as aut ON req.serie = aut.serieOrigen and req.folio = aut.folioOrigen WHERE req.serie = '" . $serie . "' and req.folio = '" . $folio . "'");
+
+          $stmt->execute();
+
+          return $stmt->fetch();
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlDetalleDocumentoAutorizacion($tabla, $serie, $folio, $tipoDocumentoUnion)
+     {
+          if ($tipoDocumentoUnion === '1') {
+               $tabla2 = "requisiciones";
+          } else if ($tipoDocumentoUnion === '2') {
+               $tabla2 = "pedidos";
+          }
+
+          $stmt = ConexionsBd::conectar()->prepare("SELECT aut.idEstatus as 'estatus',aut.serie as 'serieAut',aut.folio as 'folioAut',aut.fechaDocumento as 'fecha',aut.unidadesAprobadas,aut.montoAprobado,aut.aprobada as 'aprobada',doc.serie,doc.folio,doc.idSolicitante FROM $tabla as aut INNER JOIN $tabla2 as doc ON aut.serieOrigen = doc.serie and aut.folioOrigen = doc.folio WHERE aut.serie = '" . $serie . "' and aut.folio = '" . $folio . "'");
+
+          $stmt->execute();
+
+          return $stmt->fetch();
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlEliminarDocumento($tabla, $datos)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("DELETE FROM $tabla WHERE folio = :folioDocumento");
+
+          $stmt->bindParam(":folioDocumento", $datos["folioDocumento"], PDO::PARAM_STR);
+
+          $stmt->execute();
+
+          $stmt2 = ConexionsBd::conectar()->prepare("DELETE FROM productostempsolicitudes WHERE folioDocumento = :folioDocumento and tipo = :tipoDocumento ");
+          $stmt2->bindParam(":tipoDocumento", $datos["tipoDocumento"], PDO::PARAM_INT);
+          $stmt2->bindParam(":folioDocumento", $datos["folioDocumento"], PDO::PARAM_STR);
+
+          if ($stmt2->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlActualizarDocumento($tabla, $datos)
+     {
+
+
+
+          $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla SET idAlmacen = :idAlmacen,solicitado = :solicitado,importeSolicitado = :importeSolicitado,areaSolicitante =  :areaSolicitante,idSolicitante = :idSolicitante,prioridad = :prioridad,observaciones = :observaciones,recibido = :solicitado,importeRecibido = :importeSolicitado WHERE folio = :folioDocumento");
+
+          $stmt->bindParam(":areaSolicitante", $datos["areaSolicitante"], PDO::PARAM_INT);
+          $stmt->bindParam(":idAlmacen", $datos["idAlmacen"], PDO::PARAM_INT);
+          $stmt->bindParam(":solicitado", $datos["solicitado"], PDO::PARAM_STR);
+          $stmt->bindParam(":importeSolicitado", $datos["importeSolicitado"], PDO::PARAM_STR);
+          $stmt->bindParam(":idSolicitante", $datos["idSolicitante"], PDO::PARAM_INT);
+          $stmt->bindParam(":prioridad", $datos["prioridad"], PDO::PARAM_STR);
+          $stmt->bindParam(":observaciones", $datos["observaciones"], PDO::PARAM_STR);
+          $stmt->bindParam(":folioDocumento", $datos["folioDocumento"], PDO::PARAM_STR);
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlActualizarEstatusDocumento($tabla, $datos)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla SET idEstatus = :estatus WHERE folio = :folioDocumento");
+          $stmt->bindParam(":folioDocumento", $datos["folioDocumento"], PDO::PARAM_STR);
+          $stmt->bindParam(":estatus", $datos["estatus"], PDO::PARAM_INT);
+
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     /********
+      * ACTUALIZAR PRODUCTOS APROBADOS
+      */
+     static public function mdlActualizarProductosAprobados($tabla, $datos)
+     {
+          $folio = $datos["folioDocumento"];
+
+          $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla set unidadesRecibidas = :unidades,recibidasConversion = :unidadesConversion,importeRecibido =:importe WHERE id = :idProducto and folioDocumento = $folio  and tipo = :tipoDocumento");
+
+          $stmt->bindParam(":idProducto", $datos["idProducto"], PDO::PARAM_INT);
+          $stmt->bindParam(":unidades", $datos["unidades"], PDO::PARAM_STR);
+          $stmt->bindParam(":unidadesConversion", $datos["unidadesConversion"], PDO::PARAM_STR);
+          $stmt->bindParam(":importe", $datos["importe"], PDO::PARAM_STR);
+          $stmt->bindParam(":tipoDocumento", $datos["tipoDocumento"], PDO::PARAM_INT);
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     /********
+      * ACTUALIZAR PRODUCTOS PENDIENTES
+      */
+     static public function mdlActualizarProductosPendientes($tabla, $datos)
+     {
+          $folio = $datos["folioDocumento"];
+
+          $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla set pendientes = :unidades,pendientesConversion = :unidadesConversion,importePendiente =:importe WHERE id = :idProducto and folioDocumento = $folio  and tipo = :tipoDocumento");
+
+          $stmt->bindParam(":idProducto", $datos["idProducto"], PDO::PARAM_INT);
+          $stmt->bindParam(":unidades", $datos["unidades"], PDO::PARAM_STR);
+          $stmt->bindParam(":unidadesConversion", $datos["unidadesConversion"], PDO::PARAM_STR);
+          $stmt->bindParam(":importe", $datos["importe"], PDO::PARAM_STR);
+          $stmt->bindParam(":tipoDocumento", $datos["tipoDocumento"], PDO::PARAM_INT);
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlActualizarDocumentoAprobado($tabla, $datos)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla SET recibido = :aprobado,importeRecibido = :importeAprobado,pendientes = :pendiente,importePendiente = :importePendiente,observacionesAprobada = :observaciones,idAprobador = :aprobador,idEstatus = 3 WHERE folio = :folioDocumento");
+
+
+          $stmt->bindParam(":aprobado", $datos["aprobado"], PDO::PARAM_STR);
+          $stmt->bindParam(":importeAprobado", $datos["importeAprobado"], PDO::PARAM_STR);
+          $stmt->bindParam(":pendiente", $datos["pendiente"], PDO::PARAM_STR);
+          $stmt->bindParam(":importePendiente", $datos["importePendiente"], PDO::PARAM_STR);
+          $stmt->bindParam(":observaciones", $datos["observaciones"], PDO::PARAM_STR);
+          $stmt->bindParam(":folioDocumento", $datos["folioDocumento"], PDO::PARAM_STR);
+          $stmt->bindParam(":aprobador", $datos["aprobador"], PDO::PARAM_INT);
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlDetalleSalidasProducto($datos)
+     {
+          if ($datos["empresa"] === "PINTURAS") {
+
+               $stmt = ConexionsBd::conectarDekkerlab()->prepare("WITH salidas as (
+                    SELECT 
+                       aprod.CCODIGOPRODUCTO
+                      ,aexi.CSALIDASPERIODO1-aexi.CSALIDASINICIALES as 'Ene'
+                      ,aexi.CSALIDASPERIODO2-aexi.CSALIDASPERIODO1 as 'Feb'
+                      ,aexi.CSALIDASPERIODO3-aexi.CSALIDASPERIODO2 as 'Mar'
+                      ,aexi.CSALIDASPERIODO4-aexi.CSALIDASPERIODO3 as 'Abr'
+                      ,aexi.CSALIDASPERIODO5-aexi.CSALIDASPERIODO4 as 'May'
+                      ,aexi.CSALIDASPERIODO6-aexi.CSALIDASPERIODO5 as 'Jun'
+                      ,aexi.CSALIDASPERIODO7-aexi.CSALIDASPERIODO6 as 'Jul'
+                      ,aexi.CSALIDASPERIODO8-aexi.CSALIDASPERIODO7 as 'Ago'
+                      ,aexi.CSALIDASPERIODO9-aexi.CSALIDASPERIODO8 as 'Sep'
+                      ,aexi.CSALIDASPERIODO10-aexi.CSALIDASPERIODO9 as 'Oct'
+                      ,aexi.CSALIDASPERIODO11-aexi.CSALIDASPERIODO10 as 'Nov'
+                      ,aexi.CSALIDASPERIODO12-aexi.CSALIDASPERIODO11 as 'Dic'
+                      ,0 as 'Ene2'
+                      ,0 as 'Feb2'
+                      ,0 as 'Mar2'
+                      ,0 as 'Abr2'
+                      ,0 as 'May2'
+                      ,0 as 'Jun2'
+                      ,0 as 'Jul2'
+                      ,0 as 'Ago2'
+                      ,0 as 'Sep2'
+                      ,0 as 'Oct2'
+                      ,0 as 'Nov2'
+                      ,0 as 'Dic2'
+                  FROM [adPINTURAS2020SADEC].[dbo].[admExistenciaCosto] as aexi LEFT OUTER JOIN [adPINTURAS2020SADEC].[dbo].[admProductos] as aprod ON aexi.CIDPRODUCTO = aprod.CIDPRODUCTO WHERE aprod.CCODIGOPRODUCTO = '" . $datos["codigo"] . "' AND aexi.CIDEJERCICIO IN (9) AND aexi.CIDALMACEN = '" . $datos["idAlmacen"] . "'
+                  UNION ALL
+                    SELECT 
+                       aprod.CCODIGOPRODUCTO
+                       ,aexi.CSALIDASPERIODO1-aexi.CSALIDASINICIALES as 'Ene'
+                      ,aexi.CSALIDASPERIODO2-aexi.CSALIDASPERIODO1 as 'Feb'
+                      ,aexi.CSALIDASPERIODO3-aexi.CSALIDASPERIODO2 as 'Mar'
+                      ,aexi.CSALIDASPERIODO4-aexi.CSALIDASPERIODO3 as 'Abr'
+                      ,aexi.CSALIDASPERIODO5-aexi.CSALIDASPERIODO4 as 'May'
+                      ,aexi.CSALIDASPERIODO6-aexi.CSALIDASPERIODO5 as 'Jun'
+                      ,aexi.CSALIDASPERIODO7-aexi.CSALIDASPERIODO6 as 'Jul'
+                      ,aexi.CSALIDASPERIODO8-aexi.CSALIDASPERIODO7 as 'Ago'
+                      ,aexi.CSALIDASPERIODO9-aexi.CSALIDASPERIODO8 as 'Sep'
+                      ,aexi.CSALIDASPERIODO10-aexi.CSALIDASPERIODO9 as 'Oct'
+                      ,aexi.CSALIDASPERIODO11-aexi.CSALIDASPERIODO10 as 'Nov'
+                      ,aexi.CSALIDASPERIODO12-aexi.CSALIDASPERIODO11 as 'Dic'
+                      ,0 as 'Ene2'
+                      ,0 as 'Feb2'
+                      ,0 as 'Mar2'
+                      ,0 as 'Abr2'
+                      ,0 as 'May2'
+                      ,0 as 'Jun2'
+                      ,0 as 'Jul2'
+                      ,0 as 'Ago2'
+                      ,0 as 'Sep2'
+                      ,0 as 'Oct2'
+                      ,0 as 'Nov2'
+                      ,0 as 'Dic2'
+                  FROM [adDEKKERLAB].[dbo].[admExistenciaCosto] as aexi LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] as aprod ON aexi.CIDPRODUCTO = aprod.CIDPRODUCTO WHERE aprod.CCODIGOPRODUCTO = '" . $datos["codigo"] . "' AND aexi.CIDEJERCICIO IN (1) AND aexi.CIDALMACEN = '" . $datos["idAlmacen2"] . "'
+                    UNION
+                    SELECT 
+                      aprod.CCODIGOPRODUCTO
+                      ,0 as 'Ene'
+                      ,0 as 'Feb'
+                      ,0 as 'Mar'
+                      ,0 as 'Abr'
+                      ,0 as 'May'
+                      ,0 as 'Jun'
+                      ,0 as 'Jul'
+                      ,0 as 'Ago'
+                      ,0 as 'Sep'
+                      ,0 as 'Oct'
+                      ,0 as 'Nov'
+                      ,0 as 'Dic'
+                      ,aexi.CSALIDASPERIODO1-aexi.CSALIDASINICIALES as 'Ene2'
+                      ,aexi.CSALIDASPERIODO2-aexi.CSALIDASPERIODO1 as 'Feb2'
+                      ,aexi.CSALIDASPERIODO3-aexi.CSALIDASPERIODO2 as 'Mar2'
+                      ,aexi.CSALIDASPERIODO4-aexi.CSALIDASPERIODO3 as 'Abr2'
+                      ,aexi.CSALIDASPERIODO5-aexi.CSALIDASPERIODO4 as 'May2'
+                      ,aexi.CSALIDASPERIODO6-aexi.CSALIDASPERIODO5 as 'Jun2'
+                      ,aexi.CSALIDASPERIODO7-aexi.CSALIDASPERIODO6 as 'Jul2'
+                      ,aexi.CSALIDASPERIODO8-aexi.CSALIDASPERIODO7 as 'Ago2'
+                      ,aexi.CSALIDASPERIODO9-aexi.CSALIDASPERIODO8 as 'Sep2'
+                      ,aexi.CSALIDASPERIODO10-aexi.CSALIDASPERIODO9 as 'Oct2'
+                      ,aexi.CSALIDASPERIODO11-aexi.CSALIDASPERIODO10 as 'Nov2'
+                      ,aexi.CSALIDASPERIODO12-aexi.CSALIDASPERIODO11 as 'Dic2'
+                  FROM [adDEKKERLAB].[dbo].[admExistenciaCosto] as aexi LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] as aprod ON aexi.CIDPRODUCTO = aprod.CIDPRODUCTO WHERE aprod.CCODIGOPRODUCTO = '" . $datos["codigo"] . "' AND aexi.CIDEJERCICIO IN (2) AND aexi.CIDALMACEN = '" . $datos["idAlmacen2"] . "'
+                  ),
+                  totalSalidas as(SELECT CCODIGOPRODUCTO,Sep,Oct,Nov,Dic,Ene2,Feb2 FROM salidas  GROUP by CCODIGOPRODUCTO,Sep,Oct,Nov,Dic,Ene2,Feb2)
+                  
+                  SELECT SUM(Sep) as '1',SUM(Oct) as '2',SUM(Nov) as '3',SUM(Dic) as '4',SUM(Ene2) as '5',SUM(Feb2) as '6',SUM(Sep)+SUM(Oct)+SUM(Nov)+SUM(Dic)+SUM(Ene2)+SUM(Feb2) as total FROM totalSalidas");
+          } else {
+
+               $stmt = ConexionsBd::conectarTorres()->prepare("WITH salidas as (
+                    SELECT 
+                       aprod.CCODIGOPRODUCTO
+                      ,aexi.CSALIDASPERIODO1-aexi.CSALIDASINICIALES as 'Ene'
+                      ,aexi.CSALIDASPERIODO2-aexi.CSALIDASPERIODO1 as 'Feb'
+                      ,aexi.CSALIDASPERIODO3-aexi.CSALIDASPERIODO2 as 'Mar'
+                      ,aexi.CSALIDASPERIODO4-aexi.CSALIDASPERIODO3 as 'Abr'
+                      ,aexi.CSALIDASPERIODO5-aexi.CSALIDASPERIODO4 as 'May'
+                      ,aexi.CSALIDASPERIODO6-aexi.CSALIDASPERIODO5 as 'Jun'
+                      ,aexi.CSALIDASPERIODO7-aexi.CSALIDASPERIODO6 as 'Jul'
+                      ,aexi.CSALIDASPERIODO8-aexi.CSALIDASPERIODO7 as 'Ago'
+                      ,aexi.CSALIDASPERIODO9-aexi.CSALIDASPERIODO8 as 'Sep'
+                      ,aexi.CSALIDASPERIODO10-aexi.CSALIDASPERIODO9 as 'Oct'
+                      ,aexi.CSALIDASPERIODO11-aexi.CSALIDASPERIODO10 as 'Nov'
+                      ,aexi.CSALIDASPERIODO12-aexi.CSALIDASPERIODO11 as 'Dic'
+                      ,0 as 'Ene2'
+                      ,0 as 'Feb2'
+                      ,0 as 'Mar2'
+                      ,0 as 'Abr2'
+                      ,0 as 'May2'
+                      ,0 as 'Jun2'
+                      ,0 as 'Jul2'
+                      ,0 as 'Ago2'
+                      ,0 as 'Sep2'
+                      ,0 as 'Oct2'
+                      ,0 as 'Nov2'
+                      ,0 as 'Dic2'
+                  FROM [adPinturas_y_Complemen].[dbo].[admExistenciaCosto] as aexi LEFT OUTER JOIN [adPinturas_y_Complemen].[dbo].[admProductos] as aprod ON aexi.CIDPRODUCTO = aprod.CIDPRODUCTO WHERE aprod.CCODIGOPRODUCTO = '" . $datos["codigo"] . "' AND aexi.CIDEJERCICIO IN (4) AND aexi.CIDALMACEN = '" . $datos["idAlmacen"] . "'
+                  UNION ALL
+                    SELECT 
+                       aprod.CCODIGOPRODUCTO
+                       ,aexi.CSALIDASPERIODO1-aexi.CSALIDASINICIALES as 'Ene'
+                      ,aexi.CSALIDASPERIODO2-aexi.CSALIDASPERIODO1 as 'Feb'
+                      ,aexi.CSALIDASPERIODO3-aexi.CSALIDASPERIODO2 as 'Mar'
+                      ,aexi.CSALIDASPERIODO4-aexi.CSALIDASPERIODO3 as 'Abr'
+                      ,aexi.CSALIDASPERIODO5-aexi.CSALIDASPERIODO4 as 'May'
+                      ,aexi.CSALIDASPERIODO6-aexi.CSALIDASPERIODO5 as 'Jun'
+                      ,aexi.CSALIDASPERIODO7-aexi.CSALIDASPERIODO6 as 'Jul'
+                      ,aexi.CSALIDASPERIODO8-aexi.CSALIDASPERIODO7 as 'Ago'
+                      ,aexi.CSALIDASPERIODO9-aexi.CSALIDASPERIODO8 as 'Sep'
+                      ,aexi.CSALIDASPERIODO10-aexi.CSALIDASPERIODO9 as 'Oct'
+                      ,aexi.CSALIDASPERIODO11-aexi.CSALIDASPERIODO10 as 'Nov'
+                      ,aexi.CSALIDASPERIODO12-aexi.CSALIDASPERIODO11 as 'Dic'
+                      ,0 as 'Ene2'
+                      ,0 as 'Feb2'
+                      ,0 as 'Mar2'
+                      ,0 as 'Abr2'
+                      ,0 as 'May2'
+                      ,0 as 'Jun2'
+                      ,0 as 'Jul2'
+                      ,0 as 'Ago2'
+                      ,0 as 'Sep2'
+                      ,0 as 'Oct2'
+                      ,0 as 'Nov2'
+                      ,0 as 'Dic2'
+                  FROM [adDEKKERLAB].[dbo].[admExistenciaCosto] as aexi LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] as aprod ON aexi.CIDPRODUCTO = aprod.CIDPRODUCTO WHERE aprod.CCODIGOPRODUCTO = '" . $datos["codigo"] . "' AND aexi.CIDEJERCICIO IN (1) AND aexi.CIDALMACEN = '" . $datos["idAlmacen2"] . "'
+                    UNION
+                    SELECT 
+                      aprod.CCODIGOPRODUCTO
+                      ,0 as 'Ene'
+                      ,0 as 'Feb'
+                      ,0 as 'Mar'
+                      ,0 as 'Abr'
+                      ,0 as 'May'
+                      ,0 as 'Jun'
+                      ,0 as 'Jul'
+                      ,0 as 'Ago'
+                      ,0 as 'Sep'
+                      ,0 as 'Oct'
+                      ,0 as 'Nov'
+                      ,0 as 'Dic'
+                      ,aexi.CSALIDASPERIODO1-aexi.CSALIDASINICIALES as 'Ene2'
+                      ,aexi.CSALIDASPERIODO2-aexi.CSALIDASPERIODO1 as 'Feb2'
+                      ,aexi.CSALIDASPERIODO3-aexi.CSALIDASPERIODO2 as 'Mar2'
+                      ,aexi.CSALIDASPERIODO4-aexi.CSALIDASPERIODO3 as 'Abr2'
+                      ,aexi.CSALIDASPERIODO5-aexi.CSALIDASPERIODO4 as 'May2'
+                      ,aexi.CSALIDASPERIODO6-aexi.CSALIDASPERIODO5 as 'Jun2'
+                      ,aexi.CSALIDASPERIODO7-aexi.CSALIDASPERIODO6 as 'Jul2'
+                      ,aexi.CSALIDASPERIODO8-aexi.CSALIDASPERIODO7 as 'Ago2'
+                      ,aexi.CSALIDASPERIODO9-aexi.CSALIDASPERIODO8 as 'Sep2'
+                      ,aexi.CSALIDASPERIODO10-aexi.CSALIDASPERIODO9 as 'Oct2'
+                      ,aexi.CSALIDASPERIODO11-aexi.CSALIDASPERIODO10 as 'Nov2'
+                      ,aexi.CSALIDASPERIODO12-aexi.CSALIDASPERIODO11 as 'Dic2'
+                  FROM [adDEKKERLAB].[dbo].[admExistenciaCosto] as aexi LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] as aprod ON aexi.CIDPRODUCTO = aprod.CIDPRODUCTO WHERE aprod.CCODIGOPRODUCTO = '" . $datos["codigo"] . "' AND aexi.CIDEJERCICIO IN (2) AND aexi.CIDALMACEN = '" . $datos["idAlmacen2"] . "'
+                  ),
+                  totalSalidas as(SELECT CCODIGOPRODUCTO,Sep,Oct,Nov,Dic,Ene2,Feb2 FROM salidas  GROUP by CCODIGOPRODUCTO,Sep,Oct,Nov,Dic,Ene2,Feb2)
+                  
+                  SELECT SUM(Sep) as '1',SUM(Oct) as '2',SUM(Nov) as '3',SUM(Dic) as '4',SUM(Ene2) as '5',SUM(Feb2) as '6',SUM(Sep)+SUM(Oct)+SUM(Nov)+SUM(Dic)+SUM(Ene2)+SUM(Feb2) as total FROM totalSalidas");
+          }
+
+
+          $stmt->execute();
+
+          return $stmt->fetch();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     /********
+      * INSERTAR AUTORIZACION DE COMPRA
+      */
+     static public function mdlGenerarAutorizacionCompra($datos)
+     {
+          $folio = ConexionsBd::conectar()->prepare("SELECT IF(MAX(folio) IS NULL,1,MAX(folio)+1) as folio FROM autorizacionescompra");
+          $folio->execute();
+          $result = $folio->fetch();
+          $resultFolio = $result["folio"];
+          $stmt = ConexionsBd::conectar()->prepare("INSERT INTO autorizacionescompra(idEstatus,serie,folio,serieOrigen,folioOrigen,tipoDocumento,unidadesAprobadas,montoAprobado) VALUES( 
+           1,
+           'AUMA',
+           '" . $resultFolio . "',
+           :serieDocumento,
+           :folioDocumento,
+           :tipoDocumento,
+           :unidadesAprobadas,
+           :montoAprobado)");
+
+          $stmt->bindParam(":serieDocumento", $datos["serieDocumento"], PDO::PARAM_STR);
+          $stmt->bindParam(":folioDocumento", $datos["folioDocumento"], PDO::PARAM_INT);
+          $stmt->bindParam(":tipoDocumento", $datos["tipoDocumento"], PDO::PARAM_INT);
+          $stmt->bindParam(":unidadesAprobadas", $datos["unidades"], PDO::PARAM_STR);
+          $stmt->bindParam(":montoAprobado", $datos["importe"], PDO::PARAM_STR);
+
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
      }
 }

@@ -39,13 +39,14 @@
                     <?php
                     if ($_SESSION["grupo"] != "Administracion") {
                     } else {
-
-                        echo '<ul class="nav-left">
+                        if ($_SESSION["modulo"] == "Ventas") {
+                            echo '<ul class="nav-left">
                             <li>
                                 <button type="button" class="btn btn-info" onclick="openModal()"> <i class="fa fa-window-restore"></i>Accesos Directos</button>
                                 <strong style="color:white">*presionar f2 para desplegar acceso</strong>
                             </li>
                         </ul>';
+                        }
                     }
                     ?>
 

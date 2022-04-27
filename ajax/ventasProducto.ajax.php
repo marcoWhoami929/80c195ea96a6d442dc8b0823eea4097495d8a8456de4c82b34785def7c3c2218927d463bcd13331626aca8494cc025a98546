@@ -31,7 +31,7 @@ if ($action == 'ventasProductoMonto') {
     $row = $countAll;
 
     if ($row > 0) {
-        $numrows = $countAll;;
+        $numrows = $countAll;
     } else {
         $numrows = 0;
     }
@@ -187,7 +187,7 @@ if ($action == 'ventasProductoUnidades') {
     $row = $countAll;
 
     if ($row > 0) {
-        $numrows = $countAll;;
+        $numrows = $countAll;
     } else {
         $numrows = 0;
     }

@@ -2,6 +2,7 @@ posicionarMenu();
 
 $(window).scroll(function () {
   posicionarMenu();
+  posicionarMenu2();
 });
 
 function posicionarMenu() {
@@ -15,6 +16,18 @@ function posicionarMenu() {
     //document.getElementById("fixedHead").setAttribute("style", "position:fixed");
   } else {
     $(".filterParams").removeClass("fixed");
+    //$("#fixedHead").removeClass("fixedHead");
+    //$("#fixedHead").removeClass("fixed2");
+  }
+}
+function posicionarMenu2() {
+  if ($(window).scrollTop() >= 180) {
+    $(".filterParams2").addClass("fixed");
+    //$("#fixedHead").addClass("fixedHead");
+
+    //document.getElementById("fixedHead").setAttribute("style", "position:fixed");
+  } else {
+    $(".filterParams2").removeClass("fixed");
     //$("#fixedHead").removeClass("fixedHead");
     //$("#fixedHead").removeClass("fixed2");
   }
