@@ -146,6 +146,7 @@ class ultimosCostosDekkerlab extends ConexionsBd
                        select * from filtroCostos  PIVOT(MAX(CIDDOCUMENTO) FOR MES in([1],[2],[3],[4],[5],[6],[7],[8],[9],[10],[11],[12])) as pivotTable  where filtro2 = 1  ORDER BY $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
 
         $query = $this->mysqli->query($sql);
+        
         $query = $query->fetchAll();
         return $query;
     }
