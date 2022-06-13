@@ -260,11 +260,11 @@ if ($action == 'listadoProductosAlmacenes') {
                         $codigo = '"' . $row['CCODIGOPRODUCTO'] . '"';
 
                         if ($row["ROTACION"] > 75) {
-                            $rotacion = "<button type='button' onclick='obtenerSalidasProducto($empresa,$codigo,$almacen,$almacen2,$periodo)' class='btn btn-success'>Alta</button>";
+                            $rotacion = "<button type='button' onclick='obtenerSalidasProducto($empresa,$codigo,$almacen,$almacen2,$periodo)' class='btn nestable-success'>Alta</button>";
                         } else if ($row["ROTACION"] < 74.99 and $row["ROTACION"] > 50) {
-                            $rotacion = "<button type='button' onclick='obtenerSalidasProducto($empresa,$codigo,$almacen,$almacen2,$periodo)' class='btn btn-warning'>Media</button>";
+                            $rotacion = "<button type='button' onclick='obtenerSalidasProducto($empresa,$codigo,$almacen,$almacen2,$periodo)' class='btn nestable-warning'>Media</button>";
                         } else if ($row["ROTACION"] < 49.99 and $row["ROTACION"] > 25) {
-                            $rotacion = "<button type='button' onclick='obtenerSalidasProducto($empresa,$codigo,$almacen,$almacen2,$periodo)' class='btn btn-danger'>Baja</button>";
+                            $rotacion = "<button type='button' onclick='obtenerSalidasProducto($empresa,$codigo,$almacen,$almacen2,$periodo)' class='btn nestable-danger'>Baja</button>";
                         } else {
                             $rotacion = "<span class='badge badge-info'>SIN ROTACION</span>";
                         }
