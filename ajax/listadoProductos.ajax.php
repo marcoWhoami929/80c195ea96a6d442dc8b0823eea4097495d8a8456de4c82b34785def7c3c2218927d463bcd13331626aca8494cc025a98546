@@ -269,11 +269,11 @@ if ($action == 'listadoProductosAlmacenes') {
                             $rotacion = "<span class='badge badge-info'>SIN ROTACION</span>";
                         }
 
-                        if ($row["ROTACION"] > 74.99) {
+                        if ($row["ROTACION"] > 75) {
                             $clasificacion = "<span class='badge badge-success'>A</span>";
-                        } else if ($row["ROTACION"] < 75 and $row["ROTACION"] > 49.99) {
+                        } else if ($row["ROTACION"] < 74.99 and $row["ROTACION"] > 50) {
                             $clasificacion = "<span class='badge badge-info'>B</span>";
-                        } else if ($row["ROTACION"] < 50 and $row["ROTACION"] > 24.99) {
+                        } else if ($row["ROTACION"] < 49.99 and $row["ROTACION"] > 25) {
                             $clasificacion = "<span class='badge badge-warning'>C</span>";
                         } else {
                             $clasificacion = "<span class='badge badge-danger'>D</span>";
@@ -478,11 +478,11 @@ if ($action == 'listadoProductosAgotarse') {
                             $rotacion = "<span class='badge badge-info'>SIN ROTACION</span>";
                         }
 
-                        if ($row["ROTACION"] > 74.99) {
+                        if ($row["ROTACION"] > 75) {
                             $clasificacion = "<span class='badge badge-success'>A</span>";
-                        } else if ($row["ROTACION"] < 75 and $row["ROTACION"] > 49.99) {
+                        } else if ($row["ROTACION"] < 74.99 and $row["ROTACION"] > 50) {
                             $clasificacion = "<span class='badge badge-info'>B</span>";
-                        } else if ($row["ROTACION"] < 50 and $row["ROTACION"] > 24.99) {
+                        } else if ($row["ROTACION"] < 49.99 and $row["ROTACION"] > 25) {
                             $clasificacion = "<span class='badge badge-warning'>C</span>";
                         } else {
                             $clasificacion = "<span class='badge badge-danger'>D</span>";

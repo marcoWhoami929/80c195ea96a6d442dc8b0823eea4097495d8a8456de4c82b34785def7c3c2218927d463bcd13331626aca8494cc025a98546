@@ -209,8 +209,8 @@
                         <div class="msg"></div>
                     </div>
                     <div class="form-group">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                        <button type="button" class="btn nestable-danger" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn nestable-info">Actualizar</button>
                     </div>
                 </form>
 
@@ -247,8 +247,8 @@
                     </div>
                     <div class="form-group">
 
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary">Registrar</button>
+                        <button type="button" class="btn nestable-danger" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn nestable-info">Registrar</button>
                     </div>
                 </form>
 

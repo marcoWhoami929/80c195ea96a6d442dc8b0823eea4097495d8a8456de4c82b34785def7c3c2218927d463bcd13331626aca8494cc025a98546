@@ -37,6 +37,46 @@ class InventariosFunctions
     public $empresa;
     public $idAlmacen2;
     public $tipoDocumentoUnion;
+    public $usuario;
+    public $vista;
+    public $folio;
+    public $periodo;
+    public $ejercicio;
+    public $tipoDetalleDocumento;
+    public $referencia;
+    public $idClienteProveedor;
+    public $rfcClienteProveedor;
+    public $razonSocialClienteProveedor;
+    public $productos;
+    public $serie;
+    public $tipoUsuario;
+    public $idDocumentoDe;
+    public $idConcepto;
+    public $titulo;
+    public $color;
+    public $mensaje;
+    public $startDate;
+    public $endDate;
+    public $sucursal;
+    public $id;
+    public $existencias;
+    public $inventario;
+    public $diferencia;
+    public $existenciasImportes;
+    public $inventarioImportes;
+    public $diferenciaImportes;
+    public $idRealizador;
+    public $marca;
+    public $serieOrigen;
+    public $folioOrigen;
+    public $familia;
+    public $categoria;
+    public $anaquel;
+    public $repisa;
+    public $proveedor;
+    public $habilitado;
+    public $folioInventario;
+
     public  function insertarProductosTemporales()
     {
         $tabla = "productostempsolicitudes";
@@ -54,6 +94,7 @@ class InventariosFunctions
             "importe" => $this->importe,
             "tipo" => $this->tipo,
             "folioDocumento" => $this->folioDocumento,
+            "precioCapturado" => bcdiv($this->costo / $this->valorConversion, '1', 4),
             "sesion" => session_id()
         );
 
@@ -75,6 +116,7 @@ class InventariosFunctions
             "importe" => $this->importe,
             "tipoDocumento" => $this->tipoDocumento,
             "folioDocumento" => $this->folioDocumento,
+            "precioCapturado" => bcdiv($this->costo / $this->valorConversion, '1', 4),
             "sesion" => session_id()
         );
 
@@ -291,7 +333,8 @@ class InventariosFunctions
             "codigo" => $this->codigo,
             "empresa" => $this->empresa,
             "idAlmacen" => $this->idAlmacen,
-            "idAlmacen2" => $this->idAlmacen2
+            "idAlmacen2" => $this->idAlmacen2,
+            "periodo" => $this->periodo
 
         );
 
@@ -303,12 +346,221 @@ class InventariosFunctions
         $datos = array(
             "serieDocumento" => $this->serieDocumento,
             "folioDocumento" => $this->folioDocumento,
+            "fechaDocumento" => date("Y-m-d"),
             "tipoDocumento" => $this->tipoDocumento,
             "unidades" => $this->unidades,
-            "importe" => $this->importe
+            "importe" => $this->importe,
+            "area" => $_SESSION["id"],
+            "nombreArea" => $_SESSION["nombre"]
         );
 
         $respuesta = ModelAdmon::mdlGenerarAutorizacionCompra($datos);
+        echo json_encode($respuesta);
+    }
+    public  function mostrarProductosAutorizacion()
+    {
+        $usuario = $this->usuario;
+        $sesion = session_id();
+        $tipo = $this->tipo;
+        $folio = $this->folio;
+        $tipoDetalleDocumento = $this->tipoDetalleDocumento;
+        $search = array("tipoDetalleDocumento" => $tipoDetalleDocumento, "usuario" => $usuario, "sesion" => $sesion, "folio" => $folio, "tipo" => $tipo);
+        //consulta principal para recuperar los datos
+
+        $respuesta = ModelAdmon::mostrarProductosAutorizacion($search);
+        echo json_encode($respuesta);
+    }
+    public  function generarOrdenCompra()
+    {
+        $importe = $this->importe;
+        $observaciones = trim($this->observaciones);
+        $datos = array(
+            "referencia" => $this->referencia,
+            "idClienteProveedor" => $this->idClienteProveedor,
+            "rfcClienteProveedor" => $this->rfcClienteProveedor,
+            "razonSocialClienteProveedor" => $this->razonSocialClienteProveedor,
+            "productos" => $this->productos,
+            "unidades" => $this->unidades,
+            "unidadesPendientes" => $this->unidades,
+            "neto" => floatval($importe),
+            "impuesto" => number_format(floatval($importe) * 0.16, 2),
+            "total" => number_format(floatval($importe) * 1.16, 2),
+            "serie" => $this->serie,
+            "folio" => $this->folio,
+            "observaciones" => $observaciones
+        );
+        $respuesta = ModelAdmon::generarOrdenCompra($datos);
+        echo json_encode($respuesta);
+    }
+    public  function listadoRecordatorios()
+    {
+        $usuario = $this->usuario;
+        $tipoUsuario = $this->tipoUsuario;
+
+        $respuesta = ModelAdmon::mdlListadoRecordatorios($usuario, $tipoUsuario);
+        echo json_encode($respuesta);
+    }
+    public function generarRecordatorio()
+    {
+        $datos = array(
+            "titulo" => trim($this->titulo),
+            "color" => $this->color,
+            "mensaje" => trim($this->mensaje),
+            "startDate" => $this->startDate,
+            "endDate" => $this->endDate,
+            "usuario" => $this->usuario,
+            "sucursal" => $this->sucursal
+        );
+
+        $respuesta = ModelAdmon::mdlGenerarRecordatorio($datos);
+        echo json_encode($respuesta);
+    }
+    public function detalleRecordatorio()
+    {
+        $datos = array(
+            "id" => $this->id
+        );
+
+        $respuesta = ModelAdmon::mdlDetalleRecordatorio($datos);
+        echo json_encode($respuesta);
+    }
+    public function actualizarRecordatorio()
+    {
+        $datos = array(
+            "id" => $this->id,
+            "mensaje" => trim($this->mensaje),
+            "startDate" => $this->startDate,
+            "endDate" => $this->endDate
+        );
+
+        $respuesta = ModelAdmon::mdlActualizarRecordatorio($datos);
+        echo json_encode($respuesta);
+    }
+    public function eliminarRecordatorio()
+    {
+        $datos = array(
+            "id" => $this->id
+        );
+
+        $respuesta = ModelAdmon::mdlEliminarRecordatorio($datos);
+        echo json_encode($respuesta);
+    }
+    public  function impresionDocumentos()
+    {
+        $idDocumentoDe = $this->idDocumentoDe;
+        $idConcepto = $this->idConcepto;
+        $estatus = $this->estatus;
+
+        $respuesta = ModelAdmon::mdlImpresionDocumentos($idDocumentoDe, $idConcepto, $estatus);
+        echo json_encode($respuesta);
+    }
+    public function generarInventario()
+    {
+        $datos = array(
+            "serie" => $this->serie,
+            "existencias" => $this->existencias,
+            "inventario" => $this->inventario,
+            "diferencia" => $this->diferencia,
+            "existenciasImportes" => $this->existenciasImportes,
+            "inventarioImportes" => $this->inventarioImportes,
+            "diferenciaImportes" => $this->diferenciaImportes,
+            "idSolicitante" => $this->idSolicitante,
+            "idRealizador" => $this->idRealizador,
+            "observaciones" => $this->observaciones,
+            "idAlmacen" => $this->idAlmacen,
+            "periodo" => $this->periodo,
+            "marca" => $this->marca,
+            "familia" => $this->familia,
+            "categoria" => $this->categoria,
+            "anaquel" => $this->anaquel,
+            "repisa" => $this->repisa,
+            "proveedor" => $this->proveedor,
+            "productos" => $this->productos,
+            "area" => $_SESSION["area"],
+            "idArea" => $_SESSION["id"],
+            "sesionId" => session_id()
+        );
+
+        $respuesta = ModelAdmon::mdlGenerarInventario($datos);
+        echo json_encode($respuesta);
+    }
+    public  function estatusDocumentoInventario()
+    {
+        $tabla = $this->tabla;
+
+        $folio = $this->folioDocumento;
+
+        $respuesta = ControllerAdmon::ctrEstatusDocumentoInventario($tabla, $folio);
+        echo json_encode($respuesta);
+    }
+    public  function actualizarEstatusDocumentoInventario()
+    {
+        $tabla = $this->tabla;
+        $datos = array(
+            "folioDocumento" => $this->folioDocumento,
+            "estatus" => $this->estatus,
+            "habilitado" => $this->habilitado
+        );
+
+        $respuesta = ControllerAdmon::ctrActualizarEstatusDocumentoInventario($tabla, $datos);
+        echo json_encode($respuesta);
+    }
+    public function detalleInventario()
+    {
+        $folio = $this->folioDocumento;
+
+
+        $respuesta = ModelAdmon::mdlDetalleInventario($folio);
+        echo json_encode($respuesta);
+    }
+    public function generarMovimientoInventario()
+    {
+
+
+        $importe = $this->importe;
+        $observaciones = trim($this->observaciones);
+
+        $datos = array(
+            "referencia" => $this->referencia,
+            "unidades" => $this->unidades,
+            "unidadesPendientes" => $this->unidades,
+            "neto" => floatval($importe),
+            "total" => floatval($importe),
+            "productos" => $this->productos,
+            "serie" => $this->serie,
+            "serieOrigen" => $this->serieOrigen,
+            "folioOrigen" => $this->folioOrigen,
+            "observaciones" => $observaciones,
+            "idDocumentoDe" => $this->idDocumentoDe,
+            "idConcepto" => $this->idConcepto,
+            "tipo" => $this->tipo
+        );
+
+        $respuesta = ModelAdmon::mdlGenerarMovimientoInventario($datos);
+        echo json_encode($respuesta);
+    }
+    public function actualizarProductoInventario()
+    {
+
+        $datos = array(
+            "productos" => $this->productos
+        );
+
+        $respuesta = ModelAdmon::mdlActualizarProductoInventario($datos);
+        echo json_encode($respuesta);
+    }
+    public function actualizarInventario()
+    {
+
+        $datos = array(
+            "folioInventario" => $this->folioInventario,
+            "inventario" => $this->inventario,
+            "diferencia" => $this->diferencia,
+            "inventarioImportes" => $this->inventarioImportes,
+            "diferenciaImportes" => $this->diferenciaImportes,
+        );
+
+        $respuesta = ModelAdmon::mdlActualizarInventario($datos);
         echo json_encode($respuesta);
     }
 }
@@ -339,6 +591,7 @@ if (isset($_POST["accion"])) {
         $actualizar->idAlmacen = $_POST["idAlmacen"];
         $actualizar->valorConversion = $_POST["valorConversion"];
         $actualizar->importe = $_POST["importe"];
+        $actualizar->costo = $_POST["costo"];
         $actualizar->tipoDocumento = $_POST["tipoDocumento"];
         $actualizar->folioDocumento = $_POST["folioDocumento"];
         $actualizar->actualizarProductosTemporales();
@@ -460,6 +713,7 @@ if (isset($_POST["accion"])) {
         $detalleSalidas->codigo = $_POST["codigo"];
         $detalleSalidas->idAlmacen = $_POST["idAlmacen"];
         $detalleSalidas->idAlmacen2 = $_POST["idAlmacen2"];
+        $detalleSalidas->periodo = $_POST["periodo"];
         $detalleSalidas->detalleSalidasProducto();
     }
     if ($_POST["accion"] === "generarAutorizacionCompra") {
@@ -470,5 +724,142 @@ if (isset($_POST["accion"])) {
         $solicitud->unidades = $_POST["unidades"];
         $solicitud->importe = $_POST["importe"];
         $solicitud->generarAutorizacionCompra();
+    }
+    if ($_POST["accion"] === "productosAutorizacion") {
+        $listaProductos = new InventariosFunctions();
+        $listaProductos->usuario = $_POST["usuario"];
+        $listaProductos->folio = $_POST["folio"];
+        $listaProductos->periodo = $_POST["periodo"];
+        $listaProductos->ejercicio = $_POST["ejercicio"];
+        $listaProductos->tipoDetalleDocumento = $_POST["tipoDetalleDocumento"];
+        $listaProductos->tipo = $_POST["tipo"];
+        $listaProductos->mostrarProductosAutorizacion();
+    }
+    if ($_POST["accion"] === "generarOrdenCompra") {
+        $generarOrden = new InventariosFunctions();
+        $generarOrden->referencia = $_POST["referencia"];
+        $generarOrden->idClienteProveedor = $_POST["idClienteProveedor"];
+        $generarOrden->rfcClienteProveedor = $_POST["rfcClienteProveedor"];
+        $generarOrden->razonSocialClienteProveedor = $_POST["razonSocialClienteProveedor"];
+        $generarOrden->productos = $_POST["productos"];
+        $generarOrden->unidades = $_POST["unidades"];
+        $generarOrden->importe = $_POST["importe"];
+        $generarOrden->serie = $_POST["serie"];
+        $generarOrden->folio = $_POST["folio"];
+        $generarOrden->observaciones = $_POST["observaciones"];
+        $generarOrden->generarOrdenCompra();
+    }
+    if ($_POST["accion"] === "listaRecordatorios") {
+        $recordatorios = new InventariosFunctions();
+        $recordatorios->usuario = $_POST["usuario"];
+        $recordatorios->tipoUsuario = $_POST["tipoUsuario"];
+        $recordatorios->listadoRecordatorios();
+    }
+    if ($_POST["accion"] === "generarRecordatorio") {
+        $generarRecordatorio = new InventariosFunctions();
+        $generarRecordatorio->titulo = $_POST["titulo"];
+        $generarRecordatorio->color = $_POST["color"];
+        $generarRecordatorio->mensaje = $_POST["mensaje"];
+        $generarRecordatorio->startDate = $_POST["startDate"];
+        $generarRecordatorio->endDate = $_POST["endDate"];
+        $generarRecordatorio->usuario = $_POST["usuario"];
+        $generarRecordatorio->sucursal = $_POST["sucursal"];
+        $generarRecordatorio->generarRecordatorio();
+    }
+    if ($_POST["accion"] === "detalleRecordatorio") {
+        $detalleRecordatorio = new InventariosFunctions();
+        $detalleRecordatorio->id = $_POST["id"];
+        $detalleRecordatorio->detalleRecordatorio();
+    }
+    if ($_POST["accion"] === "actualizarRecordatorio") {
+        $actualizarRecordatorio = new InventariosFunctions();
+        $actualizarRecordatorio->id = $_POST["id"];
+        $actualizarRecordatorio->mensaje = $_POST["mensaje"];
+        $actualizarRecordatorio->startDate = $_POST["startDate"];
+        $actualizarRecordatorio->endDate = $_POST["endDate"];
+        $actualizarRecordatorio->actualizarRecordatorio();
+    }
+    if ($_POST["accion"] === "eliminarRecordatorio") {
+        $eliminarRecordatorio = new InventariosFunctions();
+        $eliminarRecordatorio->id = $_POST["id"];
+        $eliminarRecordatorio->eliminarRecordatorio();
+    }
+    if ($_POST["accion"] === "impresionDocumentos") {
+        $impresion = new InventariosFunctions();
+        $impresion->idDocumentoDe = $_POST["idDocumentoDe"];
+        $impresion->idConcepto = $_POST["idConcepto"];
+        $impresion->estatus = $_POST["estatus"];
+        $impresion->impresionDocumentos();
+    }
+    if ($_POST["accion"] === "generarInventario") {
+        $inventario = new InventariosFunctions();
+        $inventario->serie = $_POST["serie"];
+        $inventario->existencias = $_POST["existencias"];
+        $inventario->inventario = $_POST["inventario"];
+        $inventario->diferencia = $_POST["diferencia"];
+        $inventario->existenciasImportes = $_POST["existenciasImportes"];
+        $inventario->inventarioImportes = $_POST["inventarioImportes"];
+        $inventario->diferenciaImportes = $_POST["diferenciaImportes"];
+        $inventario->idSolicitante = $_POST["idSolicitante"];
+        $inventario->idRealizador = $_POST["idRealizador"];
+        $inventario->observaciones = $_POST["observaciones"];
+        $inventario->idAlmacen = $_POST["idAlmacen"];
+        $inventario->periodo = $_POST["periodo"];
+        $inventario->productos = $_POST["productos"];
+        $inventario->marca = $_POST["marca"];
+        $inventario->familia = $_POST["familia"];
+        $inventario->categoria = $_POST["categoria"];
+        $inventario->anaquel = $_POST["anaquel"];
+        $inventario->repisa = $_POST["repisa"];
+        $inventario->proveedor = $_POST["proveedor"];
+        $inventario->generarInventario();
+    }
+    if ($_POST["accion"] === "estatusDocumentoInventario") {
+        $estatus = new InventariosFunctions();
+        $estatus->folioDocumento = $_POST["folioDocumento"];
+        $estatus->tabla = $_POST["tabla"];
+        $estatus->estatusDocumentoInventario();
+    }
+    if ($_POST["accion"] === "updateEstatusDocumentoInventario") {
+        $actualizarEstatus = new InventariosFunctions();
+        $actualizarEstatus->folioDocumento = $_POST["folioDocumento"];
+        $actualizarEstatus->tabla = $_POST["tabla"];
+        $actualizarEstatus->estatus = $_POST["estatus"];
+        $actualizarEstatus->habilitado = $_POST["habilitado"];
+        $actualizarEstatus->actualizarEstatusDocumentoInventario();
+    }
+    if ($_POST["accion"] === "detalleInventario") {
+        $detalleInventario = new InventariosFunctions();
+        $detalleInventario->folioDocumento = $_POST["folioDocumento"];
+        $detalleInventario->detalleInventario();
+    }
+    if ($_POST["accion"] === "generarMovimientoInventario") {
+        $movimientoInventario = new InventariosFunctions();
+        $movimientoInventario->referencia = $_POST["referencia"];
+        $movimientoInventario->unidades = $_POST["unidades"];
+        $movimientoInventario->importe = $_POST["importe"];
+        $movimientoInventario->productos = $_POST["productos"];
+        $movimientoInventario->serie = $_POST["serie"];
+        $movimientoInventario->serieOrigen = $_POST["serieOrigen"];
+        $movimientoInventario->folioOrigen = $_POST["folioOrigen"];
+        $movimientoInventario->observaciones = $_POST["observaciones"];
+        $movimientoInventario->idDocumentoDe = $_POST["idDocumentoDe"];
+        $movimientoInventario->idConcepto = $_POST["idConcepto"];
+        $movimientoInventario->tipo = $_POST["tipo"];
+        $movimientoInventario->generarMovimientoInventario();
+    }
+    if ($_POST["accion"] === "actualizarProductoInventario") {
+        $actualizarProductoInventario = new InventariosFunctions();
+        $actualizarProductoInventario->productos = $_POST["productos"];
+        $actualizarProductoInventario->actualizarProductoInventario();
+    }
+    if ($_POST["accion"] === "actualizarInventario") {
+        $actualizarInventario = new InventariosFunctions();
+        $actualizarInventario->folioInventario = $_POST["folioInventario"];
+        $actualizarInventario->inventario = $_POST["inventario"];
+        $actualizarInventario->diferencia = $_POST["diferencia"];
+        $actualizarInventario->inventarioImportes = $_POST["inventarioImportes"];
+        $actualizarInventario->diferenciaImportes = $_POST["diferenciaImportes"];
+        $actualizarInventario->actualizarInventario();
     }
 }

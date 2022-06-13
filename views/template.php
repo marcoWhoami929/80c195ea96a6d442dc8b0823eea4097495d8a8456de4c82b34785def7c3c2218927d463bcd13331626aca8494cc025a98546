@@ -36,6 +36,8 @@ session_start();
 
     <!--- Datatable css-->
     <link rel="stylesheet" type="text/css" href="views/css/datatable/datatable.css">
+    <!--FULL CALENDAR-->
+    <link href="views/css/fullcalendar.css" type="text/css" rel="stylesheet">
 
     <!-- Required Jquery -->
     <script type="text/javascript" src="views/js/jquery/jquery.min.js "></script>
@@ -74,12 +76,12 @@ session_start();
     <!-- tags editor-->
     <script src="views/js/jquery.caret.min.js"></script>
     <script src="views/js/jquery.tag-editor.js"></script>
-
-
-
     <script src="views/js/moment.js"></script>
     <!-- Datatable js-->
     <script src="views/js/datatable/datatable.js"></script>
+    <!-- Full calendar js-->
+    <script src="views/js/fullcalendar.js"></script>
+    <script src="views/locales/es.js"></script>
 
 
 </head>
@@ -175,6 +177,8 @@ session_start();
     <script src="views/js/template.js"></script>
     <script src="views/js/templateInventarios.js"></script>
     <script src="views/js/admonTables.js"></script>
+    <!-- FULL CALENDAR-->
+
     <?php
     if ($_GET["ruta"] == "dashboard" || $_GET["ruta"] == "") {
         echo "<script src='views/js/chart.js'></script>";

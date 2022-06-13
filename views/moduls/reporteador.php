@@ -10,6 +10,7 @@ require_once "../../clases/ultimosCostosDekkerlab.php";
 require_once "../../clases/detalleVentasDiario.php";
 require_once "../../clases/detalleVentas.php";
 require_once "../../clases/detalleVentasAnual.php";
+include_once('../../clases/dataInventarios.php');
 require_once "../../clases/PHPExcel.php";
 class loadReports
 {
@@ -36,6 +37,23 @@ class loadReports
     public $fechaInicio;
     public $fechaFin;
     public $ejercicio;
+    public $usuario;
+    public $marca;
+    public $familia;
+    public $categoria;
+    public $anaquel;
+    public $repisa;
+    public $proveedor;
+    public $campoOrden;
+    public $periodo;
+    public $almacen;
+    public $nombreAlmacen;
+    public $folio;
+    public $idEstatus;
+    public $habilitado;
+    public $accionMovimiento;
+    public $filtroDiferencias;
+    public $documento;
     public function reportUltimosCostos()
     {
         $empresa = $this->empresa;
@@ -236,6 +254,58 @@ class loadReports
         $inventarioActual = new ControllerReports();
         $inventarioActual->ctrDescargarReporteInventarioActual($search);
     }
+    public function reporteRealizarInventario()
+    {
+
+        $usuario = $this->usuario;
+        $per_page = $this->per_page;
+        $marca = $this->marca;
+        $familia = $this->familia;
+        $categoria = $this->categoria;
+        $anaquel = $this->anaquel;
+        $repisa = $this->repisa;
+        $proveedor = $this->proveedor;
+        $periodo = $this->periodo;
+        $almacen = $this->almacen;
+        $campoOrden = $this->campoOrden;
+        $orden = $this->orden;
+        $nombreAlmacen = $this->nombreAlmacen;
+        $page = $this->page;
+
+        //Variables de paginación
+        $page = (isset($page) && !empty($page)) ? $page : 1;
+        $adjacents  = 4; //espacio entre páginas después del número de adyacentes
+        $offset = ($page - 1) * $per_page;
+
+        $search = array("nombreAlmacen" => $nombreAlmacen, "almacen" => $almacen, "marca" => $marca, "familia" => $familia, "categoria" => $categoria, "anaquel" => $anaquel, "repisa" => $repisa, "proveedor" => $proveedor, "periodo" => $periodo, "usuario" => $usuario, "per_page" => $per_page, "offset" => $offset, "campoOrden" => $campoOrden, "orden" => $orden);
+
+        //consulta principal para recuperar los datos
+        $obtenerReporteIndicadores = new ControllerReports();
+        $obtenerReporteIndicadores->ctrDescargarReporteRealizarInventario($search);
+    }
+    public function reporteEditarInventario()
+    {
+        $folio = $this->folio;
+        $per_page = $this->per_page;
+        $almacen = $this->almacen;
+        $page = $this->page;
+        $campos = "prod.*,alm.ccodigoalmacen,med.cdespliegue as 'despliegue',med.cnombreunidad as 'nombreUnidad',med2.cnombreunidad as 'unidad'";
+        //Variables de paginación
+        $page = (isset($page) && !empty($page)) ? $page : 1;
+        $adjacents  = 4; //espacio entre páginas después del número de adyacentes
+        $offset = ($page - 1) * $per_page;
+        $accionMovimiento = $this->accionMovimiento;
+        $filtroDiferencias = $this->filtroDiferencias;
+        $idEstatus = $this->idEstatus;
+        $habilitado = $this->habilitado;
+        $nombreAlmacen = $this->nombreAlmacen;
+        $documento = $this->documento;
+        $search = array("nombreAlmacen" => $nombreAlmacen, "documento" => $documento, "almacen" => $almacen, "idEstatus" => $idEstatus, "habilitado" => $habilitado, "accionMovimiento" => $accionMovimiento, "filtroDiferencias" => $filtroDiferencias, "folio" => $folio, "per_page" => $per_page, "offset" => $offset);
+
+        //consulta principal para recuperar los datos
+        $obtenerReporteIndicadores = new ControllerReports();
+        $obtenerReporteIndicadores->ctrDescargarReporteEditarInventario($campos, $search);
+    }
 }
 
 if (isset($_GET["reporteUltimosCostos"])) {
@@ -358,4 +428,36 @@ if (isset($_GET["reporteInventarioActual"])) {
     $reporteInventarioActual->ejercicio = $_GET["ejercicio"];
     $reporteInventarioActual->vista = $_GET["vista"];
     $reporteInventarioActual->reporteInventarioActual();
+}
+if (isset($_GET["reporteRealizarInventario"])) {
+    $reporteRealizarInventario = new loadReports();
+    $reporteRealizarInventario->usuario = $_GET["idUsuario"];
+    $reporteRealizarInventario->per_page = $_GET["per_page"];
+    $reporteRealizarInventario->marca = $_GET["marca"];
+    $reporteRealizarInventario->familia = $_GET["familia"];
+    $reporteRealizarInventario->categoria = $_GET["categoria"];
+    $reporteRealizarInventario->anaquel = $_GET["anaquel"];
+    $reporteRealizarInventario->repisa = $_GET["repisa"];
+    $reporteRealizarInventario->proveedor = $_GET["proveedor"];
+    $reporteRealizarInventario->campoOrden = $_GET["campoOrden"];
+    $reporteRealizarInventario->orden = $_GET["orden"];
+    $reporteRealizarInventario->periodo = $_GET["periodo"];
+    $reporteRealizarInventario->almacen = $_GET["almacen"];
+    $reporteRealizarInventario->nombreAlmacen = $_GET["nombreAlmacen"];
+    $reporteRealizarInventario->reporteRealizarInventario();
+}
+if (isset($_GET["reporteEditarInventario"])) {
+    $reporteEditarInventario = new loadReports();
+    $reporteEditarInventario->usuario = $_GET["idUsuario"];
+    $reporteEditarInventario->page = $_GET["page"];
+    $reporteEditarInventario->per_page = $_GET["per_page"];
+    $reporteEditarInventario->folio = $_GET["folio"];
+    $reporteEditarInventario->almacen = $_GET["almacen"];
+    $reporteEditarInventario->idEstatus = $_GET["idEstatus"];
+    $reporteEditarInventario->habilitado = $_GET["habilitado"];
+    $reporteEditarInventario->accionMovimiento = $_GET["accionMovimiento"];
+    $reporteEditarInventario->filtroDiferencias = $_GET["filtroDiferencias"];
+    $reporteEditarInventario->documento = $_GET["documento"];
+    $reporteEditarInventario->nombreAlmacen = $_GET["nombreAlmacen"];
+    $reporteEditarInventario->reporteEditarInventario();
 }

@@ -178,6 +178,7 @@ if ($action == 'busquedaProductosSolicitudes') {
     $producto = strip_tags($_REQUEST['producto']);
     $vista = strip_tags($_REQUEST['vista']);
     $per_page = intval($_REQUEST['per_page']);
+
     //Variables de paginación
     $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page'])) ? $_REQUEST['page'] : 1;
     $adjacents  = 4; //espacio entre páginas después del número de adyacentes
@@ -248,6 +249,90 @@ if ($action == 'busquedaProductosSolicitudes') {
                             <td style="font-weight:bold"><input class="form-control costoProducto" type="text" value="$<?= number_format($row['COSTO'], 2) ?>" readonly></td>
                             <td><input class="form-control importeProducto" type="text" value="$<?= number_format($row['COSTO'] * 1, 2) ?>" readonly></td>
                             <td><button type="button" class="btn btn-info" onclick="loadCart(this)"><i class="fa fa-plus" style="color:white"></i></button></td>
+                        </tr>
+                    <?php
+                        $finales++;
+                    }
+
+                    ?>
+
+                </tbody>
+
+            </table>
+
+        </div>
+        <div class="clearfix">
+            <?php
+            $inicios = $offset + 1;
+            $finales += $inicios - 1;
+            echo '<div class="hint-text">Mostrando ' . $inicios . ' al ' . $finales . ' de ' . $numrows . ' registros</div>';
+
+
+            include '../clases/pagination.php'; //include pagination class
+            $pagination = new Pagination($page, $total_pages, $adjacents);
+            echo $pagination->paginateInventarios($vista);
+
+            ?>
+        </div>
+    <?php
+    }
+}
+if ($action == 'busquedaClientesProveedores') {
+
+    include('../clases/busquedaDatos.php');
+    $database = new busquedaDatos();
+    //Recibir variables enviadas
+    $clienteProveedor = strip_tags($_REQUEST['clienteProveedor']);
+    $tipo = strip_tags($_REQUEST['tipo']);
+    $vista = strip_tags($_REQUEST['vista']);
+    $per_page = intval($_REQUEST['per_page']);
+    //Variables de paginación
+    $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page'])) ? $_REQUEST['page'] : 1;
+    $adjacents  = 4; //espacio entre páginas después del número de adyacentes
+    $offset = ($page - 1) * $per_page;
+    $search = array("clienteProveedor" => $clienteProveedor, "tipo" => $tipo, "per_page" => $per_page, "offset" => $offset);
+
+    $aColumns = array("CCODIGOCLIENTE", "CRAZONSOCIAL", "CRFC"); //Columnas de busqueda
+    //consulta principal para recuperar los datos
+    $datos = $database->getClientesProveedores($search, $aColumns);
+
+    $countAll = $database->getCounter();
+    $row = $countAll;
+
+    if ($row > 0) {
+        $numrows = $countAll;
+    } else {
+        $numrows = 0;
+    }
+    $total_pages = ceil($numrows / $per_page);
+
+    //Recorrer los datos recuperados
+
+    if ($numrows > 0) {
+    ?> <div class="fixedColumns">
+            <table class="table table-responsive table-striped table-hover " id="tableListaBusqueda">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>CODIGO</th>
+                        <th>RFC</th>
+                        <th>RAZÓN SOCIAL</th>
+                        <th></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $finales = 0;
+                    foreach ($datos as $key => $row) {
+
+                    ?>
+                        <tr>
+                            <th class="idClienteProveedor"><?= $row['CIDCLIENTEPROVEEDOR'] ?></th>
+                            <th class="codigoClienteProveedor"><?= $row['CCODIGOCLIENTE'] ?></th>
+                            <td class="rfcClienteProveedor" style="font-weight:bold"><?= $row['CRFC'] ?></td>
+                            <td class="razonSocialClienteProveedor" style="font-weight:bold"><?= $row['CRAZONSOCIAL'] ?></td>
+                            <td><button type="button" class="btn btn-info" onclick="ordenCompra(this)"><i class="fa fa-plus" style="color:white"></i></button></td>
                         </tr>
                     <?php
                         $finales++;

@@ -5,6 +5,50 @@ const formatNumber = (num) => {
     p < 0 || i < p ? `${m},` : m
   );
 };
+const formatIsoToDate = (dateIso) => {
+  date = new Date(dateIso);
+  year = date.getFullYear();
+  month = date.getMonth() + 1;
+  day = date.getDate();
+  hour = date.getHours();
+  minutes = date.getMinutes();
+  dt = date.getDate();
+
+  if (day < 10) {
+    day = "0" + day;
+  }
+  if (month < 10) {
+    month = "0" + month;
+  }
+
+  return (finalDate = `${year}-${month}-${day} ${hour}:${minutes}:00`);
+};
+const convertPositive = (number) => {
+  if (number < 0) {
+    number = number * -1;
+  }
+  return number;
+};
+const cargarRecordatorios = (evt) => {
+  var recordatorios = evt;
+
+  calendar.removeAllEvents();
+  for (let i = 0; i < recordatorios.length; i++) {
+    var id = recordatorios[i]["id"];
+    var title = recordatorios[i]["titulo"];
+    var start = recordatorios[i]["start"];
+    var end = recordatorios[i]["end"];
+    var color = recordatorios[i]["color"];
+    calendar.addEvent({
+      id: id,
+      title: title,
+      start: start,
+      end: end,
+      color: color,
+      backgroundColor: color,
+    });
+  }
+};
 const idUsuario = localStorage.idUsuarioInventarios;
 ejercicio = 0;
 /****Obtener dia actual */
@@ -69,8 +113,9 @@ $(function () {
         document.getElementById("fecha").disabled = true;
         elegirSolicitante();
         cargarListaProductosRequisicion(1, 0);
-        loadProductosSolicitudes(1);
         localStorage.setItem("tipoDocumento", "1");
+        loadProductosSolicitudes(1);
+
         break;
       case "editarRequisicion":
         $("#periodo").val(mm.replace("0", ""));
@@ -87,18 +132,18 @@ $(function () {
         $("#periodo").val(mm.replace("0", ""));
         $(".selectorCategoria").select2();
         cargarListaProductosEcommerce(1);
-        loadProductosVenta(1);
+        //loadProductosVenta(1);
 
         break;
       case "miAlmacen":
         $("#periodo").val(mm.replace("0", ""));
         productosAlmacenes();
-        loadProductosVenta(1);
+        //loadProductosVenta(1);
         break;
       case "agotarse":
         $("#periodo").val(mm.replace("0", ""));
         productosPorAgotarse();
-        loadProductosVenta(1);
+        //loadProductosVenta(1);
         break;
       case "faltantesRequisiciones":
         localStorage.removeItem("folioDocumento");
@@ -121,8 +166,18 @@ $(function () {
           var folioDocumento = localStorage.folioDocumento;
           var tablaDocumento = localStorage.tablaDocumento;
           detalleDocumentoAutorizacion(folioDocumento, tablaDocumento);
+          loadClientesProveedores(1);
           //loadProductosAutorizaciones(1);
         }
+        break;
+      case "ordenesCompra":
+        listaOrdenesCompra();
+        break;
+      case "compras":
+        listaCompras();
+        break;
+      case "recordatorios":
+        listaRecordatorios();
         break;
       case "indicadores":
         cargarIndicadoresUtilidad(1);
@@ -132,9 +187,142 @@ $(function () {
         setEjercicios();
         setEjercicios2();
         break;
+      case "impresionDocumentos":
+        listarDocumentosNoImpresos(1);
+        break;
+      case "pedidos":
+        listaPedidos();
+        localStorage.removeItem("folioDocumento");
+        localStorage.removeItem("estatusDocumento");
+        localStorage.removeItem("tipoDetalleDocumento");
+        localStorage.setItem("tipoDocumento", "2");
+        break;
+      case "realizarPedido":
+        $("#fecha").val(today);
+        document.getElementById("fecha").disabled = true;
+        elegirSolicitante();
+        cargarListaProductosRequisicion(1, 0);
+        localStorage.setItem("tipoDocumento", "2");
+        loadProductosSolicitudes(1);
+
+        break;
+      case "editarPedido":
+        $("#periodo").val(mm.replace("0", ""));
+        if (localStorage.folioDocumento === undefined) {
+          window.location.href = "pedidos";
+        } else {
+          var folioDocumento = localStorage.folioDocumento;
+          var tablaDocumento = localStorage.tablaDocumento;
+          detalleDocumento(folioDocumento, tablaDocumento);
+          loadProductosSolicitudes(1);
+        }
+        break;
+      case "backorder":
+        localStorage.removeItem("folioDocumento");
+        localStorage.removeItem("estatusDocumento");
+        localStorage.removeItem("tipoDetalleDocumento");
+        listaPedidosFaltantes();
+        break;
+      case "inventarios":
+        $("#periodo").val(mm.replace("0", ""));
+        localStorage.setItem("arrayMarca", "[]");
+        localStorage.setItem("arrayFamilia", "[]");
+        localStorage.setItem("arrayCategoria", "[]");
+        localStorage.setItem("arrayAnaquel", "[]");
+        localStorage.setItem("arrayRepisa", "[]");
+        localStorage.setItem("arrayProveedor", "[]");
+        localStorage.removeItem("folioInventario");
+        listaInventarios();
+        break;
+      case "realizarInventario":
+        $("#fecha").val(today);
+        $("#periodo").val(mm.replace("0", ""));
+        $(".selectorCategoria").select2();
+        $(".selectorFamilia").select2();
+        document.getElementById("fecha").disabled = true;
+        elegirRealizador();
+        cargarListaProductosInventarios(1);
+        break;
+      case "editarInventario":
+        if (localStorage.folioInventario === undefined) {
+          window.location.href = "inventarios";
+        } else {
+          var folioInventario = localStorage.folioInventario;
+          detalleInventario(folioInventario);
+        }
+        break;
     }
   }
+  /***CATEGORIA */
   $(".selectorCategoria").select2();
+  var categorias = JSON.parse(localStorage.getItem("arrayCategoria"));
+  $(".selectorCategoria").val(categorias).trigger("change");
+  $(".selectorCategoria").on("select2:select", function (e) {
+    var categoria = e.params.data.id;
+    agregarDatosBusqueda(categoria, "arrayCategoria");
+  });
+  //detectamos se opcion se quito funciona con select multiple
+  $(".selectorCategoria").on("select2:unselect", function (e) {
+    var categoria = e.params.data.id;
+    var arreglo = localStorage.getItem("arrayCategoria");
+    removeItemFromArregloBusqueda(arreglo, categoria, "arrayCategoria");
+  });
+  /***FAMILIA */
+  $(".selectorFamilia").select2();
+  var familias = JSON.parse(localStorage.getItem("arrayFamilia"));
+  $(".selectorFamilia").val(familias).trigger("change");
+  $(".selectorFamilia").on("select2:select", function (e) {
+    var familia = e.params.data.id;
+    agregarDatosBusqueda(familia, "arrayFamilia");
+  });
+  //detectamos se opcion se quito funciona con select multiple
+  $(".selectorFamilia").on("select2:unselect", function (e) {
+    var familia = e.params.data.id;
+    var arreglo = localStorage.getItem("arrayFamilia");
+    removeItemFromArregloBusqueda(arreglo, familia, "arrayFamilia");
+  });
+  /***ANAQUEL */
+  $(".selectorAnaquel").select2();
+  var anaqueles = JSON.parse(localStorage.getItem("arrayAnaquel"));
+  $(".selectorAnaquel").val(anaqueles).trigger("change");
+  $(".selectorAnaquel").on("select2:select", function (e) {
+    var anaquel = e.params.data.id;
+    agregarDatosBusqueda(anaquel, "arrayAnaquel");
+  });
+  //detectamos se opcion se quito funciona con select multiple
+  $(".selectorAnaquel").on("select2:unselect", function (e) {
+    var anaquel = e.params.data.id;
+    var arreglo = localStorage.getItem("arrayAnaquel");
+    removeItemFromArregloBusqueda(arreglo, anaquel, "arrayAnaquel");
+  });
+  /***REPISA */
+  $(".selectorRepisa").select2();
+  var repisas = JSON.parse(localStorage.getItem("arrayRepisa"));
+  $(".selectorRepisa").val(repisas).trigger("change");
+  $(".selectorRepisa").on("select2:select", function (e) {
+    var repisa = e.params.data.id;
+    agregarDatosBusqueda(repisa, "arrayRepisa");
+  });
+  //detectamos se opcion se quito funciona con select multiple
+  $(".selectorRepisa").on("select2:unselect", function (e) {
+    var repisa = e.params.data.id;
+    var arreglo = localStorage.getItem("arrayRepisa");
+    removeItemFromArregloBusqueda(arreglo, repisa, "arrayRepisa");
+  });
+  /***PROVEEDOR */
+  $(".selectorProveedor").select2();
+  var proveedores = JSON.parse(localStorage.getItem("arrayProveedor"));
+  $(".selectorProveedor").val(proveedores).trigger("change");
+  $(".selectorProveedor").on("select2:select", function (e) {
+    var proveedor = e.params.data.id;
+    agregarDatosBusqueda(proveedor, "arrayProveedor");
+  });
+  //detectamos se opcion se quito funciona con select multiple
+  $(".selectorProveedor").on("select2:unselect", function (e) {
+    var proveedor = e.params.data.id;
+    var arreglo = localStorage.getItem("arrayProveedor");
+    removeItemFromArregloBusqueda(arreglo, proveedor, "arrayProveedor");
+  });
 });
 function cargarIndicadoresInventarios(page) {
   var vista = "cargarIndicadoresInventarios";
@@ -857,6 +1045,70 @@ function setEjercicios2() {
   });
 }
 /******************************************************/
+function listarDocumentosNoImpresos(page) {
+  var per_page = 500;
+  var vista = "cargarListaRequisiciones";
+  var campo = $("#campoOrden").val();
+  var orden = $("#orden").val();
+  var idDocumentoDe = $("#idDocumentoDe").val();
+  var idConcepto = $("#idConcepto").val();
+  var estatus = $("#estatus").val();
+  var parametros = {
+    action: "listadoDocumentosNoImpresos",
+    page: page,
+    per_page: per_page,
+    idDocumentoDe: idDocumentoDe,
+    idConcepto: idConcepto,
+    estatus: estatus,
+    campo: campo,
+    orden: orden,
+    vista: vista,
+  };
+  $("#loader").fadeIn("slow");
+  $.ajax({
+    url: "ajax/documentos.ajax.php",
+    data: parametros,
+    beforeSend: function (objeto) {
+      $("#loader").html("Buscando...");
+    },
+    success: function (data) {
+      $(".data").html(data).fadeIn("slow");
+      $("#loader").html("");
+    },
+  });
+}
+function impresionDocumentos() {
+  var idDocumentoDe = $("#idDocumentoDe").val();
+  var idConcepto = $("#idConcepto").val();
+  var estatus = $("#estatus").val();
+  var datos = new FormData();
+  datos.append("accion", "impresionDocumentos");
+  datos.append("idDocumentoDe", idDocumentoDe);
+  datos.append("idConcepto", idConcepto);
+  datos.append("estatus", estatus);
+
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    type: "post",
+    dataType: "json",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (res) {
+      var response = res.replace(/['"]+/g, "");
+      if (response == "ok") {
+        listarDocumentosNoImpresos(1);
+        Swal.fire({
+          icon: "success",
+          title: "¡Documentos Impresos Correctamente!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    },
+  });
+}
 function listaRequisiciones() {
   if (
     localStorage.grupoUsuario === "Administracion" ||
@@ -878,7 +1130,6 @@ function listaRequisiciones() {
 /****FUNCIONES MODULOS*/
 function cargarListaRequisiciones(page) {
   var per_page = $("#per_page").val();
-  var usuario = localStorage.idUsuarioInventarios;
   var vista = "cargarListaRequisiciones";
   var campo = $("#campoOrden").val();
   var orden = $("#orden").val();
@@ -887,7 +1138,7 @@ function cargarListaRequisiciones(page) {
   var parametros = {
     action: "listaRequisiciones",
     page: page,
-    usuario: usuario,
+    usuario: idUsuario,
     per_page: per_page,
     prioridad: prioridad,
     estatus: estatus,
@@ -991,11 +1242,10 @@ function cargarListaProductosRequisicion(page, folio) {
         tipo: localStorage.tipoDocumento,
       };
     } else {
-      var usuario = localStorage.idUsuarioInventarios;
       var parametros = {
         action: "listarProductosRequisicion",
         page: page,
-        usuario: usuario,
+        usuario: idUsuario,
         per_page: per_page,
         vista: vista,
         folio: folio,
@@ -1053,6 +1303,11 @@ function elegirSolicitante() {
   var nombre = solic.options[solic.selectedIndex].text;
   $("#nombreSolicitante").html(nombre);
 }
+function elegirRealizador() {
+  var solic = document.getElementById("realizador");
+  var nombre = solic.options[solic.selectedIndex].text;
+  $("#nombreSolicitante").html(nombre);
+}
 
 /*****OPTION SOLICITANTES */
 /****BUSCADOR DE PRODUCTOS */
@@ -1078,6 +1333,34 @@ function loadProductosSolicitudes(page) {
     },
     success: function (data) {
       $(".dataProductos").html(data).fadeIn("slow");
+      $("#loader2").html("");
+    },
+  });
+}
+/****BUSCADOR DE PRODUCTOS */
+function loadClientesProveedores(page) {
+  var clienteProveedor = $("#nombre").val();
+  var vista = "loadClientesProveedores";
+  var per_page = "5";
+  var parametros = {
+    action: "busquedaClientesProveedores",
+    page: page,
+    clienteProveedor: clienteProveedor,
+    vista: vista,
+    tipo: 3,
+    per_page: per_page,
+  };
+  $("#loader2").fadeIn("slow");
+  $.ajax({
+    url: "ajax/listaBusqueda.ajax.php",
+    data: parametros,
+    beforeSend: function () {
+      $("#loader2").html(
+        '<img src="views/images/ajax-loader.gif"> Cargando...'
+      );
+    },
+    success: function (data) {
+      $(".dataClientesProveedores").html(data).fadeIn("slow");
       $("#loader2").html("");
     },
   });
@@ -1174,6 +1457,115 @@ function updateCartPendiente(el) {
   updateTotalesCartPendiente();
   updateProductCartPendiente(el);
 }
+function updateInventario(el) {
+  var row = $(el).parents("tr");
+  var inventario = row.find(".inventarioProducto").val();
+  var costo = row.find(".costoProducto").text();
+  costo = parseFloat(costo.replace(/[$,]/g, ""));
+  var idUnidad = $("option:selected", row.find(".unidadProducto")).val();
+  var conversion = row.find(".unidadProductoBase").attr("valorConversion");
+  var idUnidadBase = row.find(".unidadProductoBase").attr("idUnidad");
+  //alert(idUnidadBase + " " + idUnidad);
+  var existencia = row.find(".existenciasProducto").text();
+  var existenciaImporte = row.find(".existenciasImporteProducto").text();
+  existenciaImporte = parseFloat(existenciaImporte.replace(/[$,]/g, ""));
+  var almacen = $("#almacen").val();
+  if (conversion != 1) {
+    var importe = (costo / conversion) * inventario;
+
+    if (
+      almacen === "3" ||
+      almacen === "5" ||
+      almacen === "7" ||
+      almacen === "9" ||
+      almacen === "11" ||
+      almacen === "13"
+    ) {
+      var existenciaConversion = existencia * conversion;
+      if (
+        idUnidad == "1" ||
+        idUnidad == "11" ||
+        idUnidad == "16" ||
+        idUnidad == "28" ||
+        idUnidad == "50"
+      ) {
+        if (idUnidad == "28" && idUnidadBase == "28") {
+          var cantidadConversion = inventario * conversion;
+          var diferencia = existencia - inventario;
+          var importe = importe * costo;
+          var diferenciaConversion = parseFloat(diferencia);
+        } else {
+          var cantidadConversion = inventario / conversion;
+          var diferencia = existenciaConversion - inventario;
+          var importe = cantidadConversion * costo;
+          var diferenciaConversion = parseFloat(diferencia / conversion);
+        }
+      } else {
+        var cantidadConversion = parseFloat(inventario * conversion);
+        var diferencia = existencia - inventario;
+        var importe = inventario * costo;
+        var diferenciaConversion = parseFloat(diferencia);
+      }
+    } else {
+      var existenciaConversion = parseFloat(existencia);
+      var cantidadConversion = parseFloat(inventario);
+      var diferencia = existencia - inventario;
+      var importe = inventario * costo;
+      var diferenciaConversion = parseFloat(diferencia);
+    }
+  } else {
+    var cantidadConversion = parseFloat(inventario);
+    var existenciaConversion = parseFloat(existencia);
+    var diferencia = existencia - inventario;
+    var importe = inventario * costo;
+    var diferenciaConversion = parseFloat(diferencia);
+  }
+  var diferenciaImporte = existenciaImporte - importe;
+  row
+    .find(".diferenciasProducto")
+    .html(formatNumber(parseFloat(diferencia.toFixed(5))));
+
+  row
+    .find(".inventarioImporteProducto")
+    .html("$" + formatNumber(parseFloat(importe.toFixed(5))));
+
+  row
+    .find(".diferenciasImporteProducto")
+    .html("$" + formatNumber(parseFloat(diferenciaImporte.toFixed(5))));
+
+  row
+    .find(".existenciasProducto")
+    .attr("cantidadConv", existenciaConversion.toFixed(13));
+  row
+    .find(".diferenciasProducto")
+    .attr("cantidadConv", diferenciaConversion.toFixed(13));
+  row
+    .find(".inventarioProducto")
+    .attr("cantidadConv", cantidadConversion.toFixed(13));
+
+  switch (Math.sign(diferencia)) {
+    case 0:
+      row.find(".estadoProducto").html("Sin Accion");
+      break;
+    case 1:
+      row.find(".estadoProducto").html("Salida");
+      break;
+    case -1:
+      if (existencia == "0.00000") {
+        row.find(".estadoProducto").html("Entrada");
+      } else if (diferencia == "-1.4210854715202004e-14") {
+        row.find(".estadoProducto").html("Sin Accion");
+      } else {
+        row.find(".estadoProducto").html("Entrada");
+      }
+
+      break;
+  }
+
+  updateTotalesExistencias(almacen);
+  updateTotalesDiferencias(almacen);
+  updateTotalesInventario();
+}
 function loadCart(el) {
   var row = $(el).parents("tr");
   var tipoDocumento = localStorage.tipoDocumento;
@@ -1255,7 +1647,9 @@ function updateProductCart(el) {
   );
   var unidadesConversion = unidades * valorConversion;
   var importe = row.find(".importeProducto").val();
+  var costo = row.find(".costoProducto").val();
   importe = parseFloat(importe.replace(/[$,]/g, ""));
+  costo = parseFloat(costo.replace(/[$,]/g, ""));
   var tipoDocumento = localStorage.tipoDocumento;
   if (localStorage.folioDocumento === undefined) {
     var folioDocumento = 0;
@@ -1273,6 +1667,7 @@ function updateProductCart(el) {
   datos.append("idAlmacen", idAlmacen);
   datos.append("valorConversion", valorConversion);
   datos.append("importe", importe);
+  datos.append("costo", costo);
   datos.append("tipoDocumento", tipoDocumento);
   datos.append("folioDocumento", folioDocumento);
 
@@ -1464,6 +1859,123 @@ function updateTotalesCartPendiente() {
     }
   });
   $("#importeTotalPendiente").val("$" + importe.toFixed(2));
+}
+function updateTotalesCartSolicitado() {
+  /*SUMA DE CANTIDADES*/
+  var cantidad = 0;
+  var importe = 0;
+  $("#contenedorProductos .unidadesPendientes").each(function () {
+    if ($(this).val() == "") {
+      cantidad += parseFloat($(this).text());
+    } else {
+      cantidad += parseFloat($(this).val());
+    }
+  });
+
+  $("#cantidadTotalSolicitada").val(cantidad.toFixed(2));
+
+  $("#contenedorProductos .importePendiente").each(function () {
+    if ($(this).val() == "") {
+      importe += parseFloat($(this).text().replace(/[$,]/g, ""));
+    } else {
+      importe += parseFloat($(this).val().replace(/[$,]/g, ""));
+    }
+  });
+  $("#importeTotalSolicitado").val("$" + importe.toFixed(2));
+}
+function updateTotalesExistencias(idAlmacen) {
+  /*SUMA DE CANTIDADES*/
+
+  var cantidad = 0;
+  var importe = 0;
+  if (
+    idAlmacen === "3" ||
+    idAlmacen === "5" ||
+    idAlmacen === "7" ||
+    idAlmacen === "9" ||
+    idAlmacen === "11" ||
+    idAlmacen === "13"
+  ) {
+    $("#contenedorProductos .existenciasConversion").each(function () {
+      cantidad += parseFloat($(this).text());
+    });
+  } else {
+    $("#contenedorProductos .existenciasProducto").each(function () {
+      cantidad += parseFloat($(this).text());
+    });
+  }
+
+  $("#existenciaTotalUnidades").val(cantidad.toFixed(5));
+
+  $("#contenedorProductos .existenciasImporteProducto").each(function () {
+    if ($(this).val() == "") {
+      importe += parseFloat($(this).text().replace(/[$,]/g, ""));
+    } else {
+      importe += parseFloat($(this).val().replace(/[$,]/g, ""));
+    }
+  });
+  $("#existenciaTotalImporte").val(
+    "$" + formatNumber(parseFloat(importe.toFixed(5)))
+  );
+}
+function updateTotalesInventario() {
+  /*SUMA DE CANTIDADES*/
+  var cantidad = 0;
+  var importe = 0;
+  $("#contenedorProductos .inventarioProducto").each(function () {
+    if ($(this).val() == "") {
+      cantidad += parseFloat($(this).text().replace(/[$,]/g, ""));
+    } else {
+      cantidad += parseFloat($(this).val().replace(/[$,]/g, ""));
+    }
+  });
+
+  $("#inventarioTotalUnidades").val(cantidad.toFixed(5));
+  $("#contenedorProductos .inventarioImporteProducto").each(function () {
+    if ($(this).val() == "") {
+      importe += parseFloat($(this).text().replace(/[$,]/g, ""));
+    } else {
+      importe += parseFloat($(this).val().replace(/[$,]/g, ""));
+    }
+  });
+  $("#inventarioTotalImporte").val(
+    "$" + formatNumber(parseFloat(importe.toFixed(5)))
+  );
+}
+function updateTotalesDiferencias(idAlmacen) {
+  /*SUMA DE CANTIDADES*/
+  var cantidad = 0;
+  var importe = 0;
+
+  if (
+    idAlmacen === "3" ||
+    idAlmacen === "5" ||
+    idAlmacen === "7" ||
+    idAlmacen === "9" ||
+    idAlmacen === "11" ||
+    idAlmacen === "13"
+  ) {
+    $("#contenedorProductos .diferenciasProducto").each(function () {
+      //cantidad += parseFloat($(this).attr("cantidadconv"));
+      cantidad += parseFloat($(this).text());
+    });
+  } else {
+    $("#contenedorProductos .diferenciasProducto").each(function () {
+      cantidad += parseFloat($(this).text());
+    });
+  }
+
+  $("#diferenciasTotalUnidades").val(cantidad.toFixed(5));
+  $("#contenedorProductos .diferenciasImporteProducto").each(function () {
+    if ($(this).val() == "") {
+      importe += parseFloat($(this).text().replace(/[$,]/g, ""));
+    } else {
+      importe += parseFloat($(this).val().replace(/[$,]/g, ""));
+    }
+  });
+  $("#diferenciasTotalImporte").val(
+    "$" + formatNumber(parseFloat(importe.toFixed(5)))
+  );
 }
 function generarDocumento(documento) {
   if (localStorage.folioDocumento === undefined) {
@@ -1686,8 +2198,8 @@ function editarDocumento(
 function detalleDocumento(folio, tabla) {
   if (localStorage.tipoDocumento === "1") {
     var serieDocumento = "REMA";
-  } else if (tipoDocumento === "2") {
-    var serieDocumento = "PEMA";
+  } else if (localStorage.tipoDocumento === "2") {
+    var serieDocumento = "PDMA";
   }
   var tipoDocumentoUnion = localStorage.tipoDocumentoUnion;
   var datas = new FormData();
@@ -1775,9 +2287,10 @@ function detalleDocumento(folio, tabla) {
     }
     if (localStorage.grupoUsuario != "Administracion") {
       if (
-        localStorage.estatusDocumento == 4 &&
-        response["pendientes"] != 0 &&
-        response["folioAutorizacion"] == 0
+        localStorage.estatusDocumento == 4 ||
+        (localStorage.estatusDocumento == 3 &&
+          response["pendientes"] != 0 &&
+          response["folioAutorizacion"] == 0)
       ) {
         document.getElementById(
           "btnSolicitarAutorizacionCompra"
@@ -1789,7 +2302,7 @@ function detalleDocumento(folio, tabla) {
       }
     }
     elegirSolicitante();
-    cargarListaProductosRequisicion(1, folio);
+    cargarListaProductosPedido(1, folio);
   });
 }
 function detalleDocumentoAutorizacion(folio, tabla) {
@@ -1811,9 +2324,11 @@ function detalleDocumentoAutorizacion(folio, tabla) {
     contentType: false,
     processData: false,
   }).done(function (response) {
+    localStorage.setItem("serieOrigen", response["serie"]);
     $("#documento").html(response["serieAut"] + " " + response["folioAut"]);
     $("#documentoOrigen").html(response["serie"] + " " + response["folio"]);
     $("#fecha").val(response["fecha"]);
+    $("#observaciones").val(response["observaciones"]);
     document.getElementById("fecha").disabled = true;
 
     $("#solicitante").val(response["idSolicitante"]);
@@ -1828,12 +2343,13 @@ function detalleDocumentoAutorizacion(folio, tabla) {
         document.getElementById("btnGenerarOrdenCompra").style.display = "";
       }
     } else {
-      document.getElementById("headMain").style.display = "";
-      document.getElementById("headSecond").style.display = "none";
+      document.getElementById("headMain").style.display = "none";
+      document.getElementById("headSecond").style.display = "";
+      document.getElementById("observaciones").setAttribute("readonly", true);
     }
 
     elegirSolicitante();
-    cargarListaProductosAutorizacion(1, folio);
+    cargarListaProductosAutorizacion(1, response["folio"]);
   });
 }
 function eliminarDocumento(tipoDocumento, folio) {
@@ -2084,7 +2600,7 @@ function aprobarDocumento(documento) {
   );
   var observaciones = $("#observacionesRevision").val();
   var folioDocumento = localStorage.folioDocumento;
-  var aprobador = localStorage.idUsuarioInventarios;
+  var aprobador = idUsuario;
   var datos = new FormData();
   datos.append("accion", "actualizarDocumentoAprobado");
   datos.append("aprobado", aprobado);
@@ -2124,7 +2640,6 @@ function aprobarDocumento(documento) {
 function generarContratipo(el) {
   var row = $(el).parents("tr");
   var idProducto = row.find(".idProducto").attr("idProducto");
-  alert(idProducto);
 }
 function finalizarDocumento(tabla) {
   var datos = new FormData();
@@ -2310,6 +2825,7 @@ function obtenerSalidasProducto(empresa, codigo, almacen, almacen2, periodo) {
   datos.append("codigo", codigo);
   datos.append("idAlmacen", almacen);
   datos.append("idAlmacen2", almacen2);
+  datos.append("periodo", periodo);
   $("#modalDetalleSalidas").modal();
   $.ajax({
     url: "ajax/inventariosFunctions.ajax.php",
@@ -2603,7 +3119,6 @@ function listaRequisicionesFaltantes() {
 }
 function cargarListaRequisicionesFaltantes(page) {
   var per_page = $("#per_page").val();
-  var usuario = localStorage.idUsuarioInventarios;
   var vista = "cargarListaRequisicionesFaltantes";
   var campo = $("#campoOrden").val();
   var orden = $("#orden").val();
@@ -2612,7 +3127,7 @@ function cargarListaRequisicionesFaltantes(page) {
   var parametros = {
     action: "listaRequisicionesFaltantes",
     page: page,
-    usuario: usuario,
+    usuario: idUsuario,
     per_page: per_page,
     prioridad: prioridad,
     estatus: estatus,
@@ -2635,7 +3150,6 @@ function cargarListaRequisicionesFaltantes(page) {
 }
 function cargarListaRequisicionesFaltantesAdmin(page) {
   var per_page = $("#per_page").val();
-  var usuario = localStorage.idUsuarioInventarios;
   var vista = "cargarListaRequisicionesFaltantesAdmin";
   var campo = $("#campoOrden").val();
   var orden = $("#orden").val();
@@ -2645,7 +3159,7 @@ function cargarListaRequisicionesFaltantesAdmin(page) {
   var parametros = {
     action: "listaRequisicionesFaltantesAdmin",
     page: page,
-    usuario: usuario,
+    usuario: idUsuario,
     per_page: per_page,
     prioridad: prioridad,
     estatus: estatus,
@@ -2671,8 +3185,8 @@ function autorizacionCompra() {
   if (localStorage.tipoDocumento === "1") {
     var serieDocumento = "REMA";
     var documento = "requisiciones";
-  } else if (tipoDocumento === "2") {
-    var serieDocumento = "PEMA";
+  } else if (localStorage.tipoDocumento === "2") {
+    var serieDocumento = "PDMA";
     var documento = "pedidos";
   }
   var solicitado = $("#cantidadTotalPendiente").val();
@@ -2737,7 +3251,6 @@ function listaAutorizaciones() {
 }
 function cargarListaAutorizaciones(page) {
   var per_page = $("#per_page").val();
-  var usuario = localStorage.idUsuarioInventarios;
   var vista = "cargarListaAutorizaciones";
   var campo = $("#campoOrden").val();
   var orden = $("#orden").val();
@@ -2745,7 +3258,7 @@ function cargarListaAutorizaciones(page) {
   var parametros = {
     action: "listaAutorizaciones",
     page: page,
-    usuario: usuario,
+    usuario: idUsuario,
     per_page: per_page,
     estatus: estatus,
     campo: campo,
@@ -2861,20 +3374,708 @@ function cargarListaProductosAutorizacion(page, folio) {
       periodo: periodo,
       ejercicio: ejercicio,
       tipoDetalleDocumento: tipoDetalleDocumento,
-      tipo: localStorage.tipoDocumento,
+      tipo: localStorage.tipoDocumentoUnion,
     };
   } else {
-    var usuario = localStorage.idUsuarioInventarios;
+    var periodo = $("#periodo").val();
     var parametros = {
-      action: "listarProductosRequisicion",
+      action: "listarProductosRequisicionAdmin",
+      page: page,
+      usuario: idUsuario,
+      per_page: per_page,
+      vista: vista,
+      folio: folio,
+      periodo: periodo,
+      ejercicio: ejercicio,
+      tipoDetalleDocumento: tipoDetalleDocumento,
+      tipo: localStorage.tipoDocumentoUnion,
+    };
+  }
+
+  var datos = new FormData();
+  datos.append("accion", "productosAutorizacion");
+  datos.append("page", page);
+  datos.append("usuario", usuario);
+  datos.append("per_page", per_page);
+  datos.append("vista", vista);
+  datos.append("folio", folio);
+  datos.append("periodo", periodo);
+  datos.append("ejercicio", ejercicio);
+  datos.append("tipoDetalleDocumento", tipoDetalleDocumento);
+  datos.append("tipo", localStorage.tipoDocumentoUnion);
+
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    type: "post",
+    dataType: "json",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+  }).done(function (res) {
+    localStorage.setItem("listadoProductos", JSON.stringify(res));
+  });
+  $.ajax({
+    url: "ajax/listarProductosSolicitudes.ajax.php",
+    data: parametros,
+    success: function (data) {
+      if (data != "fail") {
+        $(".data").html(data).fadeIn("slow");
+        $(".dataFail").html("");
+        updateTotalesCart();
+        updateTotalesCartAprobado();
+        updateTotalesCartPendiente();
+        updateTotalesCartSolicitado();
+        if (
+          localStorage.estatusDocumento == 3 ||
+          localStorage.estatusDocumento == 4
+        ) {
+          var boton = document.getElementsByClassName("btnGenerarContratipo");
+
+          for (var i = 0; i < boton.length; i++) {
+            boton[i].style.display = "none";
+          }
+          var boton2 = document.getElementsByClassName("btnEliminarProducto");
+
+          for (var i = 0; i < boton2.length; i++) {
+            boton2[i].style.display = "none";
+          }
+
+          var input = document.getElementsByClassName("unidadesAprobadas");
+
+          for (var i = 0; i < input.length; i++) {
+            input[i].readOnly = true;
+          }
+        }
+        document.getElementById("unidadesSolicitadas").style.display = "";
+        document.getElementById("importeSolicitado").style.display = "";
+      } else {
+        $(".data").html("");
+        updateTotalesCart();
+        updateTotalesCartAprobado();
+        $(".dataFail").html("<h3></h3>");
+      }
+    },
+  });
+}
+function ordenCompra(el) {
+  var referencia = $("#documento").text();
+  var documento = referencia.split(" ");
+  var serie = documento[0];
+  var folio = documento[1];
+  var row = $(el).parents("tr");
+  var idClienteProveedor = row.find(".idClienteProveedor").text();
+  var rfcClienteProveedor = row.find(".rfcClienteProveedor").text();
+  var razonSocialClienteProveedor = row
+    .find(".razonSocialClienteProveedor")
+    .text();
+  var productos = localStorage.listadoProductos;
+  var unidades = $("#cantidadTotalSolicitada").val();
+  var importe = $("#importeTotalSolicitado").val();
+  importe = parseFloat(importe.replace(/[$,]/g, ""));
+  var observaciones = $("#observaciones").val();
+
+  var datos = new FormData();
+  datos.append("accion", "generarOrdenCompra");
+  datos.append("referencia", referencia);
+  datos.append("idClienteProveedor", idClienteProveedor);
+  datos.append("rfcClienteProveedor", rfcClienteProveedor);
+  datos.append("razonSocialClienteProveedor", razonSocialClienteProveedor);
+  datos.append("productos", productos);
+  datos.append("unidades", unidades);
+  datos.append("importe", importe);
+  datos.append("serie", serie);
+  datos.append("folio", folio);
+  datos.append("observaciones", observaciones);
+
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    type: "post",
+    dataType: "json",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+    beforeSend: function (objeto) {
+      $("#loadDocument").modal("show");
+      $("#titleLoadDocument").html("Generando Orden de Compra...");
+    },
+    success: function (data) {
+      setTimeout(function () {
+        $("#titleLoadDocument").html(
+          "Orden de Compra Generada Correctamente..."
+        );
+
+        localStorage.removeItem("listadoProductos");
+        window.location.href = "ordenesCompra";
+      }, 2000);
+    },
+  });
+}
+function listaOrdenesCompra() {
+  document
+    .getElementById("btnRefresh")
+    .setAttribute("onclick", "cargarListaOrdenesCompra(1)");
+
+  if (
+    localStorage.grupoUsuario === "Administracion" ||
+    localStorage.grupoUsuario === "Almacen"
+  ) {
+    document.getElementById("btnListaSucursales").style.display = "";
+  }
+  cargarListaOrdenesCompra(1);
+}
+function cargarListaOrdenesCompra(page) {
+  var per_page = $("#per_page").val();
+  var vista = "cargarListaOrdenesCompra";
+  var campo = $("#campoOrden").val();
+  var orden = $("#orden").val();
+  var estatus = $("#estatus").val();
+  var sucursal = $("#sucursal").val();
+  if (
+    localStorage.grupoUsuario === "Administracion" ||
+    localStorage.grupoUsuario === "Almacen"
+  ) {
+    var tipo = 1;
+  } else {
+    var tipo = 2;
+  }
+  var parametros = {
+    action: "listaOrdenesCompra",
+    page: page,
+    usuario: idUsuario,
+    per_page: per_page,
+    estatus: estatus,
+    campo: campo,
+    orden: orden,
+    vista: vista,
+    sucursal: sucursal,
+    tipo: tipo,
+  };
+  $("#loader").fadeIn("slow");
+  $.ajax({
+    url: "ajax/requisiciones.ajax.php",
+    data: parametros,
+    beforeSend: function (objeto) {
+      $("#loader").html("Buscando...");
+    },
+    success: function (data) {
+      $(".data").html(data).fadeIn("slow");
+      $("#loader").html("");
+    },
+  });
+}
+function listaCompras() {
+  document
+    .getElementById("btnRefresh")
+    .setAttribute("onclick", "cargarListaCompras(1)");
+
+  if (
+    localStorage.grupoUsuario === "Administracion" ||
+    localStorage.grupoUsuario === "Almacen"
+  ) {
+    document.getElementById("btnListaSucursales").style.display = "";
+  }
+  cargarListaCompras(1);
+}
+function cargarListaCompras(page) {
+  var per_page = $("#per_page").val();
+  var vista = "cargarListaCompras";
+  var campo = $("#campoOrden").val();
+  var orden = $("#orden").val();
+  var estatus = $("#estatus").val();
+  var sucursal = $("#sucursal").val();
+  if (
+    localStorage.grupoUsuario === "Administracion" ||
+    localStorage.grupoUsuario === "Almacen"
+  ) {
+    var tipo = 1;
+  } else {
+    var tipo = 2;
+  }
+  var parametros = {
+    action: "listaCompras",
+    page: page,
+    usuario: idUsuario,
+    per_page: per_page,
+    estatus: estatus,
+    campo: campo,
+    orden: orden,
+    vista: vista,
+    sucursal: sucursal,
+    tipo: tipo,
+  };
+  $("#loader").fadeIn("slow");
+  $.ajax({
+    url: "ajax/requisiciones.ajax.php",
+    data: parametros,
+    beforeSend: function (objeto) {
+      $("#loader").html("Buscando...");
+    },
+    success: function (data) {
+      $(".data").html(data).fadeIn("slow");
+      $("#loader").html("");
+    },
+  });
+}
+function detalleMovimientosDocumento(idDocumento) {
+  $("#textModal").html("MOVIMIENTOS");
+  var datos = new FormData();
+  datos.append("accion", "detalleMovimientosDocumento");
+  datos.append("idDocumentoDetalle", idDocumento);
+  $("#modalMovimientosDocumento").modal();
+  $.ajax({
+    url: "ajax/admonFunctions.ajax.php",
+    method: "POST",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+    dataType: "json",
+    success: function (respuesta) {
+      var response = respuesta;
+
+      var listaCabeceras = [
+        "N° MOVIMIENTO",
+        "CÓDIGO",
+        "NOMBRE",
+        "UNIDADES",
+        "UNIDAD",
+        "PRECIO",
+        "NETO",
+        "IMPUESTO",
+        "TOTAL",
+      ];
+
+      body = document.getElementById("tablaMovimientosDocumento");
+
+      thead = document.createElement("thead");
+
+      theadTr = document.createElement("tr");
+
+      for (var h = 0; h < listaCabeceras.length; h++) {
+        var celdaThead = document.createElement("th");
+        var textoCeldaThead = document.createTextNode(listaCabeceras[h]);
+        celdaThead.appendChild(textoCeldaThead);
+        theadTr.appendChild(celdaThead);
+      }
+
+      thead.appendChild(theadTr);
+
+      tblBody = document.createElement("tbody");
+
+      var arregloNombres = [
+        "CNUMEROMOVIMIENTO",
+        "CCODIGOPRODUCTO",
+        "CNOMBREPRODUCTO",
+        "CUNIDADESCAPTURADAS",
+        "CNOMBREUNIDAD",
+        "CPRECIOCAPTURADO",
+        "CNETO",
+        "CIMPUESTO1",
+        "TOTAL",
+      ];
+
+      // Crea las celdas
+      var acumuladoNeto = 0;
+      var acumuladoTotal = 0;
+      for (var i = 0; i < response.length; i++) {
+        // Crea las hileras de la tabla
+        var hilera = document.createElement("tr");
+        for (var j = 0; j < arregloNombres.length; j++) {
+          var celda = document.createElement("td");
+          if (arregloNombres[j] == "CIDPRODUCTO") {
+            var valor = parseInt(response[i][arregloNombres[j]]);
+          } else if (
+            arregloNombres[j] == "CPRECIOCAPTURADO" ||
+            arregloNombres[j] == "CNETO" ||
+            arregloNombres[j] == "CIMPUESTO1" ||
+            arregloNombres[j] == "TOTAL"
+          ) {
+            if (response[i][arregloNombres[j]] === null) {
+              var monto = 0;
+            } else {
+              var monto = response[i][arregloNombres[j]];
+            }
+            var valor2 = parseFloat(monto);
+
+            valor = "$" + formatNumber(parseFloat(Math.abs(valor2).toFixed(2)));
+            if (arregloNombres[j] == "CNETO") {
+              acumuladoNeto =
+                acumuladoNeto + parseFloat(Math.abs(valor2).toFixed(2));
+            }
+            if (arregloNombres[j] == "TOTAL") {
+              acumuladoTotal =
+                acumuladoTotal + parseFloat(Math.abs(valor2).toFixed(2));
+            }
+          } else {
+            var valor = response[i][arregloNombres[j]];
+          }
+
+          var textoCelda = document.createTextNode(valor);
+          celda.appendChild(textoCelda);
+          hilera.appendChild(celda);
+        }
+
+        // agrega la hilera al final de la tabla (al final del elemento tblbody)
+        tblBody.appendChild(hilera);
+      }
+      var hilera = document.createElement("tr");
+      hilera.style.background = "#00BCD4";
+      hilera.style.color = "#ffffff";
+      for (var j = 0; j < arregloNombres.length; j++) {
+        var celda = document.createElement("td");
+        celda.style.color = "#ffffff";
+        celda.style.fontWeight = "900";
+        if (arregloNombres[j] == "CNETO") {
+          valor = "$" + formatNumber(parseFloat(acumuladoNeto.toFixed(2)));
+        } else if (arregloNombres[j] == "TOTAL") {
+          valor = "$ " + formatNumber(parseFloat(acumuladoTotal.toFixed(2)));
+        } else {
+          valor = "";
+        }
+
+        var textoCelda = document.createTextNode(valor);
+        celda.appendChild(textoCelda);
+        hilera.appendChild(celda);
+      }
+      tblBody.appendChild(hilera);
+      // appends <table> into <body>
+      body.appendChild(tblBody);
+      body.appendChild(thead);
+    },
+  });
+}
+$(".btnCerrarMovimientosDocumento").click(function () {
+  var nodos = document.getElementById("tablaMovimientosDocumento");
+  while (nodos.firstChild) {
+    nodos.removeChild(nodos.firstChild);
+  }
+});
+function listaRecordatorios() {
+  if (
+    localStorage.grupoUsuario === "Administracion" ||
+    localStorage.grupoUsuario === "Almacen"
+  ) {
+    document.getElementById("btnListaSucursales").style.display = "";
+    document.getElementById("btnActualizarRecordatorio").style.display = "";
+    document.getElementById("btnEliminarRecordatorio").style.display = "";
+    var usuario = $("#sucursal").val();
+    var tipoUsuario = 1;
+  } else {
+    var tipoUsuario = 2;
+    document.getElementById("evtStart").setAttribute("readonly", "");
+    document.getElementById("evtEnd").setAttribute("readonly", "");
+    document.getElementById("evtMensaje").setAttribute("readonly", "");
+  }
+  var datos = new FormData();
+  datos.append("accion", "listaRecordatorios");
+  datos.append("usuario", usuario);
+  datos.append("tipoUsuario", tipoUsuario);
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    type: "post",
+    dataType: "json",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+  }).done(function (res) {
+    cargarRecordatorios(res);
+  });
+}
+function generarRecordatorio() {
+  var start = $("#evtCrearStart").val();
+  var end = $("#evtCrearEnd").val();
+  var titulo = $("#evtCrearTitulo").val();
+  var color = $("#evtCrearAccion").val();
+  var mensaje = $("#evtCrearMensaje").val();
+  var startDate = formatIsoToDate(start);
+  var endDate = formatIsoToDate(end);
+  var sucursal = $("#evtCrearSucursal").val();
+  if (start === "" && end === "") {
+    Swal.fire({
+      icon: "warning",
+      title: "¡Elegir las fechas del recordatorio!",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  } else {
+    var datos = new FormData();
+    datos.append("accion", "generarRecordatorio");
+    datos.append("titulo", titulo);
+    datos.append("color", color);
+    datos.append("mensaje", mensaje);
+    datos.append("startDate", startDate);
+    datos.append("endDate", endDate);
+    datos.append("usuario", idUsuario);
+    datos.append("sucursal", sucursal);
+    $.ajax({
+      url: "ajax/inventariosFunctions.ajax.php",
+      type: "post",
+      dataType: "json",
+      data: datos,
+      cache: false,
+      contentType: false,
+      processData: false,
+    }).done(function (res) {
+      var response = res.replace(/['"]+/g, "");
+      if (response == "ok") {
+        $("#modalCrearRecordatorio").modal("hide");
+        Swal.fire({
+          icon: "success",
+          title: "¡Recordatorio Generado Correctamente!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        listaRecordatorios();
+      }
+    });
+  }
+}
+function detalleRecordatorio(id) {
+  var datos = new FormData();
+  datos.append("accion", "detalleRecordatorio");
+  datos.append("id", id);
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    type: "post",
+    dataType: "json",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+  }).done(function (res) {
+    var titulo = res["titulo"];
+    var mensaje = res["mensaje"];
+    var start = res["start"];
+    var end = res["end"];
+    var solicitante = res["Solicitante"];
+    var idRecordatorio = res["id"];
+    $("#evtId").val(idRecordatorio);
+    $("#evtMensaje").val(mensaje);
+    $("#evtSolicitante").val(solicitante);
+    $("#titleModal").html(titulo);
+
+    var nowStart = new Date(start);
+    nowStart.setMinutes(nowStart.getMinutes() - nowStart.getTimezoneOffset());
+    document.getElementById("evtStart").value = nowStart
+      .toISOString()
+      .slice(0, 16);
+
+    var nowEnd = new Date(end);
+    nowEnd.setMinutes(nowEnd.getMinutes() - nowEnd.getTimezoneOffset());
+    document.getElementById("evtEnd").value = nowEnd.toISOString().slice(0, 16);
+  });
+}
+function actualizarRecordatorio() {
+  var start = $("#evtStart").val();
+  var end = $("#evtEnd").val();
+  var mensaje = $("#evtMensaje").val();
+  var startDate = formatIsoToDate(start);
+  var endDate = formatIsoToDate(end);
+  var id = $("#evtId").val();
+
+  var datos = new FormData();
+  datos.append("accion", "actualizarRecordatorio");
+  datos.append("mensaje", mensaje);
+  datos.append("startDate", startDate);
+  datos.append("endDate", endDate);
+  datos.append("id", id);
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    type: "post",
+    dataType: "json",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+  }).done(function (res) {
+    var response = res.replace(/['"]+/g, "");
+    if (response == "ok") {
+      $("#modalDetalleRecordatorio").modal("hide");
+      Swal.fire({
+        icon: "success",
+        title: "¡Recordatorio Actualizado Correctamente!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      listaRecordatorios();
+    }
+  });
+}
+function eliminarRecordatorio() {
+  var id = $("#evtId").val();
+
+  var datos = new FormData();
+  datos.append("accion", "eliminarRecordatorio");
+  datos.append("id", id);
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    type: "post",
+    dataType: "json",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+  }).done(function (res) {
+    var response = res.replace(/['"]+/g, "");
+    if (response == "ok") {
+      $("#modalDetalleRecordatorio").modal("hide");
+      Swal.fire({
+        icon: "success",
+        title: "¡Recordatorio Eliminado Correctamente!",
+        showConfirmButton: false,
+        timer: 1200,
+      });
+      listaRecordatorios();
+    }
+  });
+}
+/*****CREACION DE PEDIDOS******/
+function listaPedidos() {
+  if (
+    localStorage.grupoUsuario === "Administracion" ||
+    localStorage.grupoUsuario === "Almacen"
+  ) {
+    cargarListaPedidosAdmin(1);
+    document.getElementById("btnListaSucursales").style.display = "";
+    document
+      .getElementById("btnRefresh")
+      .setAttribute("onclick", "cargarListaPedidosAdmin(1)");
+  } else {
+    cargarListaPedidos(1);
+    document.getElementById("btnRealizarPedidos").style.display = "";
+    document
+      .getElementById("btnRefresh")
+      .setAttribute("onclick", "cargarListaPedidos(1)");
+  }
+}
+function cargarListaPedidos(page) {
+  var per_page = $("#per_page").val();
+  var vista = "cargarListaPedidos";
+  var campo = $("#campoOrden").val();
+  var orden = $("#orden").val();
+  var prioridad = $("#prioridad").val();
+  var estatus = $("#estatus").val();
+  var parametros = {
+    action: "listaPedidos",
+    page: page,
+    usuario: idUsuario,
+    per_page: per_page,
+    prioridad: prioridad,
+    estatus: estatus,
+    campo: campo,
+    orden: orden,
+    vista: vista,
+  };
+  $("#loader").fadeIn("slow");
+  $.ajax({
+    url: "ajax/pedidos.ajax.php",
+    data: parametros,
+    beforeSend: function (objeto) {
+      $("#loader").html("Buscando...");
+    },
+    success: function (data) {
+      $(".data").html(data).fadeIn("slow");
+      $("#loader").html("");
+    },
+  });
+}
+
+function cargarListaPedidosAdmin(page) {
+  var per_page = $("#per_page").val();
+  var vista = "cargarListaPedidosAdmin";
+  var campo = $("#campoOrden").val();
+  var orden = $("#orden").val();
+  var prioridad = $("#prioridad").val();
+  var estatus = $("#estatus").val();
+  var sucursal = $("#sucursal").val();
+
+  var parametros = {
+    action: "listaPedidosAdmin",
+    page: page,
+    per_page: per_page,
+    prioridad: prioridad,
+    estatus: estatus,
+    sucursal: sucursal,
+    campo: campo,
+    orden: orden,
+    vista: vista,
+  };
+  $("#loader").fadeIn("slow");
+  $.ajax({
+    url: "ajax/pedidos.ajax.php",
+    data: parametros,
+    beforeSend: function (objeto) {
+      $("#loader").html("Buscando...");
+    },
+    success: function (data) {
+      $(".data").html(data).fadeIn("slow");
+      $("#loader").html("");
+    },
+  });
+}
+function cargarListaProductosPedido(page, folio) {
+  var per_page = 100;
+  var vista = "cargarListaProductosPedido";
+  if (localStorage.tipoDetalleDocumento === undefined) {
+    tipoDetalleDocumento = "completo";
+  } else if (localStorage.tipoDetalleDocumento == "completo") {
+    tipoDetalleDocumento = "completo";
+  } else if (localStorage.tipoDetalleDocumento == "faltante") {
+    tipoDetalleDocumento = "faltante";
+  }
+
+  if (
+    localStorage.grupoUsuario == "Administracion" ||
+    localStorage.grupoUsuario == "Almacen"
+  ) {
+    var usuario = 0;
+    var periodo = $("#periodo").val();
+    var parametros = {
+      action: "listarProductosPedidosAdmin",
       page: page,
       usuario: usuario,
       per_page: per_page,
       vista: vista,
       folio: folio,
+      periodo: periodo,
+      ejercicio: ejercicio,
+      tipoDetalleDocumento: tipoDetalleDocumento,
       tipo: localStorage.tipoDocumento,
-      tipoDetalleDocumento: "",
     };
+  } else {
+    if (
+      localStorage.estatusDocumento == 3 ||
+      localStorage.estatusDocumento == 4
+    ) {
+      var usuario = 0;
+      var periodo = $("#periodo").val();
+      var parametros = {
+        action: "listarProductosPedidosAdmin",
+        page: page,
+        usuario: usuario,
+        per_page: per_page,
+        vista: vista,
+        folio: folio,
+        periodo: periodo,
+        ejercicio: ejercicio,
+        tipoDetalleDocumento: tipoDetalleDocumento,
+        tipo: localStorage.tipoDocumento,
+      };
+    } else {
+      var parametros = {
+        action: "listarProductosPedidos",
+        page: page,
+        usuario: idUsuario,
+        per_page: per_page,
+        vista: vista,
+        folio: folio,
+        tipo: localStorage.tipoDocumento,
+        tipoDetalleDocumento: "",
+      };
+    }
   }
 
   $.ajax({
@@ -2916,4 +4117,1451 @@ function cargarListaProductosAutorizacion(page, folio) {
       }
     },
   });
+}
+function listaPedidosFaltantes() {
+  if (
+    localStorage.grupoUsuario === "Administracion" ||
+    localStorage.grupoUsuario === "Almacen"
+  ) {
+    cargarListaPedidosFaltantesAdmin(1);
+    document.getElementById("btnListaSucursales").style.display = "";
+    document
+      .getElementById("btnRefresh")
+      .setAttribute("onclick", "cargarListaPedidosFaltantesAdmin(1)");
+  } else {
+    cargarListaPedidosFaltantes(1);
+    document
+      .getElementById("btnRefresh")
+      .setAttribute("onclick", "cargarListaPedidosFaltantes(1)");
+  }
+}
+function cargarListaPedidosFaltantes(page) {
+  var per_page = $("#per_page").val();
+  var vista = "cargarListaPedidosFaltantes";
+  var campo = $("#campoOrden").val();
+  var orden = $("#orden").val();
+  var prioridad = $("#prioridad").val();
+  var parametros = {
+    action: "listaPedidosFaltantes",
+    page: page,
+    usuario: idUsuario,
+    per_page: per_page,
+    prioridad: prioridad,
+    campo: campo,
+    orden: orden,
+    vista: vista,
+  };
+  $("#loader").fadeIn("slow");
+  $.ajax({
+    url: "ajax/pedidos.ajax.php",
+    data: parametros,
+    beforeSend: function (objeto) {
+      $("#loader").html("Buscando...");
+    },
+    success: function (data) {
+      $(".data").html(data).fadeIn("slow");
+      $("#loader").html("");
+    },
+  });
+}
+function cargarListaPedidosFaltantesAdmin(page) {
+  var per_page = $("#per_page").val();
+  var vista = "cargarListaPedidosFaltantesAdmin";
+  var campo = $("#campoOrden").val();
+  var orden = $("#orden").val();
+  var prioridad = $("#prioridad").val();
+  var sucursal = $("#sucursal").val();
+  var parametros = {
+    action: "listaPedidosFaltantesAdmin",
+    page: page,
+    usuario: idUsuario,
+    per_page: per_page,
+    prioridad: prioridad,
+    sucursal: sucursal,
+    campo: campo,
+    orden: orden,
+    vista: vista,
+  };
+  $("#loader").fadeIn("slow");
+  $.ajax({
+    url: "ajax/pedidos.ajax.php",
+    data: parametros,
+    beforeSend: function (objeto) {
+      $("#loader").html("Buscando...");
+    },
+    success: function (data) {
+      $(".data").html(data).fadeIn("slow");
+      $("#loader").html("");
+    },
+  });
+}
+/*****CREACION DE PEDIDOS******/
+function listaInventarios() {
+  if (
+    localStorage.grupoUsuario === "Administracion" ||
+    localStorage.grupoUsuario === "Almacen"
+  ) {
+    cargarListaInventarios(1);
+    document.getElementById("btnListaSucursales").style.display = "";
+    document
+      .getElementById("btnRefresh")
+      .setAttribute("onclick", "cargarListaInventarios(1)");
+  } else {
+    cargarListaInventarios(1);
+    document
+      .getElementById("btnRefresh")
+      .setAttribute("onclick", "cargarListaInventarios(1)");
+  }
+}
+function cargarListaInventarios(page) {
+  var per_page = $("#per_page").val();
+  var sucursal = $("#sucursal").val();
+  var vista = "cargarListaInventarios";
+  var campo = $("#campoOrden").val();
+  var orden = $("#orden").val();
+  var año = $("#anio").val();
+  var mes = $("#periodo").val();
+  var estatus = $("#estatus").val();
+  var parametros = {
+    action: "listaInventarios",
+    page: page,
+    usuario: idUsuario,
+    per_page: per_page,
+    mes: mes,
+    año: año,
+    sucursal: sucursal,
+    campo: campo,
+    orden: orden,
+    vista: vista,
+    estatus: estatus,
+  };
+  $("#loader").fadeIn("slow");
+  $.ajax({
+    url: "ajax/inventarios.ajax.php",
+    data: parametros,
+    beforeSend: function (objeto) {
+      $("#loader").html("Buscando...");
+    },
+    success: function (data) {
+      $(".data").html(data).fadeIn("slow");
+      $("#loader").html("");
+    },
+  });
+}
+function cargarListaProductosInventarios(page) {
+  var per_page = 100;
+  var vista = "cargarListaProductosInventarios";
+  var arregloMarca = JSON.parse(localStorage.getItem("arrayMarca"));
+  var arregloFamilia = JSON.parse(localStorage.getItem("arrayFamilia"));
+  var arregloCategoria = JSON.parse(localStorage.getItem("arrayCategoria"));
+  var arregloAnaquel = JSON.parse(localStorage.getItem("arrayAnaquel"));
+  var arregloRepisa = JSON.parse(localStorage.getItem("arrayRepisa"));
+  var arregloProveedor = JSON.parse(localStorage.getItem("arrayProveedor"));
+  var periodo = $("#periodo").val();
+  var almacen = $("#almacen").val();
+  if (arregloMarca === null) {
+    localStorage.setItem("arrayMarca", "[]");
+    var marca = "";
+  } else {
+    if (arregloMarca == "[]") {
+      var marca = "";
+    } else {
+      var marca = arregloMarca.toString();
+    }
+  }
+  if (arregloFamilia === null) {
+    localStorage.setItem("arrayFamilia", "[]");
+    var familia = "";
+  } else {
+    if (arregloFamilia == "[]") {
+      var familia = "";
+    } else {
+      var familia = arregloFamilia.toString();
+    }
+  }
+  if (arregloCategoria === null) {
+    localStorage.setItem("arrayCategoria", "[]");
+    var categoria = "";
+  } else {
+    if (arregloCategoria == "[]") {
+      var categoria = "";
+    } else {
+      var categoria = arregloCategoria.toString();
+    }
+  }
+  if (arregloAnaquel === null) {
+    localStorage.setItem("arrayAnaquel", "[]");
+    var anaquel = "";
+  } else {
+    if (arregloAnaquel == "[]") {
+      var anaquel = "";
+    } else {
+      var anaquel = arregloAnaquel.toString();
+    }
+  }
+  if (arregloRepisa === null) {
+    localStorage.setItem("arrayRepisa", "[]");
+    var repisa = "";
+  } else {
+    if (arregloRepisa == "[]") {
+      var repisa = "";
+    } else {
+      var repisa = arregloRepisa.toString();
+    }
+  }
+  if (arregloProveedor === null) {
+    localStorage.setItem("arrayProveedor", "[]");
+    var proveedor = "";
+  } else {
+    if (arregloProveedor == "[]") {
+      var proveedor = "";
+    } else {
+      var proveedor = arregloProveedor.toString();
+    }
+  }
+  var campoOrden = $("#campoOrden").val();
+  var orden = $("#orden").val();
+  var parametros = {
+    action: "listarProductosInventario",
+    page: page,
+    usuario: idUsuario,
+    per_page: per_page,
+    vista: vista,
+    marca: marca,
+    familia: familia,
+    categoria: categoria,
+    anaquel: anaquel,
+    repisa: repisa,
+    proveedor: proveedor,
+    campoOrden: campoOrden,
+    orden: orden,
+    periodo: periodo,
+    almacen: almacen,
+  };
+  $("#loader").fadeIn("slow");
+  $.ajax({
+    url: "ajax/listarProductosSolicitudes.ajax.php",
+    data: parametros,
+    beforeSend: function (objeto) {
+      $("#loader").html("Cargando productos espere un momento porfavor...");
+    },
+    success: function (data) {
+      $("#loader").html("");
+      if (data != "fail") {
+        $(".data").html(data).fadeIn("slow");
+        $(".dataFail").html("");
+        updateTotalesExistencias(almacen);
+        updateTotalesDiferencias(almacen);
+        updateTotalesInventario();
+      } else {
+        $(".data").html("");
+        updateTotalesExistencias(almacen);
+        updateTotalesDiferencias(almacen);
+        updateTotalesInventario();
+        $(".dataFail").html("<h3></h3>");
+      }
+    },
+  });
+}
+function generarNuevoInventario() {
+  var productosInventario = [];
+  $("#tablaInventarios tbody tr").each((index, tr) => {
+    var idProducto = parseInt($(tr).find(".idProducto").attr("idProducto"));
+    var idAlmacen = parseInt($(tr).find(".almacenProducto").attr("idAlmacen"));
+    var codigo = $(tr).find(".codigoProducto").text();
+    var descripcion = $(tr).find(".nombreProducto").text();
+    var idUnidad = parseInt($(tr).find(".unidadProducto").val());
+    var idUnidadBase = parseInt(
+      $(tr).find(".unidadProductoBase").attr("idUnidad")
+    );
+    var despliegue = $(tr).find(".unidadProductoBase").attr("despliegue");
+    var nombreUnidad = $(tr).find(".unidadProductoBase").attr("nombreUnidad");
+
+    var valorConversion = parseFloat(
+      $(tr).find(".unidadProductoBase").attr("valorConversion")
+    );
+    var costo = $(tr).find(".costoProducto").text();
+    costo = parseFloat(costo.replace(/[$,]/g, ""));
+    var precioCapturado = costo / valorConversion;
+    precioCapturado = formatNumber(parseFloat(precioCapturado.toFixed(5)));
+
+    /***EXISTENCIAS */
+    var existenciaConversion = parseFloat(
+      $(tr).find(".existenciasProducto").attr("cantidadConv")
+    );
+    var existencia = parseFloat($(tr).find(".existenciasProducto").text());
+    var existenciaImporte = $(tr).find(".existenciasImporteProducto").text();
+    existenciaImporte = parseFloat(existenciaImporte.replace(/[$,]/g, ""));
+    /***EXISTENCIAS */
+    /***INVENTARIO */
+    var inventarioConversion = parseFloat(
+      $(tr).find(".inventarioProducto").attr("cantidadConv")
+    );
+    var inventario = parseFloat($(tr).find(".inventarioProducto").val());
+    var inventarioImporte = $(tr).find(".inventarioImporteProducto").text();
+    inventarioImporte = parseFloat(inventarioImporte.replace(/[$,]/g, ""));
+    /***INVENTARIO */
+    /***DIFERENCIAS */
+    var diferenciaConversion = parseFloat(
+      $(tr).find(".diferenciasProducto").attr("cantidadConv")
+    );
+    var diferencia = parseFloat($(tr).find(".diferenciasProducto").text());
+    var diferenciaImporte = $(tr).find(".diferenciasImporteProducto").text();
+    diferenciaImporte = parseFloat(diferenciaImporte.replace(/[$,]/g, ""));
+    var estado = $(tr).find(".estadoProducto").text();
+    if (estado == "") {
+      estado = "SIN CONTABILIZAR";
+    } else {
+      estado = $(tr).find(".estadoProducto").text();
+    }
+
+    /***DIFERENCIAS */
+    var producto = [
+      ["idProducto", idProducto],
+      ["idAlmacen", idAlmacen],
+      ["codigo", codigo],
+      ["descripcion", descripcion],
+      ["idUnidad", idUnidad],
+      ["idUnidadBase", idUnidadBase],
+      ["despliegue", despliegue],
+      ["nombreUnidad", nombreUnidad],
+      ["valorConversion", valorConversion],
+      ["costo", costo],
+      ["precioCapturado", precioCapturado],
+      ["existenciaConversion", existenciaConversion],
+      ["existencia", existencia],
+      ["existenciaImporte", existenciaImporte],
+      ["inventarioConversion", inventarioConversion],
+      ["inventario", inventario],
+      ["inventarioImporte", inventarioImporte],
+      ["diferenciaConversion", diferenciaConversion],
+      ["diferencia", diferencia],
+      ["diferenciaImporte", diferenciaImporte],
+      ["estado", estado],
+    ];
+
+    productosInventario.push(producto);
+  });
+
+  switch (idUsuario) {
+    case "8":
+      var serie = "INVGE";
+      break;
+    case "9":
+      var serie = "INVGE";
+      break;
+    case "10":
+      var serie = "INVSN";
+      break;
+    case "12":
+      var serie = "INVRM";
+      break;
+    case "13":
+      var serie = "INVST";
+      break;
+    case "14":
+      var serie = "INVCA";
+      break;
+    case "15":
+      var serie = "INVTO";
+      break;
+  }
+  var existencias = $("#existenciaTotalUnidades").val();
+  var inventario = $("#inventarioTotalUnidades").val();
+  var diferencia = $("#diferenciasTotalUnidades").val();
+  var existenciasImportes = $("#existenciaTotalImporte").val();
+  existenciasImportes = parseFloat(existenciasImportes.replace(/[$,]/g, ""));
+  var inventarioImportes = $("#inventarioTotalImporte").val();
+  inventarioImportes = parseFloat(inventarioImportes.replace(/[$,]/g, ""));
+  var diferenciaImportes = $("#diferenciasTotalImporte").val();
+  diferenciaImportes = parseFloat(diferenciaImportes.replace(/[$,]/g, ""));
+  var idSolicitante = 1;
+  var idRealizador = $("#realizador").val();
+  var observaciones = $("#observaciones").val();
+  var idAlmacen = $("#almacen").val();
+  var periodo = $("#periodo").val();
+  let productos = generarProductosInventario(productosInventario);
+
+  var arregloMarca = JSON.parse(localStorage.getItem("arrayMarca"));
+  var arregloFamilia = JSON.parse(localStorage.getItem("arrayFamilia"));
+  var arregloCategoria = JSON.parse(localStorage.getItem("arrayCategoria"));
+  var arregloAnaquel = JSON.parse(localStorage.getItem("arrayAnaquel"));
+  var arregloRepisa = JSON.parse(localStorage.getItem("arrayRepisa"));
+  var arregloProveedor = JSON.parse(localStorage.getItem("arrayProveedor"));
+
+  if (arregloMarca === null) {
+    var marca = "";
+  } else {
+    if (arregloMarca == "[]") {
+      var marca = "";
+    } else {
+      var marca = arregloMarca.toString();
+    }
+  }
+  if (arregloFamilia === null) {
+    var familia = "";
+  } else {
+    if (arregloFamilia == "[]") {
+      var familia = "";
+    } else {
+      var familia = arregloFamilia.toString();
+    }
+  }
+  if (arregloCategoria === null) {
+    var categoria = "";
+  } else {
+    if (arregloCategoria == "[]") {
+      var categoria = "";
+    } else {
+      var categoria = arregloCategoria.toString();
+    }
+  }
+  if (arregloAnaquel === null) {
+    var anaquel = "";
+  } else {
+    if (arregloAnaquel == "[]") {
+      var anaquel = "";
+    } else {
+      var anaquel = arregloAnaquel.toString();
+    }
+  }
+  if (arregloRepisa === null) {
+    var repisa = "";
+  } else {
+    if (arregloRepisa == "[]") {
+      var repisa = "";
+    } else {
+      var repisa = arregloRepisa.toString();
+    }
+  }
+  if (arregloProveedor === null) {
+    var proveedor = "";
+  } else {
+    if (arregloProveedor == "[]") {
+      var proveedor = "";
+    } else {
+      var proveedor = arregloProveedor.toString();
+    }
+  }
+
+  var datos = new FormData();
+  datos.append("accion", "generarInventario");
+  datos.append("serie", serie);
+  datos.append("existencias", existencias);
+  datos.append("inventario", inventario);
+  datos.append("diferencia", diferencia);
+  datos.append("existenciasImportes", existenciasImportes);
+  datos.append("inventarioImportes", inventarioImportes);
+  datos.append("diferenciaImportes", diferenciaImportes);
+  datos.append("idSolicitante", idSolicitante);
+  datos.append("idRealizador", idRealizador);
+  datos.append("observaciones", observaciones);
+  datos.append("idAlmacen", idAlmacen);
+  datos.append("periodo", periodo);
+  datos.append("marca", marca);
+  datos.append("familia", familia);
+  datos.append("categoria", categoria);
+  datos.append("anaquel", anaquel);
+  datos.append("repisa", repisa);
+  datos.append("proveedor", proveedor);
+  datos.append("productos", JSON.stringify(productos));
+
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    type: "post",
+    dataType: "json",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+    beforeSend: function (objeto) {
+      $("#loadDocument").modal("show");
+      $("#titleLoadDocument").html("Generando Inventario...");
+    },
+    success: function (res) {
+      var response = res.replace(/['"]+/g, "");
+      if (response == "ok") {
+        localStorage.setItem("arrayMarca", "[]");
+        localStorage.setItem("arrayFamilia", "[]");
+        localStorage.setItem("arrayCategoria", "[]");
+        localStorage.setItem("arrayAnaquel", "[]");
+        localStorage.setItem("arrayRepisa", "[]");
+        localStorage.setItem("arrayProveedor", "[]");
+        localStorage.removeItem("folioInventario");
+        setTimeout(function () {
+          $("#titleLoadDocument").html("Inventario Generado Correctamente...");
+          window.location.href = "inventarios";
+        }, 2000);
+      }
+    },
+  });
+}
+function generarInventario() {
+  var inventario = $("#inventarioTotalUnidades").val();
+  if (inventario === "0.00000") {
+    Swal.fire({
+      showDenyButton: true,
+      confirmButtonText: "Generar",
+      denyButtonText: "Seguir modificando",
+      icon: "warning",
+      title:
+        "No se capturo el inventario de ningun producto ¿Desea generar el inventario?",
+      showConfirmButton: true,
+      timer: 3000,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        generarNuevoInventario();
+      }
+    });
+  } else {
+    Swal.fire({
+      showDenyButton: true,
+      confirmButtonText: "Generar",
+      denyButtonText: "Seguir modificando",
+      icon: "warning",
+      title: "¿Desea generar el registro del inventario?",
+      showConfirmButton: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        generarNuevoInventario();
+      }
+    });
+  }
+}
+
+function generarProductosInventario(array) {
+  var obj = {};
+  var final = [];
+  var arrayJson = JSON.parse(JSON.stringify(array));
+  for (var i = 0; i < arrayJson.length; i++) {
+    obj = {}; // <-- Se limpia la variable objeto para que no almacene más de una referencia
+    var general = array[i];
+    for (var n = 0; n < general.length; n++) {
+      var data = general[n];
+      var first = data.shift();
+      var last = data.pop();
+      obj[first] = last;
+    }
+    final.push(obj);
+  }
+
+  return final;
+}
+function editarInventario(folio) {
+  if (
+    idUsuario === "8" ||
+    idUsuario === "9" ||
+    idUsuario === "10" ||
+    idUsuario === "12" ||
+    idUsuario === "13" ||
+    idUsuario === "14" ||
+    idUsuario === "15"
+  ) {
+    var datas = new FormData();
+    datas.append("accion", "estatusDocumentoInventario");
+    datas.append("folioDocumento", folio);
+    datas.append("tabla", "inventarios");
+
+    $.ajax({
+      url: "ajax/inventariosFunctions.ajax.php",
+      type: "post",
+      dataType: "json",
+      data: datas,
+      cache: false,
+      contentType: false,
+      processData: false,
+    }).done(function (response) {
+      if (response["idEstatus"] == 0 && response["habilitado"] == 0) {
+        var datos = new FormData();
+        datos.append("accion", "updateEstatusDocumentoInventario");
+        datos.append("folioDocumento", folio);
+        datos.append("estatus", 1);
+        datos.append("habilitado", 1);
+        datos.append("tabla", "inventarios");
+
+        $.ajax({
+          url: "ajax/inventariosFunctions.ajax.php",
+          type: "post",
+          dataType: "json",
+          data: datos,
+          cache: false,
+          contentType: false,
+          processData: false,
+        }).done(function (res) {
+          var response = res.replace(/['"]+/g, "");
+          if (response == "ok") {
+            localStorage.setItem("folioInventario", folio);
+            window.location.href = "editarInventario";
+          }
+        });
+      } else {
+        localStorage.setItem("folioInventario", folio);
+        window.location.href = "editarInventario";
+      }
+    });
+  } else {
+    var datas = new FormData();
+    datas.append("accion", "estatusDocumentoInventario");
+    datas.append("folioDocumento", folio);
+    datas.append("tabla", "inventarios");
+
+    $.ajax({
+      url: "ajax/inventariosFunctions.ajax.php",
+      type: "post",
+      dataType: "json",
+      data: datas,
+      cache: false,
+      contentType: false,
+      processData: false,
+    }).done(function (response) {
+      if (response["idEstatus"] == 1 && response["habilitado"] == 0) {
+        var datos = new FormData();
+        datos.append("accion", "updateEstatusDocumento");
+        datos.append("folioDocumento", folio);
+        datos.append("estatus", 2);
+        datos.append("tabla", "inventarios");
+
+        $.ajax({
+          url: "ajax/inventariosFunctions.ajax.php",
+          type: "post",
+          dataType: "json",
+          data: datos,
+          cache: false,
+          contentType: false,
+          processData: false,
+        }).done(function (res) {
+          var response = res.replace(/['"]+/g, "");
+          if (response == "ok") {
+            localStorage.setItem("folioInventario", folio);
+            window.location.href = "editarInventario";
+          }
+        });
+      } else {
+        localStorage.setItem("folioInventario", folio);
+        window.location.href = "editarInventario";
+      }
+    });
+  }
+}
+function detalleInventario(folio) {
+  var data = new FormData();
+  data.append("accion", "detalleInventario");
+  data.append("folioDocumento", folio);
+
+  var campo = [
+    "marca",
+    "familia",
+    "categoria",
+    "anaquel",
+    "repisa",
+    "proveedor",
+  ];
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    type: "post",
+    dataType: "json",
+    data: data,
+    cache: false,
+    contentType: false,
+    processData: false,
+  }).done(function (response) {
+    $("#documento").html(response["serie"] + " " + response["folio"]);
+    $("#estatusDocumento").html(response["idEstatus"]);
+    $("#habilitadoDocumento").html(response["habilitado"]);
+    $("#fecha").val(response["fechaDocumento"]);
+    document.getElementById("fecha").disabled = true;
+    $("#periodo").val(response["periodo"]);
+    $("#almacen").val(response["idAlmacen"]);
+    document.getElementById("almacen").disabled = true;
+    $("#almacenInventario").html(response["almacen"]);
+    $("#nombreSolicitante").html(response["realizador"]);
+
+    for (let i = 0; i < 6; i++) {
+      var fields = response[campo[i]];
+      generarFiltroInventarios(campo[i], fields);
+    }
+
+    $("#observaciones").val(response["observaciones"]);
+    document.getElementById("observaciones").disabled = true;
+    if (localStorage.grupoUsuario === "Administracion") {
+      if (response["idEstatus"] == "2" && response["habilitado"] == "0") {
+        document.getElementById("btnAprobarInventario").style.display = "";
+        document.getElementById("btnDesaprobarInventario").style.display = "";
+        document.getElementById("btnDesaprobarInventario").innerText =
+          "Volver a contar";
+        document
+          .getElementById("marca")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("familia")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("categoria")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("anaquel")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("repisa")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("proveedor")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+      } else if (response["idEstatus"] == "3") {
+        document.getElementById("divGenerarMovimientos").style.display = "";
+        document.getElementById(
+          "btnGenerarMovimientosInventario"
+        ).style.display = "";
+        document.getElementById("btnDesaprobarInventario").style.display = "";
+        document
+          .getElementById("marca")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("familia")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("categoria")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("anaquel")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("repisa")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("proveedor")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+      }
+    } else {
+      if (response["idEstatus"] == "1" && response["habilitado"] == "1") {
+        document.getElementById("btnActualizarInventario").style.display = "";
+        document.getElementById("filtroDiferencias").style.display = "";
+        document
+          .getElementById("marca")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("familia")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("categoria")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("anaquel")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("repisa")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("proveedor")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+      } else if (response["idEstatus"] == "3") {
+        document
+          .getElementById("marca")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("familia")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("categoria")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("anaquel")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("repisa")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+        document
+          .getElementById("proveedor")
+          .setAttribute("onchange", "cargarListaProductosInventario(0)");
+      }
+    }
+    cargarListaProductosInventario(folio);
+  });
+}
+function generarFiltroInventarios(selector, campos) {
+  camposFiltro = campos.split(",");
+  const options = $("#" + selector + " option");
+  if (options[0].value === "") {
+    $(options[0]).attr("activo", 1);
+  }
+  for (let j = 0; j < camposFiltro.length; j++) {
+    for (var i = 0; i < options.length; i++) {
+      if (options[i].value.indexOf(camposFiltro[j]) < 0) {
+      } else {
+        if (camposFiltro[j] == "") {
+          $(options[0]).css("display", "block");
+          $(options[0]).text("Ninguno");
+          $(options[0]).attr("activo", 1);
+        } else {
+          $(options[i]).attr("activo", 1);
+        }
+      }
+    }
+  }
+  $("#" + selector + " option").each(function () {
+    if ($(this).attr("activo") == 1) {
+      $(this).removeAttr("display");
+    } else {
+      $(this).css("display", "none");
+    }
+  });
+}
+function cargarListaProductosInventario(folioInventario) {
+  if (folioInventario === 0) {
+    folio = localStorage.folioInventario;
+  } else {
+    folio = folioInventario;
+  }
+  var idEstatus = $("#estatusDocumento").text();
+  var habilitado = $("#habilitadoDocumento").text();
+  var vista = "cargarListaProductosInventario";
+  var almacen = $("#almacen").val();
+  var accionMovimiento = $("#accionMovimiento").val();
+  var filtroDiferencias = $("#filtroDiferencia").val();
+
+  var parametros = {
+    action: "listadoProductosInventario",
+    page: 1,
+    per_page: 5000,
+    vista: vista,
+    folio: folio,
+    almacen: almacen,
+    idEstatus: idEstatus,
+    habilitado: habilitado,
+    accionMovimiento: accionMovimiento,
+    filtroDiferencias: filtroDiferencias,
+  };
+  $("#loader").fadeIn("slow");
+  $.ajax({
+    url: "ajax/listarProductosSolicitudes.ajax.php",
+    data: parametros,
+    beforeSend: function (objeto) {
+      $("#loader").html("Cargando productos espere un momento porfavor...");
+    },
+    success: function (data) {
+      $("#loader").html("");
+      if (data != "fail") {
+        $(".data").html(data).fadeIn("slow");
+        $(".dataFail").html("");
+        updateTotalesExistencias(almacen);
+        updateTotalesDiferencias(almacen);
+        updateTotalesInventario();
+      } else {
+        $(".data").html("");
+        updateTotalesExistencias(almacen);
+        updateTotalesDiferencias(almacen);
+        updateTotalesInventario();
+        $(".dataFail").html("<h3></h3>");
+      }
+    },
+  });
+}
+function desaprobarInventario() {
+  var folio = localStorage.folioInventario;
+  var datos = new FormData();
+  datos.append("accion", "updateEstatusDocumentoInventario");
+  datos.append("folioDocumento", folio);
+  datos.append("estatus", 1);
+  datos.append("habilitado", 1);
+  datos.append("tabla", "inventarios");
+
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    type: "post",
+    dataType: "json",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+  }).done(function (res) {
+    var response = res.replace(/['"]+/g, "");
+    if (response == "ok") {
+      Swal.fire({
+        icon: "success",
+        title: "¡Documento desaprobado correctamente!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      setInterval(() => {
+        localStorage.removeItem("folioDocumento");
+        window.location.href = "inventarios";
+      }, 300);
+    }
+  });
+}
+function aprobarInventario() {
+  var folio = localStorage.folioInventario;
+  var datos = new FormData();
+  datos.append("accion", "updateEstatusDocumento");
+  datos.append("folioDocumento", folio);
+  datos.append("estatus", 3);
+  datos.append("tabla", "inventarios");
+
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    type: "post",
+    dataType: "json",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+  }).done(function (res) {
+    var response = res.replace(/['"]+/g, "");
+    if (response == "ok") {
+      Swal.fire({
+        icon: "success",
+        title: "¡Documento aprobado correctamente!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      setInterval(() => {
+        localStorage.removeItem("folioDocumento");
+        window.location.href = "inventarios";
+      }, 300);
+    }
+  });
+}
+function obtenerMovimientosInventario() {
+  var folio = localStorage.folioInventario;
+  cargarListaProductosInventario(folio);
+}
+function generarMovimientosInventario() {
+  var accion = $("#accionMovimiento").val();
+  if (accion === "") {
+    Swal.fire({
+      icon: "warning",
+      title: "¡Elegir que tipo de movimiento desea realizar",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  } else {
+    let filasProductos = 0;
+    $("#tablaDetalleInventarios tbody tr").each((index, tr) => {
+      filasProductos++;
+    });
+    if (filasProductos === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "No hay productos para generar movimientos de entrada o salida.",
+        showConfirmButton: false,
+        timer: 2500,
+      });
+    } else {
+      var documento = $("#documento").text();
+      var documentoOrigen = documento.split(" ");
+      var serieOrigen = documentoOrigen[0];
+      var folioOrigen = documentoOrigen[1];
+      var marca = $("#marcaInventario").text();
+      if (marca != "") {
+        marca = "la marca " + marca;
+      } else {
+        marca = "todas las marcas";
+      }
+      var referencia = documento;
+      var unidades = convertPositive($("#diferenciasTotalUnidades").val());
+      var importe = $("#diferenciasTotalImporte").val();
+      importe = parseFloat(convertPositive(importe.replace(/[$,]/g, "")));
+
+      var fecha = $("#fecha").val();
+      var observaciones =
+        "Movimientos de " +
+        accion +
+        " apartir del documento " +
+        documento +
+        " del dia " +
+        fecha;
+      var almacen = $("#almacen").val();
+      if (accion == "Entrada") {
+        switch (almacen) {
+          case "1":
+            var serie = "ETGE";
+            var idConcepto = "37";
+            break;
+          case "3":
+            var serie = "ETLB";
+            var idConcepto = "3036";
+            break;
+          case "4":
+            var serie = "ETCA";
+            var idConcepto = "34";
+            break;
+          case "5":
+            var serie = "ETCA";
+            var idConcepto = "34";
+            break;
+          case "6":
+            var serie = "ETRM";
+            var idConcepto = "3023";
+            break;
+          case "7":
+            var serie = "ETRM";
+            var idConcepto = "3023";
+            break;
+          case "8":
+            var serie = "ETSN";
+            var idConcepto = "3024";
+            break;
+          case "9":
+            var serie = "ETSN";
+            var idConcepto = "3024";
+            break;
+          case "10":
+            var serie = "ETST";
+            var idConcepto = "3025";
+            break;
+          case "11":
+            var serie = "ETST";
+            var idConcepto = "3025";
+            break;
+          case "12":
+            var serie = "ETTO";
+            var idConcepto = "3026";
+            break;
+          case "13":
+            var serie = "ETTO";
+            var idConcepto = "3026";
+            break;
+        }
+        var idDocumentoDe = "32";
+      } else {
+        switch (almacen) {
+          case "1":
+            var serie = "SLGE";
+            var idConcepto = "38";
+            break;
+          case "3":
+            var serie = "SLLB";
+            var idConcepto = "3037";
+            break;
+          case "4":
+            var serie = "SLCA";
+            var idConcepto = "35";
+            break;
+          case "5":
+            var serie = "SLCA";
+            var idConcepto = "35";
+            break;
+          case "6":
+            var serie = "SLRM";
+            var idConcepto = "3027";
+            break;
+          case "7":
+            var serie = "SLRM";
+            var idConcepto = "3027";
+            break;
+          case "8":
+            var serie = "SLSN";
+            var idConcepto = "3028";
+            break;
+          case "9":
+            var serie = "SLSN";
+            var idConcepto = "3028";
+            break;
+          case "10":
+            var serie = "SLST";
+            var idConcepto = "3029";
+            break;
+          case "11":
+            var serie = "SLST";
+            var idConcepto = "3029";
+            break;
+          case "12":
+            var serie = "SLTO";
+            var idConcepto = "3030";
+            break;
+          case "13":
+            var serie = "SLTO";
+            var idConcepto = "3030";
+            break;
+        }
+        var idDocumentoDe = "33";
+      }
+      var productosInventario = [];
+      $("#tablaDetalleInventarios tbody tr").each((index, tr) => {
+        var idProducto = parseInt($(tr).find(".idProducto").attr("idProducto"));
+        var idInventario = parseInt(
+          $(tr).find(".idProducto").attr("idInventario")
+        );
+        var idProdInv = parseInt($(tr).find(".idProducto").attr("idProdInv"));
+
+        var idAlmacen = parseInt(
+          $(tr).find(".almacenProducto").attr("idAlmacen")
+        );
+        var unidades = parseFloat($(tr).find(".diferenciasProducto").text());
+        var unidadesConversion = parseFloat(
+          $(tr).find(".diferenciasProducto").attr("cantidadConv")
+        );
+        var idUnidad = parseInt(
+          $(tr).find(".unidadProductoBase").attr("idUnidad")
+        );
+        var costoCapturado = $(tr)
+          .find(".costoProducto")
+          .attr("costoCapturado");
+        costoCapturado = parseFloat(costoCapturado.replace(/[$,]/g, ""));
+
+        var neto = $(tr).find(".diferenciasImporteProducto").text();
+        neto = parseFloat(neto.replace(/[$,]/g, ""));
+
+        var producto = [
+          ["idInventario", idInventario],
+          ["idProdInv", idProdInv],
+          ["idProducto", idProducto],
+          ["idDocumentoDe", idDocumentoDe],
+          ["idAlmacen", idAlmacen],
+          ["unidades", convertPositive(unidades)],
+          ["unidadesConversion", convertPositive(unidadesConversion)],
+          ["idUnidad", idUnidad],
+          ["costoCapturado", costoCapturado],
+          ["costoEspecifico", convertPositive(neto)],
+          ["neto", convertPositive(neto)],
+          ["total", convertPositive(neto)],
+        ];
+
+        productosInventario.push(producto);
+      });
+      let productos = generarProductosInventario(productosInventario);
+      var datos = new FormData();
+      datos.append("accion", "generarMovimientoInventario");
+      datos.append("referencia", referencia);
+      datos.append("unidades", unidades);
+      datos.append("importe", importe);
+      datos.append("productos", JSON.stringify(productos));
+      datos.append("serie", serie);
+      datos.append("serieOrigen", serieOrigen);
+      datos.append("folioOrigen", folioOrigen);
+      datos.append("observaciones", observaciones);
+      datos.append("idDocumentoDe", idDocumentoDe);
+      datos.append("idConcepto", idConcepto);
+      datos.append("tipo", accion);
+
+      $.ajax({
+        url: "ajax/inventariosFunctions.ajax.php",
+        type: "post",
+        dataType: "json",
+        data: datos,
+        cache: false,
+        contentType: false,
+        processData: false,
+        beforeSend: function (objeto) {
+          $("#loadDocument").modal("show");
+          $("#titleLoadDocument").html("Generando Movimiento...");
+        },
+        success: function (data) {
+          setTimeout(function () {
+            $("#titleLoadDocument").html(accion + " Generada Correctamente...");
+            window.location.href = "editarInventario";
+          }, 2000);
+        },
+      });
+    }
+  }
+}
+function updateProductoInventario(el) {
+  var productosInventario = [];
+  var row = $(el).parents("tr");
+  var idProducto = parseInt(row.find(".idProducto").attr("idProducto"));
+  var idProdInv = parseInt(row.find(".idProducto").attr("idProdInv"));
+  var folioInventario = localStorage.folioInventario;
+  var inventarioConversion = parseFloat(
+    row.find(".inventarioProducto").attr("cantidadConv")
+  );
+  var inventario = parseFloat(row.find(".inventarioProducto").val());
+  var inventarioImporte = row.find(".inventarioImporteProducto").text();
+  inventarioImporte = parseFloat(inventarioImporte.replace(/[$,]/g, ""));
+
+  var diferenciaConversion = parseFloat(
+    row.find(".diferenciasProducto").attr("cantidadConv")
+  );
+  var diferencia = parseFloat(row.find(".diferenciasProducto").text());
+  var diferenciaImporte = row.find(".diferenciasImporteProducto").text();
+  diferenciaImporte = parseFloat(diferenciaImporte.replace(/[$,]/g, ""));
+  var estado = row.find(".estadoProducto").text();
+  if (estado == "") {
+    estado = "SIN CONTABILIZAR";
+  } else {
+    estado = row.find(".estadoProducto").text();
+  }
+
+  var producto = [
+    ["idProducto", idProducto],
+    ["idProdInv", idProdInv],
+    ["inventarioConversion", inventarioConversion],
+    ["inventario", inventario],
+    ["inventarioImporte", inventarioImporte],
+    ["diferenciaConversion", diferenciaConversion],
+    ["diferencia", diferencia],
+    ["diferenciaImporte", diferenciaImporte],
+    ["estado", estado],
+    ["folio", folioInventario],
+  ];
+
+  productosInventario.push(producto);
+
+  let productos = generarProductosInventario(productosInventario);
+
+  var datos = new FormData();
+  datos.append("accion", "actualizarProductoInventario");
+  datos.append("productos", JSON.stringify(productos));
+
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    type: "post",
+    dataType: "json",
+    data: datos,
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (res) {
+      var response = res.replace(/['"]+/g, "");
+      if (response == "ok") {
+        cargarListaProductosInventario(0);
+      } else {
+        alert("Error al actualizar el movimiento");
+      }
+    },
+  });
+}
+function actualizarInventario() {
+  let filtro = $("#filtroDiferencia").val();
+  let folioInventario = localStorage.folioInventario;
+
+  if (filtro === "0") {
+    Swal.fire({
+      icon: "warning",
+      title: "¡Para continuar eliminar filtro de diferencias.!",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  } else {
+    Swal.fire({
+      showDenyButton: true,
+      confirmButtonText: "Finalizar Inventario",
+      denyButtonText: "Seguir modificando",
+      icon: "warning",
+      title: "¿Las diferencias del inventario son correctas?",
+      showConfirmButton: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        var inventario = $("#inventarioTotalUnidades").val();
+        var diferencia = $("#diferenciasTotalUnidades").val();
+
+        var inventarioImportes = $("#inventarioTotalImporte").val();
+        inventarioImportes = parseFloat(
+          inventarioImportes.replace(/[$,]/g, "")
+        );
+        var diferenciaImportes = $("#diferenciasTotalImporte").val();
+        diferenciaImportes = parseFloat(
+          diferenciaImportes.replace(/[$,]/g, "")
+        );
+
+        var datos = new FormData();
+        datos.append("accion", "actualizarInventario");
+        datos.append("folioInventario", folioInventario);
+        datos.append("inventario", inventario);
+        datos.append("diferencia", diferencia);
+        datos.append("inventarioImportes", inventarioImportes);
+        datos.append("diferenciaImportes", diferenciaImportes);
+
+        $.ajax({
+          url: "ajax/inventariosFunctions.ajax.php",
+          type: "post",
+          dataType: "json",
+          data: datos,
+          cache: false,
+          contentType: false,
+          processData: false,
+          beforeSend: function (objeto) {
+            $("#loadDocument").modal("show");
+            $("#titleLoadDocument").html("Actualizando Inventario...");
+          },
+          success: function (res) {
+            var response = res.replace(/['"]+/g, "");
+            if (response == "ok") {
+              setTimeout(function () {
+                localStorage.removeItem("folioInventario");
+                $("#titleLoadDocument").html(
+                  "Inventario Actualizado Correctamente..."
+                );
+                window.location.href = "inventarios";
+              }, 2000);
+            } else {
+              alert("Error al actualizar el inventario");
+            }
+          },
+        });
+      }
+    });
+  }
+}
+function setFiltrosInventario() {
+  var empresa = $("#empresaInventario").val();
+  var idGrupo = localStorage.idGrupo;
+  var parametros = {
+    idGrupo: idGrupo,
+    empresa: empresa,
+    action: "listadoAlmacenes",
+  };
+  $.ajax({
+    url: "ajax/inventariosFunctions.ajax.php",
+    data: parametros,
+    success: function (data) {
+      $("#diaDashboard").empty();
+      var datos = JSON.parse(data);
+      var select = document.getElementById("diaDashboard");
+      var option = document.createElement("option");
+      option.innerHTML = "Toda la semana";
+      option.value = "";
+      select.appendChild(option);
+      for (var i = 0; i < datos.length; i++) {
+        var option = document.createElement("option");
+        option.innerHTML = datos[i];
+        option.value = datos[i];
+        select.appendChild(option);
+      }
+      $("#periodWeek").html("PERIODO " + datos[0] + " - " + datos[5]);
+    },
+  });
+}
+function generarReporteRealizarInventario() {
+  var per_page = 100;
+  var page = 1;
+  var vista = "cargarListaProductosInventarios";
+  var arregloMarca = JSON.parse(localStorage.getItem("arrayMarca"));
+  var arregloFamilia = JSON.parse(localStorage.getItem("arrayFamilia"));
+  var arregloCategoria = JSON.parse(localStorage.getItem("arrayCategoria"));
+  var arregloAnaquel = JSON.parse(localStorage.getItem("arrayAnaquel"));
+  var arregloRepisa = JSON.parse(localStorage.getItem("arrayRepisa"));
+  var arregloProveedor = JSON.parse(localStorage.getItem("arrayProveedor"));
+  var periodo = $("#periodo").val();
+  var almacen = $("#almacen").val();
+  var alm = document.getElementById("almacen");
+  var nombreAlmacen = alm.options[alm.selectedIndex].text;
+
+  if (arregloMarca === null) {
+    localStorage.setItem("arrayMarca", "[]");
+    var marca = "";
+  } else {
+    if (arregloMarca == "[]") {
+      var marca = "";
+    } else {
+      var marca = arregloMarca.toString();
+    }
+  }
+  if (arregloFamilia === null) {
+    localStorage.setItem("arrayFamilia", "[]");
+    var familia = "";
+  } else {
+    if (arregloFamilia == "[]") {
+      var familia = "";
+    } else {
+      var familia = arregloFamilia.toString();
+    }
+  }
+  if (arregloCategoria === null) {
+    localStorage.setItem("arrayCategoria", "[]");
+    var categoria = "";
+  } else {
+    if (arregloCategoria == "[]") {
+      var categoria = "";
+    } else {
+      var categoria = arregloCategoria.toString();
+    }
+  }
+  if (arregloAnaquel === null) {
+    localStorage.setItem("arrayAnaquel", "[]");
+    var anaquel = "";
+  } else {
+    if (arregloAnaquel == "[]") {
+      var anaquel = "";
+    } else {
+      var anaquel = arregloAnaquel.toString();
+    }
+  }
+  if (arregloRepisa === null) {
+    localStorage.setItem("arrayRepisa", "[]");
+    var repisa = "";
+  } else {
+    if (arregloRepisa == "[]") {
+      var repisa = "";
+    } else {
+      var repisa = arregloRepisa.toString();
+    }
+  }
+  if (arregloProveedor === null) {
+    localStorage.setItem("arrayProveedor", "[]");
+    var proveedor = "";
+  } else {
+    if (arregloProveedor == "[]") {
+      var proveedor = "";
+    } else {
+      var proveedor = arregloProveedor.toString();
+    }
+  }
+  var campoOrden = $("#campoOrden").val();
+  var orden = $("#orden").val();
+
+  location.href =
+    "views/moduls/reporteador.php?reporteRealizarInventario=" +
+    "&page=" +
+    page +
+    "&usuario=" +
+    idUsuario +
+    "&per_page=" +
+    per_page +
+    "&marca=" +
+    marca +
+    "&familia=" +
+    familia +
+    "&categoria=" +
+    categoria +
+    "&anaquel=" +
+    anaquel +
+    "&repisa=" +
+    repisa +
+    "&proveedor=" +
+    proveedor +
+    "&campoOrden=" +
+    campoOrden +
+    "&orden=" +
+    orden +
+    "&periodo=" +
+    periodo +
+    "&almacen=" +
+    almacen +
+    "&nombreAlmacen=" +
+    nombreAlmacen;
+}
+function generarReporteEditarInventario() {
+  folio = localStorage.folioInventario;
+  var idEstatus = $("#estatusDocumento").text();
+  var habilitado = $("#habilitadoDocumento").text();
+  var documento = $("#documento").text();
+  var nombreAlmacen = $("#almacenInventario").text();
+  var almacen = $("#almacen").val();
+  var accionMovimiento = $("#accionMovimiento").val();
+  var filtroDiferencias = $("#filtroDiferencia").val();
+  page = 1;
+  per_page = 10000;
+  location.href =
+    "views/moduls/reporteador.php?reporteEditarInventario=" +
+    "&page=" +
+    page +
+    "&per_page=" +
+    per_page +
+    "&folio=" +
+    folio +
+    "&almacen=" +
+    almacen +
+    "&idEstatus=" +
+    idEstatus +
+    "&habilitado=" +
+    habilitado +
+    "&accionMovimiento=" +
+    accionMovimiento +
+    "&filtroDiferencias=" +
+    filtroDiferencias +
+    "&documento=" +
+    documento +
+    "&nombreAlmacen=" +
+    nombreAlmacen;
 }

@@ -273,6 +273,52 @@ class busquedaDatos extends ConexionsBd
         $query = $query->fetchAll();
         return $query;
     }
+    public function getClientesProveedores($search, $aColumns)
+    {
+        $offset = $search['offset'];
+        $per_page = $search['per_page'];
+        if ($search["clienteProveedor"] != "") {
+            $sWhere = "and (";
+            for ($i = 0; $i < count($aColumns); $i++) {
+                $sWhere .= $aColumns[$i] . " LIKE '%" . $search["clienteProveedor"] . "%' OR ";
+            }
+            $sWhere = substr_replace($sWhere, "", -3);
+            $sWhere .= ')';
+        } else {
+            $sWhere = "";
+        }
+
+        $sql = "WITH listaProveedores AS(
+            SELECT
+                   CIDCLIENTEPROVEEDOR,
+                   CCODIGOCLIENTE,
+                   CRFC,
+                   CRAZONSOCIAL
+        
+            FROM [adDEKKERLAB].[dbo].[admClientes] WHERE CIDCLIENTEPROVEEDOR != 0 and CTIPOCLIENTE = '" . $search["tipo"] . "' $sWhere)
+                  select * from listaProveedores ORDER BY CCODIGOCLIENTE ASC OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+
+
+        $query = $this->mysqli->query($sql);
+
+        $sql1 = "WITH listaProveedores AS(
+            SELECT
+                   CIDCLIENTEPROVEEDOR,
+                   CCODIGOCLIENTE,
+                   CRFC,
+                   CRAZONSOCIAL
+        
+            FROM [adDEKKERLAB].[dbo].[admClientes] WHERE CIDCLIENTEPROVEEDOR != 0 and CTIPOCLIENTE = '" . $search["tipo"] . "'  $sWhere)
+                  select * from listaProveedores ORDER BY CCODIGOCLIENTE ASC";
+
+        $nums_row = $this->countAll($sql1);
+
+        //Set counter
+        $this->setCounter($nums_row);
+
+        $query = $query->fetchAll();
+        return $query;
+    }
     function setCounter($counter)
     {
         $this->counter = $counter;

@@ -72,7 +72,7 @@
 
                                                                     </div>
                                                                     <div class="filter-group">
-                                                                        <button type="button" class="btn btn-warning" id="btnRefresh"> <i class="fa fa-refresh"></i>Actualizar</button>
+                                                                        <button type="button" class="btn nestable-info" id="btnRefresh"> <i class="fa fa-refresh"></i>Actualizar</button>
                                                                     </div>
                                                                 </div>
 

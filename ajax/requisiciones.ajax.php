@@ -606,12 +606,14 @@ if ($action == 'listaAutorizaciones') {
                 $finales = 0;
                 $num = 1;
                 foreach ($datos as $key => $row) {
-                    switch ($row["idEstatus"]) {
-                        case '1':
+                    switch ($row["aprobada"]) {
+                        case '0':
                             $estatus = '#FF5252';
+                            $estatusBoton = "";
                             break;
-                        case '2':
+                        case '1':
                             $estatus = '#11C15B';
+                            $estatusBoton = "none";
                             break;
                     }
                 ?>
@@ -631,7 +633,7 @@ if ($action == 'listaAutorizaciones') {
                         <td><?= $row['SOLICITANTE'] ?></td>
                         <td><?= $row['observaciones'] ?></td>
                         <td>
-                            <button type="button" class="btn btn-primary" onclick="editarDocumento('3','autorizacionescompra','<?= $row['folio'] ?>','autorizacion','<?= $row['tipoDocumento'] ?>')"><i class="fa fa-edit"></i></button>
+                            <button type="button" class="btn btn-primary" style="display:<?= $estatusBoton ?>" onclick="editarDocumento('3','autorizacionescompra','<?= $row['folio'] ?>','autorizacion','<?= $row['tipoDocumento'] ?>')"><i class="fa fa-edit"></i></button>
                         </td>
                     </tr>
                 <?php
@@ -716,12 +718,14 @@ if ($action == 'listaAutorizacionesAdmin') {
                 $finales = 0;
                 $num = 1;
                 foreach ($datos as $key => $row) {
-                    switch ($row["idEstatus"]) {
-                        case '1':
+                    switch ($row["aprobada"]) {
+                        case '0':
                             $estatus = '#FF5252';
+                            $estatusBoton = "";
                             break;
-                        case '2':
+                        case '1':
                             $estatus = '#11C15B';
+                            $estatusBoton = "none";
                             break;
                     }
                 ?>
@@ -743,8 +747,230 @@ if ($action == 'listaAutorizacionesAdmin') {
                         <td>
                             <button type="button" class="btn btn-primary" onclick="editarDocumento('3','autorizacionescompra','<?= $row['folio'] ?>','autorizacion','<?= $row['tipoDocumento'] ?>')"><i class="fa fa-edit"></i></button>
                             &nbsp;
-                            <button type="button" style="display:<?= $estado ?>" class="btn btn-primary" onclick="eliminarDocumento('autorizacion','<?= $row['folio'] ?>')"><i class="fa fa-trash"></i></button>
+                            <button type="button" style="display:<?= $estatusBoton ?>" class="btn btn-primary" onclick="eliminarDocumento('autorizacion','<?= $row['folio'] ?>')"><i class="fa fa-trash"></i></button>
                         </td>
+                    </tr>
+                <?php
+                    $finales++;
+                    $num++;
+                }
+                ?>
+            </tbody>
+        </table>
+        <div class="clearfix">
+            <?php
+            $inicios = $offset + 1;
+            $finales += $inicios - 1;
+            echo '<div class="hint-text">Mostrando ' . $inicios . ' al ' . $finales . ' de ' . $numrows . ' registros</div>';
+
+
+            include '../clases/pagination.php'; //include pagination class
+            $pagination = new Pagination($page, $total_pages, $adjacents);
+            echo $pagination->paginateInventarios($vista);
+
+            ?>
+        </div>
+    <?php
+    }
+}
+if ($action == 'listaOrdenesCompra') {
+
+    include('../clases/dataInventarios.php');
+    $database = new dataInventarios();
+    //Recibir variables enviadas
+    $usuario = strip_tags($_REQUEST['usuario']);
+    $vista = strip_tags($_REQUEST['vista']);
+    $per_page = intval($_REQUEST['per_page']);
+    $estatus = strip_tags($_REQUEST['estatus']);
+    $campo = strip_tags($_REQUEST['campo']);
+    $orden = strip_tags($_REQUEST['orden']);
+    $sucursal = strip_tags($_REQUEST['sucursal']);
+    $tipo = strip_tags($_REQUEST['tipo']);
+    $campos = "arel.nombreArea as 'SUCURSAL',arel.origen as 'ORIGEN',adoc.CIDDOCUMENTO,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CFECHA,adoc.CRAZONSOCIAL,adoc.CREFERENCIA,adoc.CCANCELADO,adoc.CTOTALUNIDADES,adoc.CUNIDADESPENDIENTES,adoc.CNETO,adoc.CIMPUESTO1,adoc.CTOTAL,adoc.CPENDIENTE";
+    //Variables de paginación
+    $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page'])) ? $_REQUEST['page'] : 1;
+    $adjacents  = 4; //espacio entre páginas después del número de adyacentes
+    $offset = ($page - 1) * $per_page;
+
+    $search = array("usuario" => $usuario, "sucursal" => $sucursal, "tipo" => $tipo, "per_page" => $per_page, "offset" => $offset, "estatus" => $estatus, "campo" => $campo, "orden" => $orden);
+    //consulta principal para recuperar los datos
+    $datos = $database->getOrdenesCompra($campos, $search);
+    $countAll = $database->getCounter();
+    $row = $countAll;
+
+    if ($row > 0) {
+        $numrows = $countAll;
+    } else {
+        $numrows = 0;
+    }
+    $total_pages = ceil($numrows / $per_page);
+
+
+    //Recorrer los datos recuperados
+
+    if ($numrows > 0) {
+    ?>
+        <table class="table table-responsive table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>SUCURSAL</th>
+                    <th>SERIE</th>
+                    <th>FOLIO</th>
+                    <th>FECHA</th>
+                    <th>AUTORIZACION ORIGEN</th>
+                    <th>PROVEEDOR</th>
+                    <th>UNIDADES</th>
+                    <th>UNIDADES PENDIENTES</th>
+                    <th>NETO</th>
+                    <th>IMPUESTO</th>
+                    <th>TOTAL</th>
+                    <th>PENDIENTE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $finales = 0;
+                $num = 1;
+                foreach ($datos as $key => $row) {
+                    switch ($row["CCANCELADO"]) {
+                        case '1':
+                            $estatus = '#FF5252';
+                            $estatusBoton = "";
+                            break;
+                        case '0':
+                            $estatus = '#11C15B';
+                            $estatusBoton = "none";
+                            break;
+                    }
+                    setlocale(LC_MONETARY, 'es_MX');
+                ?>
+                    <tr>
+                        <td style="background:<?= $estatus ?>;color:white"><?= $num ?></td>
+                        <td style="font-weight:bold;text-align:left"><?= $row['SUCURSAL']; ?></td>
+                        <td style="font-weight:bold;text-align:left"><?= $row['CSERIEDOCUMENTO']; ?></td>
+                        <td style="font-weight:bold;text-align:left" class="btnDetalleEntradasSalidas" onclick="detalleMovimientosDocumento(<?= $row['CIDDOCUMENTO'] ?>);"><?= intval($row['CFOLIO']) ?></td>
+                        <td><?= $row['CFECHA'] ?></td>
+                        <td style="font-weight:bold;text-align:left"><?= $row['ORIGEN']; ?></td>
+                        <td style="font-weight:bold;text-align:left"><?= $row['CRAZONSOCIAL']; ?></td>
+                        <td style="font-weight:bold;text-align:left"><?= $row['CTOTALUNIDADES'] ?></td>
+                        <td style="color:#00BAD3;font-weight:bold;text-align:left"><?= $row['CUNIDADESPENDIENTES'] ?></td>
+                        <td style="font-weight:bold;text-align:left">$ <?= bcdiv($row['CNETO'], '1', 2) ?></td>
+                        <td style="font-weight:bold;text-align:left">$ <?= bcdiv($row['CIMPUESTO1'], '1', 4) ?></td>
+                        <td style="font-weight:bold;text-align:left">$ <?= bcdiv($row['CTOTAL'], '1', 4) ?></td>
+                        <td style="color:#00BAD3;font-weight:bold;text-align:left">$ <?= number_format($row['CPENDIENTE'], 4) ?></td>
+
+                    </tr>
+                <?php
+                    $finales++;
+                    $num++;
+                }
+                ?>
+            </tbody>
+        </table>
+        <div class="clearfix">
+            <?php
+            $inicios = $offset + 1;
+            $finales += $inicios - 1;
+            echo '<div class="hint-text">Mostrando ' . $inicios . ' al ' . $finales . ' de ' . $numrows . ' registros</div>';
+
+
+            include '../clases/pagination.php'; //include pagination class
+            $pagination = new Pagination($page, $total_pages, $adjacents);
+            echo $pagination->paginateInventarios($vista);
+
+            ?>
+        </div>
+    <?php
+    }
+}
+if ($action == 'listaCompras') {
+
+    include('../clases/dataInventarios.php');
+    $database = new dataInventarios();
+    //Recibir variables enviadas
+    $usuario = strip_tags($_REQUEST['usuario']);
+    $vista = strip_tags($_REQUEST['vista']);
+    $per_page = intval($_REQUEST['per_page']);
+    $estatus = strip_tags($_REQUEST['estatus']);
+    $campo = strip_tags($_REQUEST['campo']);
+    $orden = strip_tags($_REQUEST['orden']);
+    $sucursal = strip_tags($_REQUEST['sucursal']);
+    $tipo = strip_tags($_REQUEST['tipo']);
+    $campos = "arel.nombreArea as 'SUCURSAL',arel.origen as 'ORIGEN',adoc.CIDDOCUMENTO,adoc.CSERIEDOCUMENTO,adoc.CFOLIO,adoc.CFECHA,adoc.CRAZONSOCIAL,adoc.CREFERENCIA,adoc.CCANCELADO,adoc.CTOTALUNIDADES,adoc.CUNIDADESPENDIENTES,adoc.CNETO,adoc.CIMPUESTO1,adoc.CTOTAL,adoc.CPENDIENTE";
+    //Variables de paginación
+    $page = (isset($_REQUEST['page']) && !empty($_REQUEST['page'])) ? $_REQUEST['page'] : 1;
+    $adjacents  = 4; //espacio entre páginas después del número de adyacentes
+    $offset = ($page - 1) * $per_page;
+
+    $search = array("usuario" => $usuario, "sucursal" => $sucursal, "tipo" => $tipo, "per_page" => $per_page, "offset" => $offset, "estatus" => $estatus, "campo" => $campo, "orden" => $orden);
+    //consulta principal para recuperar los datos
+    $datos = $database->getComprasRealizadas($campos, $search);
+    $countAll = $database->getCounter();
+    $row = $countAll;
+
+    if ($row > 0) {
+        $numrows = $countAll;
+    } else {
+        $numrows = 0;
+    }
+    $total_pages = ceil($numrows / $per_page);
+
+
+    //Recorrer los datos recuperados
+
+    if ($numrows > 0) {
+    ?>
+        <table class="table table-responsive table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>SUCURSAL</th>
+                    <th>SERIE</th>
+                    <th>FOLIO</th>
+                    <th>FECHA</th>
+                    <th>AUTORIZACION ORIGEN</th>
+                    <th>PROVEEDOR</th>
+                    <th>UNIDADES</th>
+                    <th>UNIDADES PENDIENTES</th>
+                    <th>NETO</th>
+                    <th>IMPUESTO</th>
+                    <th>TOTAL</th>
+                    <th>PENDIENTE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $finales = 0;
+                $num = 1;
+                foreach ($datos as $key => $row) {
+                    switch ($row["CCANCELADO"]) {
+                        case '1':
+                            $estatus = '#FF5252';
+                            $estatusBoton = "";
+                            break;
+                        case '0':
+                            $estatus = '#11C15B';
+                            $estatusBoton = "none";
+                            break;
+                    }
+                    setlocale(LC_MONETARY, 'es_MX');
+                ?>
+                    <tr>
+                        <td style="background:<?= $estatus ?>;color:white"><?= $num ?></td>
+                        <td style="font-weight:bold;text-align:left"><?= $row['SUCURSAL']; ?></td>
+                        <td style="font-weight:bold;text-align:left"><?= $row['CSERIEDOCUMENTO']; ?></td>
+                        <td style="font-weight:bold;text-align:left" class="btnDetalleEntradasSalidas" onclick="detalleMovimientosDocumento(<?= $row['CIDDOCUMENTO'] ?>);"><?= intval($row['CFOLIO']) ?></td>
+                        <td><?= $row['CFECHA'] ?></td>
+                        <td style="font-weight:bold;text-align:left"><?= $row['ORIGEN']; ?></td>
+                        <td style="font-weight:bold;text-align:left"><?= $row['CRAZONSOCIAL']; ?></td>
+                        <td style="font-weight:bold;text-align:left"><?= $row['CTOTALUNIDADES'] ?></td>
+                        <td style="color:#00BAD3;font-weight:bold;text-align:left"><?= $row['CUNIDADESPENDIENTES'] ?></td>
+                        <td style="font-weight:bold;text-align:left">$ <?= bcdiv($row['CNETO'], '1', 2) ?></td>
+                        <td style="font-weight:bold;text-align:left">$ <?= bcdiv($row['CIMPUESTO1'], '1', 4) ?></td>
+                        <td style="font-weight:bold;text-align:left">$ <?= bcdiv($row['CTOTAL'], '1', 4) ?></td>
+                        <td style="color:#00BAD3;font-weight:bold;text-align:left">$ <?= number_format($row['CPENDIENTE'], 4) ?></td>
+
                     </tr>
                 <?php
                     $finales++;
@@ -769,4 +995,5 @@ if ($action == 'listaAutorizacionesAdmin') {
 <?php
     }
 }
+
 ?>

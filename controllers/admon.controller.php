@@ -70,6 +70,7 @@ class ControllerAdmon
                                 $_SESSION["grupo"] = $respuesta["grupo"];
                                 $_SESSION["perfil"] = $respuesta["perfil"];
                                 $_SESSION["idGrupo"] = $respuesta["idGrupo"];
+                                $_SESSION["area"] = $respuesta["area"];
                                 $_SESSION["modulo"] = $modulo;
 
                                 $datos = array(
@@ -86,6 +87,7 @@ class ControllerAdmon
                                     localStorage.setItem("tipoModulo","Ventas");
                                     localStorage.setItem("grupoUsuario","' . $respuesta["grupo"] . '");
                                     localStorage.setItem("idUsuarioInventarios","' . $respuesta["id"] . '");
+                                    localStorage.setItem("idGrupo","' . $respuesta["idGrupo"] . '");
                                     window.location = "ultimosCostos";
                               
     
@@ -96,6 +98,7 @@ class ControllerAdmon
                                     localStorage.setItem("tipoModulo","Ventas");
                                     localStorage.setItem("grupoUsuario","' . $respuesta["grupo"] . '");
                                     localStorage.setItem("idUsuarioInventarios","' . $respuesta["id"] . '");
+                                    localStorage.setItem("idGrupo","' . $respuesta["idGrupo"] . '");
                                     window.location = "' . $dashboard . '";
                                
     
@@ -112,6 +115,7 @@ class ControllerAdmon
                                 $_SESSION["grupo"] = $respuesta["grupo"];
                                 $_SESSION["perfil"] = $respuesta["perfil"];
                                 $_SESSION["idGrupo"] = $respuesta["idGrupo"];
+                                $_SESSION["area"] = $respuesta["area"];
                                 $_SESSION["modulo"] = $modulo;
 
                                 $datos = array(
@@ -128,6 +132,7 @@ class ControllerAdmon
                                     localStorage.setItem("tipoModulo","Inventarios");
                                     localStorage.setItem("grupoUsuario","' . $respuesta["grupo"] . '");
                                     localStorage.setItem("idUsuarioInventarios","' . $respuesta["id"] . '");
+                                    localStorage.setItem("idGrupo","' . $respuesta["idGrupo"] . '");
                                     window.location = "ultimosCostos";
                               
     
@@ -139,14 +144,24 @@ class ControllerAdmon
                                         localStorage.setItem("tipoModulo","Inventarios");
                                         localStorage.setItem("grupoUsuario","' . $respuesta["grupo"] . '");
                                         localStorage.setItem("idUsuarioInventarios","' . $respuesta["id"] . '");
+                                        localStorage.setItem("idGrupo","' . $respuesta["idGrupo"] . '");
                                         window.location = "ecommerce";
+                                        </script>';
+                                    } else if ($_SESSION["grupo"] == 'Tiendas') {
+                                        echo '<script>
+                                        localStorage.setItem("tipoModulo","Inventarios");
+                                        localStorage.setItem("grupoUsuario","' . $respuesta["grupo"] . '");
+                                        localStorage.setItem("idUsuarioInventarios","' . $respuesta["id"] . '");
+                                        localStorage.setItem("idGrupo","' . $respuesta["idGrupo"] . '");
+                                        window.location = "miAlmacen";
                                         </script>';
                                     } else {
                                         echo '<script>
                                         localStorage.setItem("tipoModulo","Inventarios");
                                         localStorage.setItem("grupoUsuario","' . $respuesta["grupo"] . '");
                                         localStorage.setItem("idUsuarioInventarios","' . $respuesta["id"] . '");
-                                        window.location = "indicadores";
+                                        localStorage.setItem("idGrupo","' . $respuesta["idGrupo"] . '");
+                                        window.location = "dashboardInventarios";
                                         </script>';
                                     }
                                 }
@@ -373,6 +388,18 @@ class ControllerAdmon
     static public function ctrActualizarDocumentoAprobado($tabla, $datos)
     {
         $respuesta = ModelAdmon::mdlActualizarDocumentoAprobado($tabla, $datos);
+
+        return $respuesta;
+    }
+    static public function ctrEstatusDocumentoInventario($tabla, $folio)
+    {
+        $respuesta = ModelAdmon::mdlEstatusDocumentoInventario($tabla, $folio);
+
+        return $respuesta;
+    }
+    static public function ctrActualizarEstatusDocumentoInventario($tabla, $datos)
+    {
+        $respuesta = ModelAdmon::mdlActualizarEstatusDocumentoInventario($tabla, $datos);
 
         return $respuesta;
     }

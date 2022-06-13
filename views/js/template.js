@@ -3798,6 +3798,9 @@ function removeItemFromArregloBusqueda(array, item, nombreArreglo) {
     case "agotarse":
       productosPorAgotarse();
       break;
+    case "realizarInventario":
+      cargarListaProductosInventarios(1);
+      break;
   }
 }
 function validateItemArray(array, item, nombreArreglo) {
@@ -3933,6 +3936,9 @@ function validateItemArray(array, item, nombreArreglo) {
         break;
       case "agotarse":
         productosPorAgotarse();
+        break;
+      case "realizarInventario":
+        cargarListaProductosInventarios(1);
         break;
     }
   } else if (array.indexOf(item) > -1) {

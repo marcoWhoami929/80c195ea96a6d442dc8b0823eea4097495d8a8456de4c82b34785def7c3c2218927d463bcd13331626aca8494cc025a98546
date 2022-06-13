@@ -67,7 +67,7 @@
 
 
                                                                         <div class="filter-group">
-                                                                            <button type="button" id="searchProductoVenta" class="btn btn-primary" data-toggle="modal" data-target="#modalProductosVenta"> <i class="fa fa-search"></i>Productos</button>
+                                                                            <button type="button" id="searchProductoVenta" class="btn nestable-info" data-toggle="modal" data-target="#modalProductosVenta"> <i class="fa fa-search"></i>Productos</button>
                                                                         </div>
                                                                         <div class="filter-group">
                                                                             <label>Periodo:</label>
@@ -138,16 +138,16 @@
                                                                             </select>
                                                                         </div>
                                                                         <div class="filter-group">
-                                                                            <button type="button" id="btnGenerarDocumento" class="btn btn-danger" onclick="generarDocumento('requisiciones')"><i class="fa fa-edit"></i>Actualizar</button>
+                                                                            <button type="button" id="btnGenerarDocumento" class="btn nestable-danger" onclick="generarDocumento('requisiciones')"><i class="fa fa-edit"></i>Actualizar</button>
                                                                         </div>
                                                                         <div class="filter-group">
-                                                                            <button type="button" id="btnAprobarDocumento" class="btn btn-primary" onclick="aprobarDocumento('requisiciones')" style="display:none"><i class="fa fa-check"></i>Aprobar</button>
+                                                                            <button type="button" id="btnAprobarDocumento" class="btn nestable-info" onclick="aprobarDocumento('requisiciones')" style="display:none"><i class="fa fa-check"></i>Aprobar</button>
                                                                         </div>
                                                                         <div class="filter-group">
-                                                                            <button type="button" id="btnFinalizarDocumento" class="btn btn-success" onclick="finalizarDocumento('requisiciones')" style="display:none"><i class="fa fa-flag-checkered"></i>Entregado</button>
+                                                                            <button type="button" id="btnFinalizarDocumento" class="btn nestable-success" onclick="finalizarDocumento('requisiciones')" style="display:none"><i class="fa fa-flag-checkered"></i>Entregado</button>
                                                                         </div>
                                                                         <div class="filter-group">
-                                                                            <button type="button" class="btn btn-warning" id="btnSolicitarAutorizacionCompra" onclick="autorizacionCompra()" style="display:none"><i class="fa fa-paper-plane"></i>Autorización de Compra</button>
+                                                                            <button type="button" class="btn nestable-info" id="btnSolicitarAutorizacionCompra" onclick="autorizacionCompra()" style="display:none"><i class="fa fa-paper-plane"></i>Autorización de Compra</button>
                                                                         </div>
                                                                         <div class="filter-group">
                                                                             <h4 id="nombreSolicitante"></h4>
@@ -328,7 +328,7 @@
             </div>
             <div class="modal-footer">
 
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+                <button type="button" class="btn nestable-danger" data-dismiss="modal">Salir</button>
             </div>
         </div>
     </div>

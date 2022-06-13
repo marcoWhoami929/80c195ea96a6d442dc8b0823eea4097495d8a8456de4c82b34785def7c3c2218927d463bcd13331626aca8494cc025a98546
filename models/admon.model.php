@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set('America/Mexico_City');
 require_once "db_conexion.php";
 $agenteListPinturas = "CASE SUBSTRING(adoc.CSERIEDOCUMENTO,3,4)
 WHEN 'CP'
@@ -923,6 +923,64 @@ class ModelAdmon
                ,CVALORCLASIFICACION as 'Categoria'
                 
             FROM [adDEKKERLAB].[dbo].[admClasificacionesValores] WHERE CIDCLASIFICACION = 27");
+
+          $stmt->execute();
+
+          return $stmt->fetchAll();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlObtenerListaFamilias()
+     {
+          $stmt = ConexionsBd::conectarDekkerlab()->prepare("SELECT 
+               CIDVALORCLASIFICACION as 'Id'
+               ,CVALORCLASIFICACION as 'Familia'
+                
+            FROM [adDEKKERLAB].[dbo].[admClasificacionesValores] WHERE CIDCLASIFICACION = 26");
+
+          $stmt->execute();
+
+          return $stmt->fetchAll();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlObtenerListaAnaqueles()
+     {
+          $stmt = ConexionsBd::conectarDekkerlab()->prepare("SELECT 
+          CANAQUEL as 'Anaquel'
+      FROM admMaximosMinimos GROUP BY CANAQUEL ORDER BY CANAQUEL asc");
+
+          $stmt->execute();
+
+          return $stmt->fetchAll();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlObtenerListaRepisas()
+     {
+          $stmt = ConexionsBd::conectarDekkerlab()->prepare("SELECT 
+          CREPISA as 'Repisa'
+      FROM admMaximosMinimos GROUP BY CREPISA ORDER BY CREPISA asc");
+
+          $stmt->execute();
+
+          return $stmt->fetchAll();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlObtenerListaProveedores()
+     {
+          $stmt = ConexionsBd::conectarDekkerlab()->prepare("SELECT 
+          CZONA as 'Proveedor'
+      FROM admMaximosMinimos GROUP BY CZONA  ORDER BY CZONA asc");
 
           $stmt->execute();
 
@@ -6359,7 +6417,7 @@ ventasOrdenadas As(
      static public function mdlInsertarProductosTemporales($tabla, $datos)
      {
 
-          $stmt = ConexionsBd::conectar()->prepare("INSERT INTO $tabla(folioDocumento,idProducto,idAlmacenOrigen,codigo,descripcion,unidades,idUnidad,valorConversion,unidadesConversion,costo,importe,unidadesRecibidas,recibidasConversion,importeRecibido,idUsuario,sessionId,tipo) VALUES( 
+          $stmt = ConexionsBd::conectar()->prepare("INSERT INTO $tabla(folioDocumento,idProducto,idAlmacenOrigen,codigo,descripcion,unidades,idUnidad,valorConversion,unidadesConversion,costo,precioCapturado,importe,unidadesRecibidas,recibidasConversion,importeRecibido,idUsuario,sessionId,tipo) VALUES( 
           :folioDocumento,
           :idProducto,
           '1',
@@ -6370,6 +6428,7 @@ ventasOrdenadas As(
           :valorConversion,
           :unidadesConversion,
           :costo,
+          :precioCapturado,
           :importe,
           :unidades,
           :unidadesConversion,
@@ -6388,6 +6447,7 @@ ventasOrdenadas As(
           $stmt->bindParam(":valorConversion", $datos["valorConversion"], PDO::PARAM_STR);
           $stmt->bindParam(":unidadesConversion", $datos["unidadesConversion"], PDO::PARAM_STR);
           $stmt->bindParam(":costo", $datos["costo"], PDO::PARAM_STR);
+          $stmt->bindParam(":precioCapturado", $datos["precioCapturado"], PDO::PARAM_STR);
           $stmt->bindParam(":importe", $datos["importe"], PDO::PARAM_STR);
           $stmt->bindParam(":sesion", $datos["sesion"], PDO::PARAM_STR);
           $stmt->bindParam(":tipo", $datos["tipo"], PDO::PARAM_INT);
@@ -6411,9 +6471,9 @@ ventasOrdenadas As(
           $folio = $datos["folioDocumento"];
           $sesion = $datos["sesion"];
           if ($folio != 0) {
-               $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla set idAlmacenOrigen = :idAlmacenOrigen,unidades = :unidades,idUnidad = :idUnidad,valorConversion =:valorConversion,importe =:importe,unidadesRecibidas = :unidades,importeRecibido = :importe,unidadesConversion = :unidadesConversion,recibidasConversion = :unidadesConversion WHERE id = :idProducto and folioDocumento = $folio and idUsuario = :idUsuario and tipo = :tipoDocumento");
+               $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla set idAlmacenOrigen = :idAlmacenOrigen,unidades = :unidades,idUnidad = :idUnidad,valorConversion =:valorConversion,importe =:importe,precioCapturado =:precioCapturado,unidadesRecibidas = :unidades,importeRecibido = :importe,unidadesConversion = :unidadesConversion,recibidasConversion = :unidadesConversion WHERE id = :idProducto and folioDocumento = $folio and idUsuario = :idUsuario and tipo = :tipoDocumento");
           } else {
-               $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla set idAlmacenOrigen = :idAlmacenOrigen,unidades = :unidades,idUnidad = :idUnidad,valorConversion =:valorConversion,importe =:importe,unidadesRecibidas = :unidades,importeRecibido = :importe,unidadesConversion = :unidadesConversion,recibidasConversion = :unidadesConversion WHERE id = :idProducto and sessionId = '" . $sesion . "' and idUsuario = :idUsuario and tipo = :tipoDocumento");
+               $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla set idAlmacenOrigen = :idAlmacenOrigen,unidades = :unidades,idUnidad = :idUnidad,valorConversion =:valorConversion,importe =:importe,precioCapturado =:precioCapturado,unidadesRecibidas = :unidades,importeRecibido = :importe,unidadesConversion = :unidadesConversion,recibidasConversion = :unidadesConversion WHERE id = :idProducto and sessionId = '" . $sesion . "' and idUsuario = :idUsuario and tipo = :tipoDocumento");
           }
 
           $stmt->bindParam(":idUsuario", $datos["idUsuario"], PDO::PARAM_INT);
@@ -6424,6 +6484,7 @@ ventasOrdenadas As(
           $stmt->bindParam(":idAlmacenOrigen", $datos["idAlmacen"], PDO::PARAM_INT);
           $stmt->bindParam(":valorConversion", $datos["valorConversion"], PDO::PARAM_STR);
           $stmt->bindParam(":importe", $datos["importe"], PDO::PARAM_STR);
+          $stmt->bindParam(":precioCapturado", $datos["precioCapturado"], PDO::PARAM_STR);
           $stmt->bindParam(":tipoDocumento", $datos["tipoDocumento"], PDO::PARAM_INT);
           if ($stmt->execute()) {
 
@@ -6631,7 +6692,7 @@ ventasOrdenadas As(
                $tabla2 = "pedidos";
           }
 
-          $stmt = ConexionsBd::conectar()->prepare("SELECT aut.idEstatus as 'estatus',aut.serie as 'serieAut',aut.folio as 'folioAut',aut.fechaDocumento as 'fecha',aut.unidadesAprobadas,aut.montoAprobado,aut.aprobada as 'aprobada',doc.serie,doc.folio,doc.idSolicitante FROM $tabla as aut INNER JOIN $tabla2 as doc ON aut.serieOrigen = doc.serie and aut.folioOrigen = doc.folio WHERE aut.serie = '" . $serie . "' and aut.folio = '" . $folio . "'");
+          $stmt = ConexionsBd::conectar()->prepare("SELECT aut.idEstatus as 'estatus',aut.serie as 'serieAut',aut.folio as 'folioAut',aut.fechaDocumento as 'fecha',aut.unidadesAprobadas,aut.montoAprobado,aut.aprobada as 'aprobada',doc.serie,doc.folio,doc.idSolicitante,aut.observaciones,aut.areaOrigen FROM $tabla as aut INNER JOIN $tabla2 as doc ON aut.serieOrigen = doc.serie and aut.folioOrigen = doc.folio WHERE aut.serie = '" . $serie . "' and aut.folio = '" . $folio . "'");
 
           $stmt->execute();
 
@@ -6784,6 +6845,36 @@ ventasOrdenadas As(
      }
      static public function mdlDetalleSalidasProducto($datos)
      {
+          switch ($datos["periodo"]) {
+               case '1':
+                    $campos = "Jul,Ago,Sep,Oct,Nov,Dic";
+                    $camposBusqueda = "SUM(Jul) as '1',SUM(Ago) as '2',SUM(Sep) as '3',SUM(Oct) as '4',SUM(Nov) as '5',SUM(Dic) as '6',SUM(Jul)+SUM(Ago)+SUM(Sep)+SUM(Oct)+SUM(Nov)+SUM(Dic)";
+                    break;
+               case '2':
+                    $campos = "Ago,Sep,Oct,Nov,Dic,Ene2";
+                    $camposBusqueda = "SUM(Ago) as '1',SUM(Sep) as '2',SUM(Oct) as '3',SUM(Nov) as '4',SUM(Dic) as '5',SUM(Ene2) as '6',SUM(Ago)+SUM(Sep)+SUM(Oct)+SUM(Nov)+SUM(Dic)+SUM(Ene2)";
+                    break;
+               case '3':
+                    $campos = "Sep,Oct,Nov,Dic,Ene2,Feb2";
+                    $camposBusqueda = "SUM(Sep) as '1',SUM(Oct) as '2',SUM(Nov) as '3',SUM(Dic) as '4',SUM(Ene2) as '5',SUM(Feb2) as '6',SUM(Sep)+SUM(Oct)+SUM(Nov)+SUM(Dic)+SUM(Ene2)+SUM(Feb2)";
+                    break;
+               case '4':
+                    $campos = "Oct,Nov,Dic,Ene2,Feb2,Mar2";
+                    $camposBusqueda = "SUM(Oct) as '1',SUM(Nov) as '2',SUM(Dic) as '3',SUM(Ene2) as '4',SUM(Feb2) as '5',SUM(Mar2) as '6',SUM(Oct)+SUM(Nov)+SUM(Dic)+SUM(Ene2)+SUM(Feb2)+SUM(Mar2)";
+                    break;
+               case '5':
+                    $campos = "Nov,Dic,Ene2,Feb2,Mar2,Abr2";
+                    $camposBusqueda = "SUM(Nov) as '1',SUM(Dic) as '2',SUM(Ene2) as '3',SUM(Feb2) as '4',SUM(Mar2) as '5',SUM(Abr2) as '6',SUM(Nov)+SUM(Dic)+SUM(Ene2)+SUM(Feb2)+SUM(Mar2)+SUM(Abr2)";
+                    break;
+               case '6':
+                    $campos = "Dic,Ene2,Feb2,Mar2,Abr2,May2";
+                    $camposBusqueda = "SUM(Dic) as '1',SUM(Ene2) as '2',SUM(Feb2) as '3',SUM(Mar2) as '4',SUM(Abr2) as '5',SUM(May2) as '6',SUM(Dic)+SUM(Ene2)+SUM(Feb2)+SUM(Mar2)+SUM(Abr2)+SUM(May2)";
+                    break;
+               case '7':
+                    $campos = "Ene2,Feb2,Mar2,Abr2,May2,Jun2";
+                    $camposBusqueda = "SUM(Ene2) as '1',SUM(Feb2) as '2',SUM(Mar2) as '3',SUM(Abr2) as '4',SUM(May2) as '5',SUM(Jun2) as '6',SUM(Ene2)+SUM(Feb2)+SUM(Mar2)+SUM(Abr2)+SUM(May2)+SUM(Jun2)";
+                    break;
+          }
           if ($datos["empresa"] === "PINTURAS") {
 
                $stmt = ConexionsBd::conectarDekkerlab()->prepare("WITH salidas as (
@@ -6871,9 +6962,9 @@ ventasOrdenadas As(
                       ,aexi.CSALIDASPERIODO12-aexi.CSALIDASPERIODO11 as 'Dic2'
                   FROM [adDEKKERLAB].[dbo].[admExistenciaCosto] as aexi LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] as aprod ON aexi.CIDPRODUCTO = aprod.CIDPRODUCTO WHERE aprod.CCODIGOPRODUCTO = '" . $datos["codigo"] . "' AND aexi.CIDEJERCICIO IN (2) AND aexi.CIDALMACEN = '" . $datos["idAlmacen2"] . "'
                   ),
-                  totalSalidas as(SELECT CCODIGOPRODUCTO,Sep,Oct,Nov,Dic,Ene2,Feb2 FROM salidas  GROUP by CCODIGOPRODUCTO,Sep,Oct,Nov,Dic,Ene2,Feb2)
+                  totalSalidas as(SELECT $campos FROM salidas  GROUP by CCODIGOPRODUCTO,$campos)
                   
-                  SELECT SUM(Sep) as '1',SUM(Oct) as '2',SUM(Nov) as '3',SUM(Dic) as '4',SUM(Ene2) as '5',SUM(Feb2) as '6',SUM(Sep)+SUM(Oct)+SUM(Nov)+SUM(Dic)+SUM(Ene2)+SUM(Feb2) as total FROM totalSalidas");
+                  SELECT $camposBusqueda as total FROM totalSalidas");
           } else {
 
                $stmt = ConexionsBd::conectarTorres()->prepare("WITH salidas as (
@@ -6961,9 +7052,9 @@ ventasOrdenadas As(
                       ,aexi.CSALIDASPERIODO12-aexi.CSALIDASPERIODO11 as 'Dic2'
                   FROM [adDEKKERLAB].[dbo].[admExistenciaCosto] as aexi LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admProductos] as aprod ON aexi.CIDPRODUCTO = aprod.CIDPRODUCTO WHERE aprod.CCODIGOPRODUCTO = '" . $datos["codigo"] . "' AND aexi.CIDEJERCICIO IN (2) AND aexi.CIDALMACEN = '" . $datos["idAlmacen2"] . "'
                   ),
-                  totalSalidas as(SELECT CCODIGOPRODUCTO,Sep,Oct,Nov,Dic,Ene2,Feb2 FROM salidas  GROUP by CCODIGOPRODUCTO,Sep,Oct,Nov,Dic,Ene2,Feb2)
+                  totalSalidas as(SELECT $campos FROM salidas  GROUP by CCODIGOPRODUCTO,$campos)
                   
-                  SELECT SUM(Sep) as '1',SUM(Oct) as '2',SUM(Nov) as '3',SUM(Dic) as '4',SUM(Ene2) as '5',SUM(Feb2) as '6',SUM(Sep)+SUM(Oct)+SUM(Nov)+SUM(Dic)+SUM(Ene2)+SUM(Feb2) as total FROM totalSalidas");
+                  SELECT $camposBusqueda as total FROM totalSalidas");
           }
 
 
@@ -6984,21 +7075,28 @@ ventasOrdenadas As(
           $folio->execute();
           $result = $folio->fetch();
           $resultFolio = $result["folio"];
-          $stmt = ConexionsBd::conectar()->prepare("INSERT INTO autorizacionescompra(idEstatus,serie,folio,serieOrigen,folioOrigen,tipoDocumento,unidadesAprobadas,montoAprobado) VALUES( 
+          $origen = "AUMA" . " " . $resultFolio;
+
+          $stmt2 = ConexionsBd::conectarParametros()->prepare("INSERT INTO DOCUMENTOSRELACION(origen,area,idDocumento,nombreArea) VALUES('" . $origen . "','" . $datos["area"] . "','0','" . $datos["nombreArea"] . "')");
+          $stmt2->execute();
+          $stmt = ConexionsBd::conectar()->prepare("INSERT INTO autorizacionescompra(idEstatus,serie,folio,fechaDocumento,serieOrigen,folioOrigen,tipoDocumento,unidadesAprobadas,montoAprobado,areaOrigen) VALUES( 
            1,
            'AUMA',
            '" . $resultFolio . "',
+           :fechaDocumento,
            :serieDocumento,
            :folioDocumento,
            :tipoDocumento,
            :unidadesAprobadas,
-           :montoAprobado)");
-
+           :montoAprobado,
+           :areaOrigen)");
+          $stmt->bindParam(":fechaDocumento", $datos["fechaDocumento"], PDO::PARAM_STR);
           $stmt->bindParam(":serieDocumento", $datos["serieDocumento"], PDO::PARAM_STR);
           $stmt->bindParam(":folioDocumento", $datos["folioDocumento"], PDO::PARAM_INT);
           $stmt->bindParam(":tipoDocumento", $datos["tipoDocumento"], PDO::PARAM_INT);
           $stmt->bindParam(":unidadesAprobadas", $datos["unidades"], PDO::PARAM_STR);
           $stmt->bindParam(":montoAprobado", $datos["importe"], PDO::PARAM_STR);
+          $stmt->bindParam(":areaOrigen", $datos["area"], PDO::PARAM_INT);
 
           if ($stmt->execute()) {
 
@@ -7009,6 +7107,584 @@ ventasOrdenadas As(
           }
           $stmt->close();
 
+          $stmt = null;
+     }
+     static public function mostrarProductosAutorizacion($search)
+     {
+
+          if ($search["folio"] != 0) {
+               if ($search["usuario"] != 0) {
+                    $sWhere = " prod.idUsuario = '" . $search["usuario"] . "' and prod.tipo = '" . $search["tipo"] . "' and prod.folioDocumento = '" . $search["folio"] . "'";
+               } else {
+                    $sWhere = " prod.tipo = '" . $search["tipo"] . "' and prod.folioDocumento = '" . $search["folio"] . "'";
+               }
+          } else {
+               $sWhere = " prod.idUsuario = '" . $search["usuario"] . "' and prod.sessionId = '" . $search["sesion"] . "' and prod.tipo = '" . $search["tipo"] . "' and prod.folioDocumento = 0";
+          }
+
+          if ($search["tipoDetalleDocumento"] == "completo") {
+               $sWhere .= "";
+          } else {
+               $sWhere .= "and prod.pendientes != 0";
+          }
+
+
+          $stmt = ConexionsBd::conectar()->prepare("SELECT prod.idProducto AS 'CIDPRODUCTO',prod.idAlmacenOrigen as 'CIDALMACEN',prod.pendientes as 'CUNIDADES',prod.pendientesConversion as 'CUNIDADESCAPTURADAS',prod.idUnidad as 'CIDUNIDAD',prod.costo as 'CPRECIO',prod.precioCapturado as 'CPRECIOCAPTURADO',prod.importePendiente as 'CNETO',prod.importePendiente*0.16 as 'CIMPUESTO1','16' as 'CPORCENTAJEIMPUESTO1',prod.importePendiente*1.16 as 'CTOTAL' FROM productostempsolicitudes as prod INNER JOIN almacenes as alm ON prod.idAlmacenOrigen = alm.cidalmacen INNER JOIN unidadesmedida as med ON prod.idUnidad = med.cidunidad WHERE $sWhere ORDER BY prod.id asc");
+
+          $stmt->execute();
+
+          return $stmt->fetchAll();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function generarOrdenCompra($datos)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("UPDATE autorizacionescompra SET aprobada  = 1,observaciones = '" . $datos["observaciones"] . "' WHERE serie = '" . $datos["serie"] . "' and folio = '" . $datos["folio"] . "'");
+          $stmt->execute();
+
+
+          $stmt1 = ConexionsBd::conectarCorrecciones()->prepare("SELECT ISNULL(MAX(CIDDOCUMENTO)+1,1)  AS NewID FROM admDocumentos");
+          $stmt1->execute();
+          $newId = $stmt1->fetch();
+          $newId  = $newId["NewID"];
+
+          $stmt2 = ConexionsBd::conectarCorrecciones()->prepare("SELECT LOWER(CONVERT(CHAR(40),  NEWID())) AS GuidDoc");
+          $stmt2->execute();
+          $guiId = $stmt2->fetch();
+          $guiId  = $guiId["GuidDoc"];
+
+          $stmt3 = ConexionsBd::conectarCorrecciones()->prepare("SELECT ISNULL(MAX(CFOLIO)+1,1) as NewFolio FROM admDocumentos WHERE CSERIEDOCUMENTO = 'OPDK'");
+          $stmt3->execute();
+          $newFolio = $stmt3->fetch();
+          $newFolio  = $newFolio["NewFolio"];
+          $productos = json_decode($datos["productos"], true);
+          $fecha = date("Y-m-d H:i:s.000", strtotime(date("Y-m-d")));
+          $timeStamp =  date("m/d/Y H:i:s.000", strtotime(date("Y-m-d H:i:s")));
+
+          $stmt4 = ConexionsBd::conectarCorrecciones()->prepare("UPDATE admConceptos SET CNOFOLIO = '" . $newFolio . "' WHERE CIDCONCEPTODOCUMENTO = '19'");
+          $stmt4->execute();
+
+          $documentosRelacion = ConexionsBd::conectarParametros()->prepare("UPDATE DOCUMENTOSRELACION SET idDocumento  = '" . intval($newId) . "' WHERE origen = '" . $datos["referencia"] . "'");
+          $documentosRelacion->execute();
+
+          $stmt5 = ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admDocumentos(CIDDOCUMENTO,CIDDOCUMENTODE,CIDCONCEPTODOCUMENTO,CSERIEDOCUMENTO,CFOLIO,CFECHA,CIDCLIENTEPROVEEDOR,CRAZONSOCIAL,CRFC,CFECHAVENCIMIENTO,CFECHAPRONTOPAGO,CFECHAENTREGARECEPCION,CFECHAULTIMOINTERES,CIDMONEDA,CTIPOCAMBIO,CREFERENCIA,CNATURALEZA,CUSAPROVEEDOR,CAFECTADO,CESTADOCONTABLE,CNETO,CIMPUESTO1,CTOTAL,CPENDIENTE,CTOTALUNIDADES,CUNIDADESPENDIENTES,CTIMESTAMP,CGUIDDOCUMENTO,CSISTORIG,CUSUARIO) VALUES('" . intval($newId) . "','17','19','OPDK','" . intval($newFolio) . "','" . $fecha . "',:idClienteProveedor,:razonSocialClienteProveedor,:rfcClienteProveedor,'" . $fecha . "','" . $fecha . "','" . $fecha . "','" . $fecha . "','1','1',:referencia,'2','1','1','1',:neto,:impuesto,:total,:pendiente,:unidades,:unidadesPendientes,'" . $timeStamp . "','" . trim($guiId) . "','205','MARCO')");
+          $stmt5->bindParam(":referencia", $datos["referencia"], PDO::PARAM_STR);
+          $stmt5->bindParam(":idClienteProveedor", $datos["idClienteProveedor"], PDO::PARAM_INT);
+          $stmt5->bindParam(":rfcClienteProveedor", $datos["rfcClienteProveedor"], PDO::PARAM_STR);
+          $stmt5->bindParam(":razonSocialClienteProveedor", $datos["razonSocialClienteProveedor"], PDO::PARAM_STR);
+          $stmt5->bindParam(":unidades", $datos["unidades"], PDO::PARAM_STR);
+          $stmt5->bindParam(":unidadesPendientes", $datos["unidadesPendientes"], PDO::PARAM_STR);
+          $stmt5->bindParam(":neto", $datos["neto"], PDO::PARAM_STR);
+          $stmt5->bindParam(":impuesto", $datos["impuesto"], PDO::PARAM_STR);
+          $stmt5->bindParam(":total", $datos["total"], PDO::PARAM_STR);
+          $stmt5->bindParam(":pendiente", $datos["total"], PDO::PARAM_STR);
+          $stmt5->execute();
+
+          for ($i = 0; $i < count($productos); $i++) {
+
+               $movimientoId = ConexionsBd::conectarCorrecciones()->prepare("SELECT ISNULL(MAX(CIDMOVIMIENTO)+1,1)  AS idMovimiento FROM admMovimientos");
+               $movimientoId->execute();
+               $cidMovimiento = $movimientoId->fetch();
+               $cidMovimiento  = $cidMovimiento["idMovimiento"];
+               $numMovimiento = $i + 1;
+               $movimiento = ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admMovimientos(CIDMOVIMIENTO,CIDDOCUMENTO,CNUMEROMOVIMIENTO,CIDDOCUMENTODE,CIDPRODUCTO,CIDALMACEN,CUNIDADES,CUNIDADESCAPTURADAS,CIDUNIDAD,CPRECIO,CPRECIOCAPTURADO,CNETO,CIMPUESTO1,CPORCENTAJEIMPUESTO1,CTOTAL,CAFECTAEXISTENCIA,CAFECTADOSALDOS,CFECHA,CUNIDADESPENDIENTES,CTIPOTRASPASO) VALUES('" . intval($cidMovimiento) . "','" . intval($newId) . "','" . $numMovimiento . "','17','" . $productos[$i]["CIDPRODUCTO"] . "','" . $productos[$i]["CIDALMACEN"] . "','" . $productos[$i]["CUNIDADES"] . "','" . $productos[$i]["CUNIDADESCAPTURADAS"] . "','" . $productos[$i]["CIDUNIDAD"] . "','" . $productos[$i]["CPRECIO"] . "','" . $productos[$i]["CPRECIOCAPTURADO"] . "','" . $productos[$i]["CNETO"] . "','" . number_format($productos[$i]["CIMPUESTO1"], 2) . "','16','" . number_format($productos[$i]["CTOTAL"], 2) . "','3','1','" . $fecha . "','" . $productos[$i]["CUNIDADESCAPTURADAS"] . "','1')");
+               $movimiento->execute();
+          }
+          return "ok";
+
+          $movimiento->close();
+
+          $movimiento = null;
+     }
+     static public function mdlDetalleMovimientosDocumento($idDocumento)
+     {
+
+          $stmt = ConexionsBd::conectarCorrecciones()->prepare("SELECT 
+               amov.CIDMOVIMIENTO
+              ,amov.CNUMEROMOVIMIENTO
+              ,amov.CIDPRODUCTO
+              ,aprod.CCODIGOPRODUCTO
+              ,aprod.CNOMBREPRODUCTO
+              ,amov.CUNIDADES
+              ,amov.CUNIDADESCAPTURADAS
+              ,amed.CNOMBREUNIDAD
+              ,amov.CNETO
+              ,amov.CPRECIOCAPTURADO
+              ,amov.CIMPUESTO1
+              ,amov.CTOTAL as 'TOTAL'
+              
+            FROM admMovimientos as amov INNER JOIN admProductos as aprod ON amov.CIDPRODUCTO = aprod.CIDPRODUCTO INNER JOIN admUnidadesMedidaPeso as amed ON amov.CIDUNIDAD = amed.CIDUNIDAD where amov.CIDDOCUMENTO = '" . $idDocumento . "'");
+
+          $stmt->execute();
+
+          return $stmt->fetchAll();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlListadoRecordatorios($usuario, $tipoUsuario)
+     {
+          if ($usuario === "") {
+               $sWhere = "";
+          } else {
+               $sWhere = "WHERE idSucursal = '" . $usuario . "'";
+          }
+          if ($tipoUsuario === "1") {
+
+               $consulta = ConexionsBd::conectar()->prepare("SELECT rec.id,rec.titulo,rec.mensaje,rec.start,rec.end,rec.color,rec.estado,adm1.nombre as 'Sucursal', adm2.nombre as 'Solicitante' FROM `recordatorios` as rec INNER JOIN administradores as adm1 ON rec.idSucursal = adm1.id INNER JOIN administradores as adm2 ON rec.idSolicitante = adm2.id  $sWhere ORDER BY rec.id asc");
+          } else {
+               $consulta = ConexionsBd::conectar()->prepare("SELECT rec.id,rec.titulo,rec.mensaje,rec.start,rec.end,rec.color,rec.estado,adm1.nombre as 'Sucursal', adm2.nombre as 'Solicitante' FROM `recordatorios` as rec INNER JOIN administradores as adm1 ON rec.idSucursal = adm1.id INNER JOIN administradores as adm2 ON rec.idSolicitante = adm2.id  $sWhere ORDER BY rec.id asc");
+          }
+
+          $consulta->execute();
+
+          return $consulta->fetchAll();
+     }
+     static public function mdlImpresionDocumentos($idDocumentoDe, $idConcepto, $estatus)
+     {
+
+          if ($idConcepto == "") {
+               $sWhere = "CIDDOCUMENTODE = '" . $idDocumentoDe . "' AND CCANCELADO = '" . $estatus . "' AND CIMPRESO = 0";
+          } else {
+               $sWhere = "CIDDOCUMENTODE = '" . $idDocumentoDe . "' AND CIDCONCEPTODOCUMENTO = '" . $idConcepto . "' AND CCANCELADO = '" . $estatus . "' AND CIMPRESO = 0";
+          }
+          $stmt = ConexionsBd::conectarParametros()->prepare("UPDATE [adDEKKERLAB].[dbo].[admDocumentos] set CIMPRESO = 1  WHERE $sWhere");
+
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlGenerarRecordatorio($datos)
+     {
+          $stmt = ConexionsBd::conectar()->prepare("INSERT INTO recordatorios(titulo,mensaje,start,end,color,idSucursal,idSolicitante) VALUES(:titulo,:mensaje,:startDate,:endDate,:color,:sucursal,:usuario)");
+
+          $stmt->bindParam(":titulo", $datos["titulo"], PDO::PARAM_STR);
+          $stmt->bindParam(":color", $datos["color"], PDO::PARAM_STR);
+          $stmt->bindParam(":mensaje", $datos["mensaje"], PDO::PARAM_STR);
+          $stmt->bindParam(":startDate", $datos["startDate"], PDO::PARAM_STR);
+          $stmt->bindParam(":endDate", $datos["endDate"], PDO::PARAM_STR);
+          $stmt->bindParam(":usuario", $datos["usuario"], PDO::PARAM_INT);
+          $stmt->bindParam(":sucursal", $datos["sucursal"], PDO::PARAM_INT);
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlActualizarRecordatorio($datos)
+     {
+          $stmt = ConexionsBd::conectar()->prepare("UPDATE recordatorios SET start = :startDate,end = :endDate,mensaje = :mensaje WHERE id = :id");
+
+          $stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+          $stmt->bindParam(":mensaje", $datos["mensaje"], PDO::PARAM_STR);
+          $stmt->bindParam(":startDate", $datos["startDate"], PDO::PARAM_STR);
+          $stmt->bindParam(":endDate", $datos["endDate"], PDO::PARAM_STR);
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlDetalleRecordatorio($datos)
+     {
+          $stmt = ConexionsBd::conectar()->prepare("SELECT rec.id,rec.titulo,rec.mensaje,rec.start,rec.end,rec.color,adm1.nombre as 'Solicitante' FROM `recordatorios` as rec INNER JOIN administradores as adm1 ON rec.idSolicitante = adm1.id  WHERE rec.id = :id");
+
+          $stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+
+          $stmt->execute();
+          return $stmt->fetch();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlEliminarRecordatorio($datos)
+     {
+          $stmt = ConexionsBd::conectar()->prepare("DELETE FROM recordatorios  WHERE id = :id");
+
+          $stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
+
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlGenerarInventario($datos)
+     {
+          $stmt1 = ConexionsBd::conectar()->prepare("SELECT COALESCE(MAX(folio), 0) + 1 as 'Folio' FROM `inventarios`");
+          $stmt1->execute();
+          $folio = $stmt1->fetch();
+          $folio  = $folio["Folio"];
+          $stmt = ConexionsBd::conectar()->prepare("INSERT INTO inventarios(marca,familia,categoria,anaquel,repisa,proveedor,serie,folio,existencias,inventario,diferencia,existenciasImportes,inventarioImportes,diferenciaImportes,area,idArea,idSolicitante,idRealizador,observaciones,idAlmacen,periodo) VALUES(:marca,:familia,:categoria,:anaquel,:repisa,:proveedor,:serie,'" . $folio . "',:existencias,:inventario,:diferencia,:existenciasImportes,:inventarioImportes,:diferenciaImportes,:area,:idArea,:idSolicitante,:idRealizador,:observaciones,:idAlmacen,:periodo)");
+
+          $stmt->bindParam(":marca", $datos["marca"], PDO::PARAM_STR);
+          $stmt->bindParam(":familia", $datos["familia"], PDO::PARAM_STR);
+          $stmt->bindParam(":categoria", $datos["categoria"], PDO::PARAM_STR);
+          $stmt->bindParam(":anaquel", $datos["anaquel"], PDO::PARAM_STR);
+          $stmt->bindParam(":repisa", $datos["repisa"], PDO::PARAM_STR);
+          $stmt->bindParam(":proveedor", $datos["proveedor"], PDO::PARAM_STR);
+          $stmt->bindParam(":periodo", $datos["periodo"], PDO::PARAM_STR);
+          $stmt->bindParam(":serie", $datos["serie"], PDO::PARAM_STR);
+          $stmt->bindParam(":existencias", $datos["existencias"], PDO::PARAM_STR);
+          $stmt->bindParam(":inventario", $datos["inventario"], PDO::PARAM_STR);
+          $stmt->bindParam(":diferencia", $datos["diferencia"], PDO::PARAM_STR);
+          $stmt->bindParam(":existenciasImportes", $datos["existenciasImportes"], PDO::PARAM_STR);
+          $stmt->bindParam(":inventarioImportes", $datos["inventarioImportes"], PDO::PARAM_STR);
+          $stmt->bindParam(":diferenciaImportes", $datos["diferenciaImportes"], PDO::PARAM_STR);
+          $stmt->bindParam(":area", $datos["area"], PDO::PARAM_STR);
+          $stmt->bindParam(":idArea", $datos["idArea"], PDO::PARAM_INT);
+          $stmt->bindParam(":idSolicitante", $datos["idSolicitante"], PDO::PARAM_INT);
+          $stmt->bindParam(":idRealizador", $datos["idRealizador"], PDO::PARAM_INT);
+          $stmt->bindParam(":observaciones", $datos["observaciones"], PDO::PARAM_STR);
+          $stmt->bindParam(":idAlmacen", $datos["idAlmacen"], PDO::PARAM_INT);
+          $stmt->execute();
+
+          $productos = json_decode($datos["productos"], true);
+          for ($i = 0; $i < count($productos); $i++) {
+               $movimiento = ConexionsBd::conectar()->prepare("INSERT INTO productosInventarios(idInventario,idProducto,idAlmacen,codigo,descripcion,idUnidad,idUnidadBase,despliegue,nombreUnidad,valorConversion,costo,precioCapturado,existenciaConversion,existencia,existenciaImporte,inventarioConversion,inventario,inventarioImporte,diferenciaConversion,diferencia,diferenciaImporte,idUsuario,estado,sessionId) 
+               VALUES('" . $folio . "','" . $productos[$i]["idProducto"] . "','" . $productos[$i]["idAlmacen"] . "','" . $productos[$i]["codigo"] . "','" . $productos[$i]["descripcion"] . "','" . $productos[$i]["idUnidad"] . "','" . $productos[$i]["idUnidadBase"] . "','" . $productos[$i]["despliegue"] . "','" . $productos[$i]["nombreUnidad"] . "','" . $productos[$i]["valorConversion"] . "','" . $productos[$i]["costo"] . "','" . $productos[$i]["precioCapturado"] . "','" . $productos[$i]["existenciaConversion"] . "','" . $productos[$i]["existencia"] . "','" . $productos[$i]["existenciaImporte"] . "','" . $productos[$i]["inventarioConversion"] . "','" . $productos[$i]["inventario"] . "','" . $productos[$i]["inventarioImporte"] . "','" . $productos[$i]["diferenciaConversion"] . "','" . $productos[$i]["diferencia"] . "','" . $productos[$i]["diferenciaImporte"] . "','" . $datos["idArea"] . "','" . $productos[$i]["estado"] . "','" . $datos["sesionId"] . "')");
+               $movimiento->execute();
+          }
+          return "ok";
+          $stmt->close();
+          $movimiento = null;
+     }
+     static public function mdlEstatusDocumentoInventario($tabla, $folio)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("SELECT idEstatus,habilitado FROM $tabla WHERE folio = '" . $folio . "'");
+
+          $stmt->execute();
+
+          return $stmt->fetch();
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlActualizarEstatusDocumentoInventario($tabla, $datos)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("UPDATE $tabla SET idEstatus = :estatus,habilitado = :habilitado WHERE folio = :folioDocumento");
+          $stmt->bindParam(":folioDocumento", $datos["folioDocumento"], PDO::PARAM_STR);
+          $stmt->bindParam(":estatus", $datos["estatus"], PDO::PARAM_INT);
+          $stmt->bindParam(":habilitado", $datos["habilitado"], PDO::PARAM_INT);
+
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlDetalleInventario($folio)
+     {
+          $stmt = ConexionsBd::conectar()->prepare("SELECT inv.*,DATE_FORMAT(inv.fecha, '%Y-%m-%d') as 'fechaDocumento',MONTH(inv.fecha) as 'periodo',alm.cnombrealmacen as 'almacen',sol.nombre as 'realizador'  FROM `inventarios` as inv INNER JOIN almacenes as alm ON inv.idAlmacen = alm.cidalmacen INNER JOIN solicitantes as sol ON inv.idRealizador = sol.id WHERE inv.folio = '" . $folio . "'");
+
+          $stmt->execute();
+          return $stmt->fetch();
+
+          $stmt->close();
+
+          $stmt = null;
+     }
+     static public function mdlGenerarMovimientoInventario($datos)
+     {
+
+          $stmt1 = ConexionsBd::conectarCorrecciones()->prepare("SELECT ISNULL(MAX(CIDDOCUMENTO)+1,1)  AS NewID FROM admDocumentos");
+          $stmt1->execute();
+          $newId = $stmt1->fetch();
+          $newId  = $newId["NewID"];
+
+          $stmt2 = ConexionsBd::conectarCorrecciones()->prepare("SELECT LOWER(CONVERT(CHAR(40),  NEWID())) AS GuidDoc");
+          $stmt2->execute();
+          $guiId = $stmt2->fetch();
+          $guiId  = $guiId["GuidDoc"];
+
+          $stmt3 = ConexionsBd::conectarCorrecciones()->prepare("SELECT ISNULL(MAX(CNOFOLIO)+1,1) as NewFolio FROM admConceptos WHERE CIDCONCEPTODOCUMENTO = '" . $datos["idConcepto"] . "'");
+          $stmt3->execute();
+          $newFolio = $stmt3->fetch();
+          $newFolio  = $newFolio["NewFolio"];
+          $productos = json_decode($datos["productos"], true);
+          $fecha = date("Y-m-d H:i:s.000", strtotime(date("Y-m-d")));
+          $timeStamp =  date("m/d/Y H:i:s.000", strtotime(date("Y-m-d H:i:s")));
+
+          $stmt4 = ConexionsBd::conectarCorrecciones()->prepare("UPDATE admConceptos SET CNOFOLIO = '" . $newFolio . "' WHERE CIDCONCEPTODOCUMENTO = '" . $datos["idConcepto"] . "'");
+          $stmt4->execute();
+
+          $documentosRelacion = ConexionsBd::conectarParametros()->prepare("INSERT INTO MVTOSINVENTARIO(SERIEORIGEN,FOLIOORIGEN,TOTAL,SERIEMVTO,FECHA,TIPO) VALUES('" . $datos["serieOrigen"] . "','" . intval($datos["folioOrigen"]) . "','" . $datos["total"] . "','" . $datos["serie"] . "','" . $fecha . "','" . $datos["tipo"] . "')");
+          $documentosRelacion->execute();
+
+
+          $stmt5 = ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admDocumentos(CIDDOCUMENTO,CIDDOCUMENTODE,CIDCONCEPTODOCUMENTO,CSERIEDOCUMENTO,CFOLIO,CFECHA,CFECHAVENCIMIENTO,CFECHAPRONTOPAGO,CFECHAENTREGARECEPCION,CFECHAULTIMOINTERES,CIDMONEDA,CTIPOCAMBIO,CREFERENCIA,COBSERVACIONES,CNATURALEZA,CAFECTADO,CESTADOCONTABLE,CNETO,CTOTAL,CPENDIENTE,CTOTALUNIDADES,CUNIDADESPENDIENTES,CTIMESTAMP,CGUIDDOCUMENTO,CSISTORIG,CUSUARIO) 
+                                                                                     VALUES('" . intval($newId) . "',:idDocumentoDe,:idConcepto,:serie,'" . intval($newFolio) . "','" . $fecha . "','" . $fecha . "','" . $fecha . "','" . $fecha . "','" . $fecha . "','1','1',:referencia,:observaciones,'2','1','1',:neto,:total,:pendiente,:unidades,:unidadesPendientes,'" . $timeStamp . "','" . trim($guiId) . "','205','MARCO')");
+          $stmt5->bindParam(":referencia", $datos["referencia"], PDO::PARAM_STR);
+          $stmt5->bindParam(":unidades", $datos["unidades"], PDO::PARAM_STR);
+          $stmt5->bindParam(":unidadesPendientes", $datos["unidadesPendientes"], PDO::PARAM_STR);
+          $stmt5->bindParam(":neto", $datos["neto"], PDO::PARAM_STR);
+          $stmt5->bindParam(":total", $datos["total"], PDO::PARAM_STR);
+          $stmt5->bindParam(":serie", $datos["serie"], PDO::PARAM_STR);
+          $stmt5->bindParam(":observaciones", $datos["observaciones"], PDO::PARAM_STR);
+          $stmt5->bindParam(":idDocumentoDe", $datos["idDocumentoDe"], PDO::PARAM_INT);
+          $stmt5->bindParam(":idConcepto", $datos["idConcepto"], PDO::PARAM_INT);
+          $stmt5->bindParam(":pendiente", $datos["total"], PDO::PARAM_STR);
+          $stmt5->execute();
+
+          $actualizarRelacion = ConexionsBd::conectarParametros()->prepare("UPDATE MVTOSINVENTARIO SET FOLIOMVTO = '" . intval($newFolio) . "',TOTALMVTO = '" . $datos["total"] . "' WHERE SERIEORIGEN = '" . $datos["serieOrigen"] . "' AND FOLIOORIGEN = '" . intval($datos["folioOrigen"]) . "' AND SERIEMVTO = '" . $datos["serie"] . "'");
+          $actualizarRelacion->execute();
+
+          for ($i = 0; $i < count($productos); $i++) {
+
+               $movimientoInventario = ConexionsBd::conectar()->prepare("UPDATE productosinventarios SET generado = 1 WHERE id = '" . $productos[$i]["idProdInv"] . "' and idInventario = '" . $productos[$i]["idInventario"] . "'");
+               $movimientoInventario->execute();
+
+               $fechaMovimiento = date("Y-m-d H:i:s.000", strtotime(date("Y-m-d")));
+               $fechaTimeStamp =  date("m/d/Y H:i:s:000", strtotime(date("Y-m-d H:i:s")));
+               /****MOVIMIENTOS PRODUCTO*/
+               $movimientoId = ConexionsBd::conectarCorrecciones()->prepare("SELECT ISNULL(MAX(CIDMOVIMIENTO)+1,1)  AS idMovimiento FROM admMovimientos");
+               $movimientoId->execute();
+               $cidMovimiento = $movimientoId->fetch();
+               $cidMovimiento  = $cidMovimiento["idMovimiento"];
+               $numMovimiento = $i + 1;
+               if ($datos["tipo"] == "Entrada") {
+                    $afectaExistencia = 1;
+               } else {
+                    $afectaExistencia = 2;
+               }
+               $movimiento = ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admMovimientos(CIDMOVIMIENTO,CIDDOCUMENTO,CNUMEROMOVIMIENTO,CIDDOCUMENTODE,CIDPRODUCTO,CIDALMACEN,CUNIDADES,CUNIDADESCAPTURADAS,CIDUNIDAD,CCOSTOCAPTURADO,CCOSTOESPECIFICO,CNETO,CTOTAL,CAFECTAEXISTENCIA,CAFECTADOSALDOS,CAFECTADOINVENTARIO,CFECHA,CUNIDADESPENDIENTES,CTIPOTRASPASO) 
+                                    VALUES('" . intval($cidMovimiento) . "','" . intval($newId) . "','" . $numMovimiento . "','" . $productos[$i]["idDocumentoDe"] . "','" . $productos[$i]["idProducto"] . "','" . $productos[$i]["idAlmacen"] . "','" . $productos[$i]["unidadesConversion"] . "','" . $productos[$i]["unidades"] . "','" . $productos[$i]["idUnidad"] . "','" . $productos[$i]["costoCapturado"] . "','" . $productos[$i]["costoEspecifico"] . "','" . $productos[$i]["neto"] . "','" . $productos[$i]["total"] . "','" . $afectaExistencia . "','1','1','" . $fecha . "','" . $productos[$i]["unidades"] . "','1')");
+               $movimiento->execute();
+               /****MOVIMIENTOS PRODUCTO*/
+               /****CAPAS PRODUCTO*/
+               $capaId = ConexionsBd::conectarCorrecciones()->prepare("SELECT ISNULL(MAX(CIDCAPA)+1,1)  AS idCapa FROM admCapasProducto");
+               $capaId->execute();
+               $cidCapa = $capaId->fetch();
+               $cidCapa  = $cidCapa["idCapa"];
+               if ($datos["tipo"] == "Entrada") {
+                    $capaProducto = ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admCapasProducto(CIDCAPA,CIDALMACEN,CIDPRODUCTO,CFECHA,CTIPOCAPA,CTIPOCAMBIO,CEXISTENCIA,CCOSTO) VALUES('" . intval($cidCapa) . "','" . $productos[$i]["idAlmacen"] . "','" . $productos[$i]["idProducto"] . "','" . $fechaMovimiento . "','5','1','" . $productos[$i]["unidades"] . "','" . $productos[$i]["costoCapturado"] . "')");
+                    $capaProducto->execute();
+
+                    /****MOVIMIENTOS CAPAS*/
+                    $movimientoCapa = ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admMovimientosCapas(CIDMOVIMIENTO,CIDCAPA,CFECHA,CUNIDADES,CTIPOCAPA) VALUES('" . intval($cidMovimiento) . "','" . intval($cidCapa) . "','" . $fechaMovimiento . "','" . $productos[$i]["unidades"] . "','5')");
+                    $movimientoCapa->execute();
+                    /****MOVIMIENTOS CAPAS*/
+               } else {
+                    $capaIdMvto = ConexionsBd::conectarCorrecciones()->prepare("SELECT TOP(1)  CIDCAPA  AS idCapa FROM admCapasProducto WHERE CIDALMACEN = '" . $productos[$i]["idAlmacen"] . "' AND CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "' and CEXISTENCIA != 0 AND CIDCAPAORIGEN = 0");
+                    $capaIdMvto->execute();
+                    $cidCapaMvto = $capaIdMvto->fetch();
+                    $cidCapaMvto  = $cidCapaMvto["idCapa"];
+
+                    $cExistencia = ConexionsBd::conectarCorrecciones()->prepare("SELECT TOP(1) CEXISTENCIA  AS cExistencia FROM admCapasProducto WHERE CIDALMACEN = '" . $productos[$i]["idAlmacen"] . "' AND CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "' and CEXISTENCIA != 0 AND CIDCAPAORIGEN = 0");
+                    $cExistencia->execute();
+                    $existencia = $cExistencia->fetch();
+                    $existencia  = $existencia["cExistencia"];
+                    $unidadesSalida = $productos[$i]["unidades"];
+                    $diferencia = $existencia - $unidadesSalida;
+
+                    if ($diferencia == 0) {
+
+                         $capaProducto = ConexionsBd::conectarCorrecciones()->prepare("UPDATE admCapasProducto SET CEXISTENCIA = 0  WHERE CIDCAPA = '" . $cidCapaMvto . "'");
+                         $capaProducto->execute();
+
+
+                         /****MOVIMIENTOS CAPAS*/
+                         $movimientoCapa = ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admMovimientosCapas(CIDMOVIMIENTO,CIDCAPA,CFECHA,CUNIDADES,CTIPOCAPA) VALUES('" . intval($cidMovimiento) . "','" . intval($cidCapaMvto) . "','" . $fechaMovimiento . "','" . $productos[$i]["unidades"] . "','5')");
+                         $movimientoCapa->execute();
+                         /****MOVIMIENTOS CAPAS*/
+                    } else {
+                         if ($unidadesSalida > $existencia) {
+                              $capaProducto = ConexionsBd::conectarCorrecciones()->prepare("UPDATE admCapasProducto SET CEXISTENCIA = 0  WHERE CIDCAPA = '" . $cidCapa . "'");
+                              $capaProducto->execute();
+                              /****MOVIMIENTOS CAPAS*/
+
+                              $movimientoCapa = ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admMovimientosCapas(CIDMOVIMIENTO,CIDCAPA,CFECHA,CUNIDADES,CTIPOCAPA) VALUES('" . intval($cidMovimiento) . "','" . intval($cidCapaMvto) . "','" . $fechaMovimiento . "','" .  $existencia . "','5')");
+                              $movimientoCapa->execute();
+                              /****MOVIMIENTOS CAPAS*/
+                              $dif = abs($diferencia);
+
+                              $capaIdMvto = ConexionsBd::conectarCorrecciones()->prepare("SELECT TOP(1) CIDCAPA  AS idCapa FROM admCapasProducto WHERE CIDALMACEN = '" . $productos[$i]["idAlmacen"] . "' AND CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "' and CEXISTENCIA != 0 AND CIDCAPAORIGEN = 0");
+                              $capaIdMvto->execute();
+                              $cidCapaMvto = $capaIdMvto->fetch();
+                              $cidCapaMvto  = $cidCapaMvto["idCapa"];
+
+                              $cExistencia = ConexionsBd::conectarCorrecciones()->prepare("SELECT  TOP(1) CEXISTENCIA  AS cExistencia FROM admCapasProducto WHERE CIDALMACEN = '" . $productos[$i]["idAlmacen"] . "' AND CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "' and CEXISTENCIA != 0 AND CIDCAPAORIGEN = 0");
+                              $cExistencia->execute();
+                              $existencia = $cExistencia->fetch();
+                              $existencia  = $existencia["cExistencia"];
+                              $unidadesSalida = $productos[$i]["unidades"];
+                              $diferencia2 = $existencia - $dif;
+
+                              $capaProducto = ConexionsBd::conectarCorrecciones()->prepare("UPDATE admCapasProducto SET CEXISTENCIA = '" . $diferencia2 . "'  WHERE CIDCAPA = '" . intval($cidCapaMvto) . "'");
+                              $capaProducto->execute();
+                              /****MOVIMIENTOS CAPAS*/
+
+                              $movimientoCapa = ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admMovimientosCapas(CIDMOVIMIENTO,CIDCAPA,CFECHA,CUNIDADES,CTIPOCAPA) VALUES('" . intval($cidMovimiento) . "','" . intval($cidCapaMvto) . "','" . $fechaMovimiento . "','" .  $dif . "','5')");
+                              $movimientoCapa->execute();
+                         } else if ($unidadesSalida < $existencia) {
+                              $dif = abs($diferencia);
+                              $capaProducto = ConexionsBd::conectarCorrecciones()->prepare("UPDATE admCapasProducto SET CEXISTENCIA = '" . $dif . "'  WHERE CIDCAPA = '" . intval($cidCapaMvto) . "'");
+                              $capaProducto->execute();
+                              /****MOVIMIENTOS CAPAS*/
+
+                              $movimientoCapa = ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admMovimientosCapas(CIDMOVIMIENTO,CIDCAPA,CFECHA,CUNIDADES,CTIPOCAPA) VALUES('" . intval($cidMovimiento) . "','" . intval($cidCapaMvto) . "','" . $fechaMovimiento . "','" .  $unidadesSalida . "','5')");
+                              $movimientoCapa->execute();
+                         }
+                    }
+               }
+
+               /****CAPAS PRODUCTO*/
+
+               /****COSTOS HISTORICOS*/
+               $costoHistorico = ConexionsBd::conectarCorrecciones()->prepare("SELECT (SUM(CCOSTO)/COUNT(CIDCAPA)) as historico FROM admCapasProducto WHERE CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "'");
+               $costoHistorico->execute();
+               $historico = $costoHistorico->fetch();
+               $historico = $historico["historico"];
+
+               $buscarCosto = ConexionsBd::conectarCorrecciones()->prepare("SELECT COUNT(CIDCOSTOH) as base FROM admCostosHistoricos WHERE CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "' AND CIDALMACEN = 0");
+               $buscarCosto->execute();
+               $base = $buscarCosto->fetch();
+               $base = $base["base"];
+
+               $costoHistoricoMvto = ConexionsBd::conectarCorrecciones()->prepare("SELECT (SUM(CCOSTO)/COUNT(CIDCAPA)) as historico FROM admCapasProducto WHERE CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "' AND CIDALMACEN = '" . $productos[$i]["idAlmacen"] . "'");
+               $costoHistoricoMvto->execute();
+               $historicoMvto = $costoHistoricoMvto->fetch();
+               $historicoMvto = $historicoMvto["historico"];
+
+               $costoId = ConexionsBd::conectarCorrecciones()->prepare("SELECT ISNULL(MAX(CIDCOSTOH)+1,1)  AS idCosto FROM admCostosHistoricos");
+               $costoId->execute();
+               $cidCosto = $costoId->fetch();
+               $cidCosto  = $cidCosto["idCosto"];
+
+               if ($base === "0") {
+                    $capaBase =  ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admCostosHistoricos(CIDCOSTOH,CIDPRODUCTO,CIDALMACEN,CFECHACOSTOH,CCOSTOH,CULTIMOCOSTOH,CIDMOVIMIENTO,CTIMESTAMP) VALUES('" . $cidCosto . "','" . $productos[$i]["idProducto"] . "','0','" . $fechaMovimiento . "','" . $historico . "','" . $productos[$i]["costoCapturado"] . "','" . $cidMovimiento . "','" . $fechaTimeStamp . "')");
+                    $capaBase->execute();
+               } else {
+                    if ($datos["tipo"] == "Entrada") {
+                         $capaBase =  ConexionsBd::conectarCorrecciones()->prepare("UPDATE admCostosHistoricos SET CCOSTOH = '" . $historico . "',CULTIMOCOSTOH = '" . $productos[$i]["costoCapturado"] . "',CIDMOVIMIENTO = '" . $cidMovimiento . "',CTIMESTAMP = '" . $fechaTimeStamp . "' WHERE CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "' AND CIDALMACEN = 0");
+                         $capaBase->execute();
+                    }
+               }
+
+               $buscarCostoMvto = ConexionsBd::conectarCorrecciones()->prepare("SELECT COUNT(CIDCOSTOH) as baseMvto FROM admCostosHistoricos WHERE CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "' AND CIDALMACEN = '" . $productos[$i]["idAlmacen"] . "'");
+               $buscarCostoMvto->execute();
+               $baseMvto = $buscarCostoMvto->fetch();
+               $baseMvto = $baseMvto["baseMvto"];
+
+               $costoId2 = ConexionsBd::conectarCorrecciones()->prepare("SELECT ISNULL(MAX(CIDCOSTOH)+1,1)  AS idCosto FROM admCostosHistoricos");
+               $costoId2->execute();
+               $cidCosto2 = $costoId2->fetch();
+               $cidCosto2 = $cidCosto2["idCosto"];
+
+               if ($baseMvto === "0") {
+                    $capaMvto =  ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admCostosHistoricos(CIDCOSTOH,CIDPRODUCTO,CIDALMACEN,CFECHACOSTOH,CCOSTOH,CULTIMOCOSTOH,CIDMOVIMIENTO,CTIMESTAMP) VALUES('" . $cidCosto2 . "','" . $productos[$i]["idProducto"] . "','" . $productos[$i]["idAlmacen"] . "','" . $fechaMovimiento . "','" . $productos[$i]["costoCapturado"] . "','" . $productos[$i]["costoCapturado"] . "','" . $cidMovimiento . "','" . $fechaTimeStamp . "')");
+                    $capaMvto->execute();
+               } else {
+                    if ($datos["tipo"] == "Entrada") {
+                         $capaMvto =  ConexionsBd::conectarCorrecciones()->prepare("UPDATE admCostosHistoricos SET CCOSTOH = '" . $historicoMvto . "',CULTIMOCOSTOH = '" . $productos[$i]["costoCapturado"] . "',CIDMOVIMIENTO = '" . $cidMovimiento . "',CTIMESTAMP = '" . $fechaTimeStamp . "' WHERE CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "' AND CIDALMACEN = '" . $productos[$i]["idAlmacen"] . "'");
+                         $capaMvto->execute();
+                    }
+               }
+
+               /****COSTOS HISTORICOS*/
+               /****EXISTENCIAS COSTOS*/
+               $existenciaId = ConexionsBd::conectarCorrecciones()->prepare("SELECT ISNULL(MAX(CIDEXISTENCIA)+1,1)  AS idExistencia FROM admExistenciaCosto");
+               $existenciaId->execute();
+               $cidExistencia = $existenciaId->fetch();
+               $cidExistencia  = $cidExistencia["idExistencia"];
+
+               $buscarExistenciaMvto = ConexionsBd::conectarCorrecciones()->prepare("SELECT COUNT(CIDEXISTENCIA) as existenciaMvto FROM admExistenciaCosto WHERE CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "' AND CIDALMACEN = '" . $productos[$i]["idAlmacen"] . "'");
+               $buscarExistenciaMvto->execute();
+               $existenciaMvto = $buscarExistenciaMvto->fetch();
+               $existenciaMvto = $existenciaMvto["existenciaMvto"];
+
+               if ($existenciaMvto === "0") {
+
+                    //$insertarExistencia = ConexionsBd::conectarCorrecciones()->prepare("INSERT INTO admExistenciaCosto(CIDEXISTENCIA,CIDALMACEN,CIDPRODUCTO,CIDEJERCICIO,CTIPOEXISTENCIA,CENTRADASPERIODO6,CENTRADASPERIODO7,CENTRADASPERIODO8,CENTRADASPERIODO9,CENTRADASPERIODO10,CENTRADASPERIODO11,CENTRADASPERIODO12,CCOSTOENTRADASPERIODO6,CCOSTOENTRADASPERIODO7,CCOSTOENTRADASPERIODO8,CCOSTOENTRADASPERIODO9,CCOSTOENTRADASPERIODO10,CCOSTOENTRADASPERIODO11,CCOSTOENTRADASPERIODO12,CTIMESTAMP) VALUES('" . $cidExistencia . "','" . $productos[$i]["idAlmacen"] . "','" . $productos[$i]["idProducto"] . "','2','1')");
+               } else {
+                    if ($datos["tipo"] == "Entrada") {
+
+                         $actualizarExistencia = ConexionsBd::conectarCorrecciones()->prepare("UPDATE admExistenciaCosto SET CENTRADASPERIODO6 = CENTRADASPERIODO6 + '" . $productos[$i]["unidades"] . "',CENTRADASPERIODO7 = CENTRADASPERIODO7 + '" . $productos[$i]["unidades"] . "',CENTRADASPERIODO8 = CENTRADASPERIODO8 + '" . $productos[$i]["unidades"] . "',CENTRADASPERIODO9 = CENTRADASPERIODO9 + '" . $productos[$i]["unidades"] . "',CENTRADASPERIODO10 = CENTRADASPERIODO10 + '" . $productos[$i]["unidades"] . "',CENTRADASPERIODO11 = CENTRADASPERIODO11 + '" . $productos[$i]["unidades"] . "',CENTRADASPERIODO12 = CENTRADASPERIODO12 + '" . $productos[$i]["unidades"] . "',CCOSTOENTRADASPERIODO6 = CCOSTOENTRADASPERIODO6 + '" . $productos[$i]["costoCapturado"] . "',CCOSTOENTRADASPERIODO7 = CCOSTOENTRADASPERIODO7 + '" . $productos[$i]["costoCapturado"] . "',CCOSTOENTRADASPERIODO8 = CCOSTOENTRADASPERIODO8 + '" . $productos[$i]["costoCapturado"] . "',CCOSTOENTRADASPERIODO9 = CCOSTOENTRADASPERIODO9 + '" . $productos[$i]["costoCapturado"] . "',CCOSTOENTRADASPERIODO10 = CCOSTOENTRADASPERIODO10 + '" . $productos[$i]["costoCapturado"] . "',CCOSTOENTRADASPERIODO11 = CCOSTOENTRADASPERIODO11 + '" . $productos[$i]["costoCapturado"] . "',CCOSTOENTRADASPERIODO12 = CCOSTOENTRADASPERIODO12 + '" . $productos[$i]["costoCapturado"] . "',CTIMESTAMP = '" . $fechaTimeStamp . "'  WHERE CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "' AND CIDALMACEN = '" . $productos[$i]["idAlmacen"] . "' AND CIDEJERCICIO = 2");
+                         $actualizarExistencia->execute();
+                    } else {
+
+                         $actualizarExistencia = ConexionsBd::conectarCorrecciones()->prepare("UPDATE admExistenciaCosto SET CSALIDASPERIODO6 = CSALIDASPERIODO6 + '" . $productos[$i]["unidades"] . "',CSALIDASPERIODO7 = CSALIDASPERIODO7 + '" . $productos[$i]["unidades"] . "',CSALIDASPERIODO8 = CSALIDASPERIODO8 + '" . $productos[$i]["unidades"] . "',CSALIDASPERIODO9 = CSALIDASPERIODO9 + '" . $productos[$i]["unidades"] . "',CSALIDASPERIODO10 = CSALIDASPERIODO10 + '" . $productos[$i]["unidades"] . "',CSALIDASPERIODO11 = CSALIDASPERIODO11 + '" . $productos[$i]["unidades"] . "',CSALIDASPERIODO12 = CSALIDASPERIODO12 + '" . $productos[$i]["unidades"] . "',CCOSTOSALIDASPERIODO6 = CCOSTOSALIDASPERIODO6 + '" . $productos[$i]["costoCapturado"] . "',CCOSTOSALIDASPERIODO7 = CCOSTOSALIDASPERIODO7 + '" . $productos[$i]["costoCapturado"] . "',CCOSTOSALIDASPERIODO8 = CCOSTOSALIDASPERIODO8 + '" . $productos[$i]["costoCapturado"] . "',CCOSTOSALIDASPERIODO9 = CCOSTOSALIDASPERIODO9 + '" . $productos[$i]["costoCapturado"] . "',CCOSTOSALIDASPERIODO10 = CCOSTOSALIDASPERIODO10 + '" . $productos[$i]["costoCapturado"] . "',CCOSTOSALIDASPERIODO11 = CCOSTOSALIDASPERIODO11 + '" . $productos[$i]["costoCapturado"] . "',CCOSTOSALIDASPERIODO12 = CCOSTOSALIDASPERIODO12 + '" . $productos[$i]["costoCapturado"] . "',CTIMESTAMP = '" . $fechaTimeStamp . "'  WHERE CIDPRODUCTO = '" . $productos[$i]["idProducto"] . "' AND CIDALMACEN = '" . $productos[$i]["idAlmacen"] . "' AND CIDEJERCICIO = 2");
+                         $actualizarExistencia->execute();
+                    }
+               }
+
+               /****EXISTENCIAS COSTOS*/
+          }
+          $estatusDocumento = ConexionsBd::conectar()->prepare("UPDATE inventarios SET idEstatus = 4 WHERE serie = '" . $datos["serieOrigen"] . "' and folio = '" . intval($datos["folioOrigen"]) . "'");
+          $estatusDocumento->execute();
+
+          return "ok";
+
+          $estatusDocumento->close();
+
+          $estatusDocumento = null;
+     }
+     static public function mdlActualizarProductoInventario($datos)
+     {
+
+
+          $productos = json_decode($datos["productos"], true);
+          for ($i = 0; $i < count($productos); $i++) {
+               $movimiento = ConexionsBd::conectar()->prepare("UPDATE productosinventarios SET inventarioConversion = '" . $productos[$i]['inventarioConversion'] . "',inventario = '" . $productos[$i]['inventario'] . "',inventarioImporte = '" . $productos[$i]['inventarioImporte'] . "',diferenciaConversion = '" . $productos[$i]['diferenciaConversion'] . "',diferencia = '" . $productos[$i]['diferencia'] . "',diferenciaImporte = '" . $productos[$i]['diferenciaImporte'] . "',estado = '" . $productos[$i]['estado'] . "' WHERE id = '" . $productos[$i]['idProdInv'] . "' and idProducto = '" . $productos[$i]['idProducto'] . "' and idInventario = '" . $productos[$i]['folio'] . "'");
+               $movimiento->execute();
+          }
+          return "ok";
+          $movimiento->close();
+          $movimiento = null;
+     }
+     static public function mdlActualizarInventario($datos)
+     {
+
+          $stmt = ConexionsBd::conectar()->prepare("UPDATE inventarios SET inventario = :inventario,diferencia = :diferencia,inventarioImportes = :inventarioImportes,diferenciaImportes = :diferenciaImportes,habilitado = 0 WHERE folio = :folioInventario");
+          $stmt->bindParam(":inventario", $datos["inventario"], PDO::PARAM_STR);
+          $stmt->bindParam(":diferencia", $datos["diferencia"], PDO::PARAM_STR);
+          $stmt->bindParam(":inventarioImportes", $datos["inventarioImportes"], PDO::PARAM_STR);
+          $stmt->bindParam(":diferenciaImportes", $datos["diferenciaImportes"], PDO::PARAM_STR);
+          $stmt->bindParam(":folioInventario", $datos["folioInventario"], PDO::PARAM_INT);
+
+          if ($stmt->execute()) {
+
+               return "ok";
+          } else {
+
+               return "error";
+          }
+
+          $stmt->close();
           $stmt = null;
      }
 }

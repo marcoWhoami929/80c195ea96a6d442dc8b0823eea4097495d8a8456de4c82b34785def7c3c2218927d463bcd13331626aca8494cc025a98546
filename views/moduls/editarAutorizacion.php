@@ -125,10 +125,12 @@
 
                                                                         <div class="filter-group">
                                                                             <h4 id="nombreSolicitante"></h4>
+                                                                            <h4 id="areaSolicitante" style="color:transparent"></h4>
                                                                         </div>
                                                                         <div class="filter-group">
-                                                                            <button type="button" class="btn btn-warning" id="btnGenerarOrdenCompra" onclick="autorizacionCompra()" style="display:none"><i class="fa fa-paper-plane"></i>Generar orden</button>
+                                                                            <button type="button" class="btn nestable-info" data-toggle="modal" data-target="#modalClientesProveedores" id="btnGenerarOrdenCompra" style="display:none"><i class="fa fa-paper-plane"></i>Generar orden</button>
                                                                         </div>
+
                                                                     </div>
                                                                 </div>
                                                                 <div class="container col-lg-12 col-md-12 col-sm-12">
@@ -140,6 +142,7 @@
 
                                                                     </div>
                                                                 </div>
+
 
                                                                 <div>
                                                                     <table class="table table-responsive table-striped table-hover ">
@@ -228,6 +231,30 @@
                                                                                 </div>
                                                                             </div>
                                                                         </div>
+                                                                        <div class="col-lg-3 col-md-3 col-md-3" id="unidadesSolicitadas" style="display:none;margin-top:20px">
+                                                                            <div class="container">
+                                                                                <div class="row">
+                                                                                    <div class="col-lg-7 col-md-7 col-sm-7" style="background:#00BCD4;color:#ffffff">
+                                                                                        <h6>UNIDADES SOLICITADAS:</h6>
+                                                                                    </div>
+                                                                                    <div class="col-lg-3 col-md-3 col-sm-3">
+                                                                                        <input type="text" class="form-control" style="width:150px;font-size:20px;font-weight:bold" id="cantidadTotalSolicitada" readonly>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-lg-3 col-md-3 col-md-3" id="importeSolicitado" style="display:none;margin-top:20px">
+                                                                            <div class="container">
+                                                                                <div class="row">
+                                                                                    <div class="col-lg-7 col-md-7 col-sm-7" style="background:#00BCD4;color:#ffffff">
+                                                                                        <h6>IMPORTE SOLICITADO:</h6>
+                                                                                    </div>
+                                                                                    <div class="col-lg-3 col-md-3 col-sm-3">
+                                                                                        <input type="text" class="form-control" style="width:150px;font-size:20px;font-weight:bold" id="importeTotalSolicitado" readonly>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
 
@@ -247,6 +274,55 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="modalClientesProveedores" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#00BCD4;color:white">
+                <h5 class="modal-title">Buscar Proveedor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-lg-12 col-md-12 col-sm-12"></div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+
+                                <input type="text" class="form-control" id="nombre" placeholder="Buscar proveedor" onkeyup="loadClientesProveedores(1)">
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+                <div id="loader2" style="position: absolute;	text-align: center;	top: 55px;	width: 100%;display:none;"></div><!-- Carga gif animado -->
+                <div class="dataClientesProveedores"></div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn nestable-danger" data-dismiss="modal">Salir</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="loadDocument" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <center>
+                    <h5 class="modal-title" id="titleLoadDocument"></h5>
+                </center>
+
+            </div>
+            <div class="modal-body">
+                <center><img src="views/images/loader.gif" alt=""></center>
+            </div>
+
         </div>
     </div>
 </div>

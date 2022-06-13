@@ -2659,4 +2659,280 @@ class ControllerReports
 
         echo "</table>";
     }
+    public function ctrDescargarReporteRealizarInventario($search)
+    {
+        $database = new dataInventarios();
+        $arregloCampos = array();
+        $arregloHeaders = array();
+        $almacen = $search["almacen"];
+        $nombreAlmacen = $search["nombreAlmacen"];
+
+        $datos = $database->getListaProductosInventario($search);
+        $vista = "Inventario";
+        array_push($arregloHeaders, "#", "CODIGO", "DESCRIPCION", "ALMACEN", "UNIDAD", "EXISTENCIAS", "CONVER", "INVENTARIO", "DIFERENCIAS", "COSTO", "EXISTENCIAS", "INVENTARIO", "DIFERENCIAS", "ACCION");
+
+
+        /*=============================================
+			CREAMOS EL ARCHIVO DE EXCEL
+			=============================================*/
+
+        $nombre = "Reporte " . $vista . "" . '.xls';
+
+        header('Expires: 0');
+        header('Cache-control: private');
+        header('Content-type: application/vnd.ms-excel'); // Archivo de Excel
+        header("Cache-Control: cache, must-revalidate");
+        header('Content-Description: File Transfer');
+        header('Last-Modified: ' . date('D, d M Y H:i:s'));
+        header("Pragma: public");
+        header('Content-Disposition:; filename="' . $nombre . '"');
+        header("Content-Transfer-Encoding: binary");
+
+
+
+
+        echo utf8_decode("<table>");
+        echo "<tr>
+					<th colspan='" . count($arregloHeaders) . "' style='font-weight:bold; background:#17202A; color:white;'>SAN FRANCISCO DEKKERLAB</th>
+					</tr>
+
+					<tr>
+					<th colspan='" . count($arregloHeaders) . "' style='font-weight:bold; background:#17202A; color:white;'>R E P O R T E &nbsp; D E T A L L E &nbsp  I N V E N T A R I O S&nbsp;</th>
+					</tr>
+
+					<tr>
+					<th colspan='" . count($arregloHeaders) . "' style='font-weight:bold; background:#17202A; color:white;'>A L M A C E N &nbsp; " . $nombreAlmacen . "</th>
+					</tr>";
+        echo utf8_decode("<tr>");
+        for ($i = 0; $i < count($arregloHeaders); $i++) {
+            echo utf8_decode("<td style='font-weight:bold; background:#000000; color:white;'></td>");
+        }
+        echo utf8_decode("</tr>");
+        echo utf8_decode("<tr>
+        <th style='font-weight:bold; background:#000000; color:white;'></th>
+        <th style='font-weight:bold; background:#000000; color:white;'></th>
+        <th style='font-weight:bold; background:#000000; color:white;'></th>
+        <th style='font-weight:bold; background:#000000; color:white;'></th>
+        <th style='font-weight:bold; background:#000000; color:white;'></th>
+        <th style='font-weight:bold; background:#17202A; color:white;'></th>
+        <th style='font-weight:bold; background:#17202A; color:white;'></th>
+        <th style='font-weight:bold; background:#17202A; color:white;'>UNIDADES</th>
+        <th style='font-weight:bold; background:#17202A; color:white;'></th>
+        <th style='font-weight:bold; background:#0000; color:white;'></th>
+        <th style='font-weight:bold; background:#17202A; color:white;'></th>
+        <th style='font-weight:bold; background:#17202A; color:white;'>IMPORTES</th>
+        <th style='font-weight:bold; background:#17202A; color:white;'></th>
+        <th style='font-weight:bold; background:#000000; color:white;'></th>
+
+                        </tr>");
+        echo utf8_decode("<tr>");
+
+        foreach ($arregloHeaders as $key => $value) {
+
+            echo utf8_decode("<td style='font-weight:bold; background:#000000; color:white;'>" . $value . "</td>");
+        }
+        echo utf8_decode("</tr>");
+        $num = 1;
+        $sumaExistencias = 0;
+        $sumaDiferencias = 0;
+        $sumaExistenciasImporte = 0;
+        $sumaDiferenciasImporte = 0;
+        $sumaConversion = 0;
+        foreach ($datos as $key => $value) {
+
+            $costo = bcdiv($value["COSTO"], '1', 5);
+
+            if ($almacen == '3' || $almacen == '5' || $almacen == '7' || $almacen == '9' || $almacen == '11' || $almacen == '13') {
+                $conversionProducto = number_format($value["EXISTENCIAS"], 3) * $value["VALORCONVERSION"];
+            } else {
+                $conversionProducto = number_format($value["EXISTENCIAS"], 3);
+            }
+
+            $diferencia = $conversionProducto;
+            if ($diferencia > 0) {
+                $estado = "Entrada";
+            } else if ($diferencia == 0.00000) {
+                $estado = "Sin Accion";
+            }
+            $sumaExistencias +=  number_format($value["EXISTENCIAS"], 3);
+            $sumaDiferencias += number_format($value["EXISTENCIAS"], 3);
+            $sumaExistenciasImporte += number_format($value["EXISTENCIAS"], 3) * $costo;
+            $sumaDiferenciasImporte += number_format($value["EXISTENCIAS"], 3) * $costo;
+            $sumaConversion +=  $conversionProducto;
+            $style = 'mso-number-format:"@";';
+            echo utf8_decode("<tr>      
+                                        
+                                        <td style='color:black;text-align:left'>" . $num . "</td>
+                                        <td style='color:black;text-align:left;" . $style . "'>" . $value["CCODIGOPRODUCTO"] . "</td>
+                                        <td style='color:black;text-align:left'>" .  $value["CNOMBREPRODUCTO"]  . "</td>
+                                        <td style='color:black;text-align:left'>" . $value["CCODIGOALMACEN"] . "</td>
+                                        <td style='color:black;text-align:left'>" . $value["CDESPLIEGUE"] . "/" . $value["CNOMBREUNIDAD"] . "/" . $value["VALORCONVERSION"] . "</td>
+                                        <td style='color:black;text-align:right'>" . number_format($value["EXISTENCIAS"], 3) . "</td>
+                                        <td style='color:black;text-align:right'>" . $conversionProducto . "</td>
+                                        <td style='color:black;text-align:right'>0</td>
+                                        <td style='color:black;text-align:right'>" . number_format($value["EXISTENCIAS"], 3) . "</td>
+                                        <td style='color:black;text-align:right'>$" . $costo  . "</td>
+                                        <td style='color:black;text-align:right'>$" . number_format($value["EXISTENCIAS"], 5) * $costo . "</td>
+                                        <td style='color:black;text-align:right'>$" . bcdiv(0, '1', 5)  . "</td>
+                                        <td style='color:black;text-align:right'>$" . number_format($value["EXISTENCIAS"], 5) * $costo  . "</td>
+                                        <td style='color:black;text-align:right'>" . $estado . "</td>
+                                        </tr>");
+            $num++;
+        }
+        echo utf8_decode("<tr>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:left'>Total General</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:left'></td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:left'></td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:left'></td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:left'></td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'>" . $sumaExistencias . "</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'>" . $sumaConversion . "</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'></td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'>" . $sumaDiferencias . "</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'></td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'>" . $sumaExistenciasImporte . "</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'></td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'>" . $sumaDiferenciasImporte . "</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'></td>
+										</tr>");
+
+
+        echo "</table>";
+    }
+    public function ctrDescargarReporteEditarInventario($campos, $search)
+    {
+        $database = new dataInventarios();
+        $arregloHeaders = array();
+        $almacen = $search["almacen"];
+        $documento = $search["documento"];
+        $nombreAlmacen = $search["nombreAlmacen"];
+
+        $datos = $database->getListadoProductosInventario($campos, $search);
+
+        array_push($arregloHeaders, "#", "CODIGO", "DESCRIPCION", "ALMACEN", "UNIDAD", "EXISTENCIAS", "EXISTENCIAS CONV", "INVENTARIO", "DIFERENCIAS", "COSTO", "EXISTENCIAS", "INVENTARIO", "DIFERENCIAS", "ACCION");
+
+
+        /*=============================================
+			CREAMOS EL ARCHIVO DE EXCEL
+			=============================================*/
+
+        $nombre = "Inventario " . $documento . "" . '.xls';
+
+        header('Expires: 0');
+        header('Cache-control: private');
+        header('Content-type: application/vnd.ms-excel'); // Archivo de Excel
+        header("Cache-Control: cache, must-revalidate");
+        header('Content-Description: File Transfer');
+        header('Last-Modified: ' . date('D, d M Y H:i:s'));
+        header("Pragma: public");
+        header('Content-Disposition:; filename="' . $nombre . '"');
+        header("Content-Transfer-Encoding: binary");
+
+
+
+
+        echo utf8_decode("<table>");
+        echo "<tr>
+					<th colspan='" . count($arregloHeaders) . "' style='font-weight:bold; background:#17202A; color:white;'>SAN FRANCISCO DEKKERLAB</th>
+					</tr>
+
+					<tr>
+					<th colspan='" . count($arregloHeaders) . "' style='font-weight:bold; background:#17202A; color:white;'>R E P O R T E &nbsp; D E T A L L E &nbsp  I N V E N T A R I O S&nbsp;</th>
+					</tr>
+
+					<tr>
+					<th colspan='" . count($arregloHeaders) . "' style='font-weight:bold; background:#17202A; color:white;'> " . $documento . " &nbsp; A L M A C E N &nbsp;  " . $nombreAlmacen . "</th>
+					</tr>";
+        echo utf8_decode("<tr>");
+        for ($i = 0; $i < count($arregloHeaders); $i++) {
+            echo utf8_decode("<td style='font-weight:bold; background:#000000; color:white;'></td>");
+        }
+        echo utf8_decode("</tr>");
+        echo utf8_decode("<tr>
+        <th style='font-weight:bold; background:#000000; color:white;'></th>
+        <th style='font-weight:bold; background:#000000; color:white;'></th>
+        <th style='font-weight:bold; background:#000000; color:white;'></th>
+        <th style='font-weight:bold; background:#000000; color:white;'></th>
+        <th style='font-weight:bold; background:#000000; color:white;'></th>
+        <th style='font-weight:bold; background:#17202A; color:white;'></th>
+        <th style='font-weight:bold; background:#17202A; color:white;'></th>
+        <th style='font-weight:bold; background:#17202A; color:white;'>UNIDADES</th>
+        <th style='font-weight:bold; background:#17202A; color:white;'></th>
+        <th style='font-weight:bold; background:#0000; color:white;'></th>
+        <th style='font-weight:bold; background:#17202A; color:white;'></th>
+        <th style='font-weight:bold; background:#17202A; color:white;'>IMPORTES</th>
+        <th style='font-weight:bold; background:#17202A; color:white;'></th>
+        <th style='font-weight:bold; background:#000000; color:white;'></th>
+
+                        </tr>");
+        echo utf8_decode("<tr>");
+
+        foreach ($arregloHeaders as $key => $value) {
+
+            echo utf8_decode("<td style='font-weight:bold; background:#000000; color:white;'>" . $value . "</td>");
+        }
+        echo utf8_decode("</tr>");
+        $num = 1;
+        $sumaExistencias = 0;
+        $sumaDiferencias = 0;
+        $sumaExistenciasImporte = 0;
+        $sumaDiferenciasImporte = 0;
+        $sumaInventarioImporte = 0;
+        $sumaConversion = 0;
+        $sumaInventario = 0;
+        foreach ($datos as $key => $value) {
+
+            if ($almacen == '3' || $almacen == '5' || $almacen == '7' || $almacen == '9' || $almacen == '11' || $almacen == '13') {
+                $conversionProducto = bcdiv($value["existencia"] * $value["valorConversion"], '1', 5);
+            } else {
+                $conversionProducto = bcdiv($value["existencia"], '1', 5);
+            }
+
+            $sumaExistencias +=  bcdiv($value["existencia"], '1', 5);
+            $sumaInventario += bcdiv($value["inventario"], '1', 5);
+            $sumaDiferencias += bcdiv($value["diferencia"], '1', 5);
+            $sumaExistenciasImporte += bcdiv($value["existenciaImporte"], '1', 5);
+            $sumaInventarioImporte +=   bcdiv($value["inventarioImporte"], '1', 5);
+            $sumaDiferenciasImporte += bcdiv($value["diferenciaImporte"], '1', 5);
+            $sumaConversion +=  $conversionProducto;
+            $style = 'mso-number-format:"@";';
+            echo utf8_decode("<tr>      
+                                        
+                                        <td style='color:black;text-align:left'>" . $num . "</td>
+                                        <td style='color:black;text-align:left;" . $style . "'>" . $value["codigo"] . "</td>
+                                        <td style='color:black;text-align:left'>" .  $value["descripcion"]  . "</td>
+                                        <td style='color:black;text-align:left'>" . $value["ccodigoalmacen"] . "</td>
+                                        <td style='color:black;text-align:left'>" . $value["despliegue"] . "/" . $value["nombreUnidad"] . "</td>
+                                        <td style='color:black;text-align:right'>" . bcdiv($value["existencia"], '1', 5) . "</td>
+                                        <td style='color:black;text-align:right'>" . bcdiv($value["existenciaConversion"], '1', 5) . "</td>
+                                        <td style='color:black;text-align:right'>" . bcdiv($value["inventario"], '1', 5) . "</td>
+                                        <td style='color:black;text-align:right'>" . bcdiv($value["diferencia"], '1', 5) . "</td>
+                                        <td style='color:black;text-align:right'>$" . bcdiv($value["costo"], '1', 5)  . "</td>
+                                        <td style='color:black;text-align:right'>$" . bcdiv($value["existenciaImporte"], '1', 5)  . "</td>
+                                        <td style='color:black;text-align:right'>$" . bcdiv($value["inventarioImporte"], '1', 5)  . "</td>
+                                        <td style='color:black;text-align:right'>$" . bcdiv($value["diferenciaImporte"], '1', 5)  . "</td>
+                                        <td style='color:black;text-align:right'>" . $value["estado"] . "</td>
+                                        </tr>");
+            $num++;
+        }
+        echo utf8_decode("<tr>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:left'>Total General</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:left'></td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:left'></td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:left'></td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:left'></td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'>" . $sumaExistencias . "</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'>" . $sumaConversion . "</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'>" . $sumaInventario . "</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'>" . $sumaDiferencias . "</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'></td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'>" . $sumaExistenciasImporte . "</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'>" . $sumaInventarioImporte . "</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'>" . $sumaDiferenciasImporte . "</td>
+                                        <td style='color:white;background:#17202A;font-weight:bold;text-align:right'></td>
+										</tr>");
+
+
+        echo "</table>";
+    }
 }

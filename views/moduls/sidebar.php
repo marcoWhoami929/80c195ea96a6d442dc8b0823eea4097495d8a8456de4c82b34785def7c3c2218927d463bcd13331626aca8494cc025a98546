@@ -296,10 +296,40 @@
                 </li>
             </ul>';
         } else {
+            if ($_SESSION["nombre"] === "Elsa Martinez") {
 
-            if ($_SESSION["grupo"] == "Tiendas") {
-            } else if ($_SESSION["grupo"] == 'Ecommerce') {
-                echo '<div class="pcoded-navigation-label">Ecommerce</div>
+                echo '
+                <ul class="pcoded-item pcoded-left-item">
+                    <li class="">
+                        <a href="indicadores" class="waves-effect waves-dark">
+                            <span class="pcoded-micon"><i class="ti-bar-chart"></i><b></b></span>
+                            <span class="pcoded-mtext">Indicadores</span>
+                            <span class="pcoded-mcaret"></span>
+                        </a>
+        
+                    </li>
+                    <li class="">
+                    <a href="inventarioActual" class="waves-effect waves-dark">
+                        <span class="pcoded-micon"><i class="ti-package"></i><b></b></span>
+                        <span class="pcoded-mtext">Inventario Actual</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+    
+                </li>
+                <li class="">
+                    <a href="impresionDocumentos" class="waves-effect waves-dark">
+                        <span class="pcoded-micon"><i class="ti-printer"></i><b></b></span>
+                        <span class="pcoded-mtext">Impresion Masiva</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+    
+                </li>
+                </ul>';
+            } else {
+
+                if ($_SESSION["grupo"] == "Tiendas") {
+                } else if ($_SESSION["grupo"] == 'Ecommerce') {
+                    echo '<div class="pcoded-navigation-label">Ecommerce</div>
                 <ul class="pcoded-item pcoded-left-item">
                     <li class="">
                         <a href="ecommerce" class="waves-effect waves-dark">
@@ -309,81 +339,49 @@
                         </a>
                     </li>
                 </ul>';
-            } else {
-                /*
-                echo '<div class="pcoded-navigation-label">Tablero</div>
-            <ul class="pcoded-item pcoded-left-item">
-                <li class="active">
-                    <a href="dashboardInventarios" class="waves-effect waves-dark">
-                        <span class="pcoded-micon"><i class="ti-dashboard"></i><b></b></span>
-                        <span class="pcoded-mtext">Tablero</span>
-                        <span class="pcoded-mcaret"></span>
-                    </a>
-    
-                </li>
-            </ul>';
-            */
-                echo '<div class="pcoded-navigation-label">Indicadores</div>
-            <ul class="pcoded-item pcoded-left-item">
-                <li class="">
-                    <a href="indicadores" class="waves-effect waves-dark">
-                        <span class="pcoded-micon"><i class="ti-bar-chart"></i><b></b></span>
-                        <span class="pcoded-mtext">Indicadores</span>
-                        <span class="pcoded-mcaret"></span>
-                    </a>
-    
-                </li>
-                <li class="">
-                <a href="inventarioActual" class="waves-effect waves-dark">
-                    <span class="pcoded-micon"><i class="ti-package"></i><b></b></span>
-                    <span class="pcoded-mtext">Inventario Actual</span>
-                    <span class="pcoded-mcaret"></span>
-                </a>
+                } else {
 
-            </li>
-            </ul>';
-            }
+                    if ($_SESSION["grupo"] == "Almacen") {
+                    } else {
+                        echo '<div class="pcoded-navigation-label">Tablero</div>
+                        <ul class="pcoded-item pcoded-left-item">
+                            <li class="active">
+                                <a href="dashboardInventarios" class="waves-effect waves-dark">
+                                    <span class="pcoded-micon"><i class="ti-dashboard"></i><b></b></span>
+                                    <span class="pcoded-mtext">Tablero</span>
+                                    <span class="pcoded-mcaret"></span>
+                                </a>
+                
+                            </li>
+                        </ul>';
 
-            if ($_SESSION["grupo"] == "Administracion") {
-                /*
+                        echo '
+                        <ul class="pcoded-item pcoded-left-item">
+                            <li class="">
+                                <a href="indicadores" class="waves-effect waves-dark">
+                                    <span class="pcoded-micon"><i class="ti-bar-chart"></i><b></b></span>
+                                    <span class="pcoded-mtext">Indicadores</span>
+                                    <span class="pcoded-mcaret"></span>
+                                </a>
+                
+                            </li>
+                            <li class="">
+                            <a href="inventarioActual" class="waves-effect waves-dark">
+                                <span class="pcoded-micon"><i class="ti-package"></i><b></b></span>
+                                <span class="pcoded-mtext">Inventario Actual</span>
+                                <span class="pcoded-mcaret"></span>
+                            </a>
+            
+                        </li>
+                        </ul>';
+                    }
+                }
 
-                echo '<ul class="pcoded-item pcoded-left-item">
-                <li class="pcoded-hasmenu">
-                    <a href="javascript:void(0)" class="waves-effect waves-dark">
-                        <span class="pcoded-micon"><i class="ti-flag-alt"></i><b></b></span>
-                        <span class="pcoded-mtext">Movimientos</span>
-                        <span class="pcoded-mcaret"></span>
-                    </a>
-                    <ul class="pcoded-submenu">
-                    <li class="">
-                        <a href="entradas" class="waves-effect waves-dark">
-                            <span class="pcoded-mtext">Entradas</span>
-                            <span class="pcoded-mcaret"></span>
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href="salidas" class="waves-effect waves-dark">
-                            <span class="pcoded-mtext">Salidas</span>
-                            <span class="pcoded-mcaret"></span>
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href="traspasos" class="waves-effect waves-dark">
-               
-                            <span class="pcoded-mtext">Traspasos</span>
-                            <span class="pcoded-mcaret"></span>
-                        </a>
-                    </li>
-                   
-    
-                    </ul>
-                </li>
-            </ul>';
-            */
-            }
-            if ($_SESSION["grupo"] != "Ecommerce") {
-                /*
-                echo '<ul class="pcoded-item pcoded-left-item">
+
+                if ($_SESSION["grupo"] != "Ecommerce") {
+
+                    echo '<div class="pcoded-navigation-label">Mi Almacén</div>
+                <ul class="pcoded-item pcoded-left-item">
                 <li class="pcoded-hasmenu">
                     <a href="javascript:void(0)" class="waves-effect waves-dark">
                         <span class="pcoded-micon"><i class="ti-panel"></i><b></b></span>
@@ -403,11 +401,19 @@
                             <span class="pcoded-mcaret"></span>
                         </a>
                     </li>
+                    <!--
+                    <li class="">
+                    <a href="masVendidos" class="waves-effect waves-dark">
+                        <span class="pcoded-mtext">Más Vendidos</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                </li>
+               -->
                 
                     </ul>
                 </li>
             </ul>';
-                echo '<ul class="pcoded-item pcoded-left-item">
+                    echo '<ul class="pcoded-item pcoded-left-item">
                 <li class="pcoded-hasmenu">
                     <a href="javascript:void(0)" class="waves-effect waves-dark">
                         <span class="pcoded-micon"><i class="ti-money"></i><b></b></span>
@@ -437,7 +443,7 @@
                 </li>
             </ul>';
 
-                echo '<ul class="pcoded-item pcoded-left-item">
+                    echo '<ul class="pcoded-item pcoded-left-item">
                 <li class="pcoded-hasmenu">
                     <a href="javascript:void(0)" class="waves-effect waves-dark">
                         <span class="pcoded-micon"><i class="ti-bookmark-alt"></i><b></b></span>
@@ -461,7 +467,7 @@
                     </ul>
                 </li>
             </ul>';
-                echo '<ul class="pcoded-item pcoded-left-item">
+                    echo '<ul class="pcoded-item pcoded-left-item">
             <li class="">
                 <a href="recordatorios" class="waves-effect waves-dark">
                     <span class="pcoded-micon"><i class="ti-calendar"></i><b></b></span>
@@ -471,7 +477,7 @@
 
             </li>
         </ul>';
-                echo '<ul class="pcoded-item pcoded-left-item">
+                    echo '<ul class="pcoded-item pcoded-left-item">
         <li class="">
             <a href="existencias" class="waves-effect waves-dark">
                 <span class="pcoded-micon"><i class="ti-package"></i><b></b></span>
@@ -482,7 +488,7 @@
         </li>
     </ul>';
 
-                echo '<ul class="pcoded-item pcoded-left-item">
+                    echo '<ul class="pcoded-item pcoded-left-item">
             <li class="pcoded-hasmenu">
                 <a href="javascript:void(0)" class="waves-effect waves-dark">
                     <span class="pcoded-micon"><i class="ti-bookmark-alt"></i><b></b></span>
@@ -490,12 +496,15 @@
                     <span class="pcoded-mcaret"></span>
                 </a>
                 <ul class="pcoded-submenu">
+                <!--
                 <li class="">
                     <a href="pedidoSugerido" class="waves-effect waves-dark">
                         <span class="pcoded-mtext">Pedido Sugerido</span>
                         <span class="pcoded-mcaret"></span>
                     </a>
                 </li>
+
+                -->
                 <li class="">
                     <a href="pedidos" class="waves-effect waves-dark">
                         <span class="pcoded-mtext">Mis Pedidos</span>
@@ -513,7 +522,7 @@
                 </ul>
             </li>
         </ul>';
-                echo '<ul class="pcoded-item pcoded-left-item">
+                    echo '<ul class="pcoded-item pcoded-left-item">
             <li class="pcoded-hasmenu">
                 <a href="javascript:void(0)" class="waves-effect waves-dark">
                     <span class="pcoded-micon"><i class="ti-dropbox"></i><b></b></span>
@@ -522,22 +531,63 @@
                 </a>
                 <ul class="pcoded-submenu">
                 <li class="">
+                    <a href="inventarios" class="waves-effect waves-dark">
+                        <span class="pcoded-mtext">Inventarios Realizados</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                </li> ';
+                    if ($_SESSION["grupo"] != "Administracion") {
+                        echo '<li class="">
                     <a href="realizarInventario" class="waves-effect waves-dark">
                         <span class="pcoded-mtext">Realizar Inventario</span>
                         <span class="pcoded-mcaret"></span>
                     </a>
-                </li>
+                </li>';
+                    }
+
+
+                    echo ' </ul>
+            </li>
+        </ul>';
+
+
+                    if ($_SESSION["grupo"] == "Administracion") {
+
+
+                        echo '<ul class="pcoded-item pcoded-left-item">
+            <li class="pcoded-hasmenu">
+                <a href="javascript:void(0)" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-flag-alt"></i><b></b></span>
+                    <span class="pcoded-mtext">Movimientos</span>
+                    <span class="pcoded-mcaret"></span>
+                </a>
+                <ul class="pcoded-submenu">
                 <li class="">
-                    <a href="inventariosRealizados" class="waves-effect waves-dark">
-                        <span class="pcoded-mtext">Inventarios Realizados</span>
+                    <a href="entradas" class="waves-effect waves-dark">
+                        <span class="pcoded-mtext">Entradas</span>
                         <span class="pcoded-mcaret"></span>
                     </a>
                 </li>
+                <li class="">
+                    <a href="salidas" class="waves-effect waves-dark">
+                        <span class="pcoded-mtext">Salidas</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="traspasos" class="waves-effect waves-dark">
+           
+                        <span class="pcoded-mtext">Traspasos</span>
+                        <span class="pcoded-mcaret"></span>
+                    </a>
+                </li>
+               
+
                 </ul>
             </li>
-        </ul>
-        ';
-        */
+        </ul>';
+                    }
+                }
             }
         }
         ?>

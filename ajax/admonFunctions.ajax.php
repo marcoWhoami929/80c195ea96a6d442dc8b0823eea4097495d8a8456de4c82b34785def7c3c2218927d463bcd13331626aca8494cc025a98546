@@ -224,8 +224,15 @@ class AjaxAdmon
             "idDocumento" => $this->idDocumento
 
         );
-
         $respuesta = ModelAdmon::mdlDetalleDocumentoIndicadores($datos);
+
+        echo json_encode($respuesta);
+    }
+    public function detalleMovimientosDocumento()
+    {
+        $idDocumento  = $this->idDocumento;
+
+        $respuesta = ModelAdmon::mdlDetalleMovimientosDocumento($idDocumento);
 
         echo json_encode($respuesta);
     }
@@ -333,5 +340,9 @@ if (isset($_POST["accion"])) {
         $detalleDocumento = new AjaxAdmon();
         $detalleDocumento->idDocumento = $_POST["idDocumentoDetalle"];
         $detalleDocumento->detalleDocumentoIndicadores();
+    } else if ($_POST["accion"] == "detalleMovimientosDocumento") {
+        $detalle = new AjaxAdmon();
+        $detalle->idDocumento = $_POST["idDocumentoDetalle"];
+        $detalle->detalleMovimientosDocumento();
     }
 }

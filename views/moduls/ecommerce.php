@@ -52,7 +52,7 @@
                                                                     <h3>Precios Ecommerce</h3>
                                                                     <small>*Atajo Para Buscador Productos: <strong>CTRL + X</strong></small>
                                                                     <div class="filter-group">
-                                                                        <button type="button" class="btn btn-warning" onclick="cargarListaProductosEcommerce(1)"> <i class="fa fa-refresh"></i>Actualizar</button>
+                                                                        <button type="button" class="btn nestable-info" onclick="cargarListaProductosEcommerce(1)"> <i class="fa fa-refresh"></i>Actualizar</button>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row text-center" id="loader" style="position: absolute;top: 80px;left: 40%;color:#ffffff;font-size:22px">
@@ -253,7 +253,7 @@
             </div>
             <div class="modal-footer">
 
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+                <button type="button" class="btn nestable-danger" data-dismiss="modal">Salir</button>
             </div>
         </div>
     </div>

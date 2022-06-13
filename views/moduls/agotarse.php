@@ -65,7 +65,7 @@
 
                                                                     <small>*Atajo Para Buscador Productos: <strong>CTRL + X</strong></small>
                                                                     <div class="filter-group">
-                                                                        <button type="button" class="btn btn-warning" onclick="productosPorAgotarse()"> <i class="fa fa-refresh"></i>Actualizar</button>
+                                                                        <button type="button" class="btn nestable-info" onclick="productosPorAgotarse()"> <i class="fa fa-refresh"></i>Actualizar</button>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row text-center" id="loader" style="position: absolute;top: 80px;left: 40%;color:#00BCD4;font-size:22px">
@@ -255,7 +255,7 @@
             </div>
             <div class="modal-footer">
 
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+                <button type="button" class="btn nestable-danger" data-dismiss="modal">Salir</button>
             </div>
         </div>
     </div>

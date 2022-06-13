@@ -23773,7 +23773,7 @@ SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull(
           $sWhere = " adoc.CCANCELADO  = '" . $estatus . "'  and YEAR(adoc.CFECHA) = '" . $año . "' ";
 
 
-          $condicional = "WHERE indicador = 1  and NombreCliente NOT IN('PINTURAS Y COMPLEMENTOS DE PUEBLA S.A. DE C.V.','FLEX FINISHES MEXICO, S.A. DE C.V.')";
+          $condicional = "WHERE indicador = 1  and NombreCliente NOT IN('PINTURAS Y COMPLEMENTOS DE PUEBLA S.A. DE C.V.','FLEX FINISHES MEXICO, S.A. DE C.V.','PINTURAS Y COMPLEMENTOS DE PUEBLA','FLEX FINISHES MEXICO')";
 
           $sql = "WITH indicadores
           AS (SELECT

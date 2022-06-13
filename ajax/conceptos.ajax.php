@@ -58,8 +58,8 @@ if ($action == 'conceptoPinturas') {
                         <td><?= $row['CCENTROTRABAJO'] ?></td>
                         <td> <?= $row['CCANALCOMERCIAL'] ?></td>
                         <td>
-                            <button type="button" class="btn btn-primary" onclick="obtenerDatosConcepto(<?= $row['CIDPARAM']; ?>,'PINTURAS')"><i class="fa fa-edit"></i></button>
-                            <button type="button" class="btn btn-danger" onclick="eliminarConcepto(<?= $row['CIDPARAM']; ?>,'PINTURAS')"><i class="fa fa-trash"></i></button>
+                            <button type="button" class="btn nestable-info" onclick="obtenerDatosConcepto(<?= $row['CIDPARAM']; ?>,'PINTURAS')"><i class="fa fa-edit"></i></button>
+                            <button type="button" class="btn nestable-danger" onclick="eliminarConcepto(<?= $row['CIDPARAM']; ?>,'PINTURAS')"><i class="fa fa-trash"></i></button>
                         </td>
                     </tr>
                 <?php
@@ -141,8 +141,8 @@ if ($action == 'conceptoFlex') {
                         <td><?= $row['CCENTROTRABAJO'] ?></td>
                         <td> <?= $row['CCANALCOMERCIAL'] ?></td>
                         <td>
-                            <button type="button" class="btn btn-primary" onclick="obtenerDatosConcepto(<?= $row['CIDPARAM']; ?>,'FLEX')"><i class="fa fa-edit"></i></button>
-                            <button type="button" class="btn btn-danger" onclick="eliminarConcepto(<?= $row['CIDPARAM']; ?>,'FLEX')"><i class="fa fa-trash"></i></button>
+                            <button type="button" class="btn nestable-info" onclick="obtenerDatosConcepto(<?= $row['CIDPARAM']; ?>,'FLEX')"><i class="fa fa-edit"></i></button>
+                            <button type="button" class="btn nestable-danger" onclick="eliminarConcepto(<?= $row['CIDPARAM']; ?>,'FLEX')"><i class="fa fa-trash"></i></button>
                         </td>
                     </tr>
                 <?php

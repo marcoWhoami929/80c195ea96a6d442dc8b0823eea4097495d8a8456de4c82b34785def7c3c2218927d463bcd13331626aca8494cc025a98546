@@ -66,7 +66,7 @@
 
 
                                                                         <div class="filter-group">
-                                                                            <button type="button" id="searchProductoVenta" class="btn btn-primary" data-toggle="modal" data-target="#modalProductosVenta"> <i class="fa fa-search"></i>Productos</button>
+                                                                            <button type="button" id="searchProductoVenta" class="btn nestable-info" data-toggle="modal" data-target="#modalProductosVenta"> <i class="fa fa-search"></i>Productos</button>
                                                                         </div>
 
                                                                         <div class="filter-group">
@@ -111,7 +111,7 @@
                                                                             </select>
                                                                         </div>
                                                                         <div class="filter-group">
-                                                                            <button type="button" class="btn btn-danger" onclick="generarDocumento('requisiciones')"><i class="fa fa-edit"></i>Generar</button>
+                                                                            <button type="button" class="btn nestable-success" onclick="generarDocumento('requisiciones')"><i class="fa fa-edit"></i>Generar</button>
                                                                         </div>
                                                                         <div class="filter-group">
                                                                             <h4 id="nombreSolicitante"></h4>
@@ -218,7 +218,7 @@
             </div>
             <div class="modal-footer">
 
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+                <button type="button" class="btn nestable-danger" data-dismiss="modal">Salir</button>
             </div>
         </div>
     </div>

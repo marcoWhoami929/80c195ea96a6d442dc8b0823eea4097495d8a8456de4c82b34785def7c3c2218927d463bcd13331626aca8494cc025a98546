@@ -52,7 +52,7 @@
                                                                     <h3>Mi Almacén</h3>
                                                                     <small>*Atajo Para Buscador Productos: <strong>CTRL + X</strong></small>
                                                                     <div class="filter-group">
-                                                                        <button type="button" class="btn btn-warning" onclick="productosAlmacenes()"> <i class="fa fa-refresh"></i>Actualizar</button>
+                                                                        <button type="button" class="btn nestable-info" onclick="productosAlmacenes()"> <i class="fa fa-refresh"></i>Actualizar</button>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row text-center" id="loader" style="position: absolute;top: 80px;left: 40%;color:#ffffff;font-size:22px">
@@ -69,7 +69,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="filter-group">
-                                                                            <button type="button" id="searchProductoVenta" class="btn btn-primary" data-toggle="modal" data-target="#modalProductosVenta"> <i class="fa fa-search"></i>Productos</button>
+                                                                            <button type="button" id="searchProductoVenta" class="btn nestable-info" data-toggle="modal" data-target="#modalProductosVenta"> <i class="fa fa-search"></i>Productos</button>
                                                                         </div>
                                                                         <div class="filter-group">
                                                                             <label>Periodo:</label>
@@ -232,7 +232,7 @@
             </div>
             <div class="modal-footer">
 
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Salir</button>
+                <button type="button" class="btn nestable-danger" data-dismiss="modal">Salir</button>
             </div>
         </div>
     </div>

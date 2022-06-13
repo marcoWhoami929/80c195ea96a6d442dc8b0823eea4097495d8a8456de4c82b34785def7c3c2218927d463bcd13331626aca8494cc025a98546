@@ -86,7 +86,7 @@
                                                                     <div class="table-wrapper">
                                                                         <div class="table-title" style="margin-top:-80px;height:50px">
                                                                             <div class="filter-group">
-                                                                                <button type="button" class="btn btn-warning" onclick="cargarIndicadoresUtilidad(1)"> <i class="fa fa-refresh"></i>Actualizar</button>
+                                                                                <button type="button" class="btn nestable-info" onclick="cargarIndicadoresUtilidad(1)"> <i class="fa fa-refresh"></i>Actualizar</button>
                                                                             </div>
                                                                         </div>
 
@@ -225,7 +225,7 @@
                                                                     <div class="table-wrapper">
                                                                         <div class="table-title" style="margin-top:-80px;height:50px">
                                                                             <div class="filter-group">
-                                                                                <button type="button" class="btn btn-warning" onclick="cargarIndicadoresInventarios(1)"> <i class="fa fa-refresh"></i>Actualizar</button>
+                                                                                <button type="button" class="btn nestable-info" onclick="cargarIndicadoresInventarios(1)"> <i class="fa fa-refresh"></i>Actualizar</button>
                                                                             </div>
                                                                         </div>
 
@@ -364,7 +364,7 @@
                                                                     <div class="table-wrapper">
                                                                         <div class="table-title" style="margin-top:-80px;height:50px">
                                                                             <div class="filter-group">
-                                                                                <button type="button" class="btn btn-warning" onclick="cargarIndicadoresDetalladoInventarios(1)"> <i class="fa fa-refresh"></i>Actualizar</button>
+                                                                                <button type="button" class="btn nestable-info" onclick="cargarIndicadoresDetalladoInventarios(1)"> <i class="fa fa-refresh"></i>Actualizar</button>
                                                                             </div>
                                                                         </div>
 
