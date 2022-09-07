@@ -307,7 +307,9 @@ $(function () {
         localStorage.setItem("año", 2022);
       } else {
       }
-
+      break;
+      case "ventasCanalFiltro":
+      cargarVentasCanalFiltro(1);
       break;
    
     
@@ -3472,6 +3474,20 @@ function redireccionAcion(accion) {
       localStorage.setItem("marcaDetalle", "");
       window.open("detalleVentas", "_blank");
       break;
+       case "ACATEPEC":
+      localStorage.setItem("centroDetalle", "10 TIENDA ACATEPEC");
+      localStorage.setItem("agenteDetalle", "");
+      localStorage.setItem("canalDetalle", "");
+      localStorage.setItem("clienteDetalle", "");
+      localStorage.setItem("fechaDetalle", dia);
+      localStorage.setItem("mesDetalle", "");
+      localStorage.setItem("semanaDetalle", semana);
+      localStorage.setItem("añoDetalle", año);
+      localStorage.setItem("conceptoDetalle", "");
+      localStorage.setItem("codigoDetalle", "");
+      localStorage.setItem("marcaDetalle", "");
+      window.open("detalleVentas", "_blank");
+      break;
     case "FLOTILLAS":
       localStorage.setItem("centroDetalle", "");
       localStorage.setItem("agenteDetalle", "");
@@ -4702,4 +4718,39 @@ function accionBusqueda() {
     $(".busquedaMensual").hide();
     $(".busquedaRango").show();
   }
+}
+function cargarVentasCanalFiltro(page) {
+  var vista = "cargarVentasCanalFiltro";
+  var fechaInicio1 = $("#fechaInicio1").val();
+  var fechaFinal1 = $("#fechaFinal1").val();
+  var fechaInicio2 = $("#fechaInicio2").val();
+  var fechaFinal2 = $("#fechaFinal2").val();
+  var estatus = 0;
+  var per_page = 10;
+  var parametros = {
+    action: "ventasCanalFiltro",
+    page: page,
+    estatus: estatus,
+    vista: vista,
+    per_page: per_page,
+    fechaInicio1: fechaInicio1,
+    fechaFinal1: fechaFinal1,
+    fechaInicio2: fechaInicio2,
+    fechaFinal2: fechaFinal2
+
+  };
+ 
+  $.ajax({
+    url: "ajax/ventasYearToDay.ajax.php",
+    data: parametros,
+    beforeSend: function (objeto) {
+       $("#loader").fadeIn("slow");
+      $("#loader").html("Cargando Porfavor Espere ........");
+
+    },
+    success: function (data) {
+        $("#loader").html("");
+      $(".ventasCanalFiltroData").html(data).fadeIn("slow");
+    },
+  });
 }

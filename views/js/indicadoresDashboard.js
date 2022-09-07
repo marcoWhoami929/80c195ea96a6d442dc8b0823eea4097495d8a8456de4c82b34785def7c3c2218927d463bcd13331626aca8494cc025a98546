@@ -67,7 +67,8 @@ function loadIndicadoresDashboard(año, semana, dia) {
       respuesta.tiendas[1]["value"] +
       respuesta.tiendas[2]["value"] +
       respuesta.tiendas[3]["value"] +
-      respuesta.tiendas[4]["value"];
+      respuesta.tiendas[4]["value"] +
+      respuesta.tiendas[5]["value"];
 
     $("#dashboardMayoreo").html(
       "$ " + format(respuesta.canales[0]["value"].toFixed(2))
@@ -96,15 +97,19 @@ function loadIndicadoresDashboard(año, semana, dia) {
     );
     $("#dataCapu").html(
       "<i class='fa fa-dollar-sign m-r-15 text-c-green'></i>" +
-        format(respuesta.tiendas[2]["value"].toFixed(2))
+        format(respuesta.tiendas[3]["value"].toFixed(2))
     );
     $("#dataReforma").html(
       "<i class='fa fa-dollar-sign m-r-15 text-c-green'></i>" +
-        format(respuesta.tiendas[3]["value"].toFixed(2))
+        format(respuesta.tiendas[4]["value"].toFixed(2))
     );
     $("#dataLasTorres").html(
       "<i class='fa fa-dollar-sign m-r-15 text-c-green'></i>" +
-        format(respuesta.tiendas[4]["value"].toFixed(2))
+        format(respuesta.tiendas[5]["value"].toFixed(2))
+    );
+    $("#dataAcatepec").html(
+      "<i class='fa fa-dollar-sign m-r-15 text-c-green'></i>" +
+        format(respuesta.tiendas[2]["value"].toFixed(2))
     );
     $("#dashboardTotalesTiendas").html(
       "$ " + format(totalAcumuladoTiendas.toFixed(2))

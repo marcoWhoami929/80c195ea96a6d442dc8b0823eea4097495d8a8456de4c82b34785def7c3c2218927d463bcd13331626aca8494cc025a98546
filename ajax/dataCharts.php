@@ -16,6 +16,7 @@ if (isset($_GET["grafico"])) {
             array_push($etiquetas, array("name" => $value["canalComercial"], "y" => (float)$value["Totales"], "drilldown" => $value["canalComercial"]));
         }
         $totalSanManuel = 0;
+        $totalSantiago = 0;
         foreach ($ventasDiariasTiendas as $key => $value) {
 
             if ($value["Agente"] == "ALBERTO YIZARK GONZALEZ AVILES") {
@@ -25,9 +26,11 @@ if (isset($_GET["grafico"])) {
             } else if ($value["Agente"] == "MOSTRADOR SAN MANUEL") {
                 $total = $totalSanManuel + $value["Totales"];
                 array_push($series, array('PV SAN MANUEL', (float)$total));
+            } else if ($value["Agente"] == "GABRIEL GARDUÑO GARCIA") {
+                $totalSantiago = $totalSantiago + $value["Totales"];
             } else if ($value["Agente"] == "MOSTRADOR SANTIAGO") {
-
-                array_push($series, array('PV SANTIAGO', (float)$value["Totales"]));
+                $totals = $totalSantiago + $value["Totales"];
+                array_push($series, array('PV SANTIAGO', (float)$totals));
             } else {
                 array_push($series, array($value["Agente"], (float)$value["Totales"]));
             }

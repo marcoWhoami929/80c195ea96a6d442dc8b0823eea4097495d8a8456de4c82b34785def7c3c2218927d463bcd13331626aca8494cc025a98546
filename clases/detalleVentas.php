@@ -4,6 +4,9 @@ $agenteListPinturas = "CASE SUBSTRING(adoc.CSERIEDOCUMENTO,3,4)
 WHEN 'CP'
 THEN 
 'PV CAPU'
+WHEN 'CT'
+THEN 
+'PV ACATEPEC'
 WHEN 'SA'
 THEN 
 'PV SAN MANUEL'
@@ -234,6 +237,9 @@ $agenteListDekkerlab = "CASE SUBSTRING(adoc.CSERIEDOCUMENTO,3,4)
 WHEN 'CA'
 THEN 
 'PV CAPU'
+WHEN 'CT'
+THEN 
+'PV ACATEPEC'
 WHEN 'RM'
 THEN
  'PV REFORMA'
@@ -1365,7 +1371,7 @@ class detalleVentas extends ConexionsBd
          ELSE
          SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
          '1' As indicador
-  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -1972,7 +1978,7 @@ SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull(
          ELSE
          SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
          '1' As indicador
-  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -2658,7 +2664,7 @@ SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull(
          ELSE
          SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
          '1' As indicador
-  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -3266,7 +3272,7 @@ SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull(
          ELSE
          SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
          '1' As indicador
-  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -3950,7 +3956,7 @@ SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull(
          ELSE
          SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
          '1' As indicador
-  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -4557,7 +4563,7 @@ SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull(
          ELSE
          SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Total,
          '1' As indicador
-  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -5253,7 +5259,7 @@ SELECT *,IsNull([1],0) + IsNull([2],0) + IsNull([3],0) + IsNull([4],0) + IsNull(
                     ELSE
                     SUM((amov.CTOTAL)-amov.CIMPUESTO1) END AS Total,
                     '1' As indicador
-                    FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and amov.CIDALMACEN IN (1,4,6,8,10,12,14,15,16) and amov.CIDUNIDAD NOT IN(1,28,50) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+                    FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and amov.CIDALMACEN IN (1,4,6,8,10,12,14,15,16,17) and amov.CIDUNIDAD NOT IN(1,28,50) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -5860,7 +5866,7 @@ CASE adoc.CRAZONSOCIAL
         ELSE
         SUM((amov.CTOTAL)-amov.CIMPUESTO1) END AS Total,
         '1' As indicador
-        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and amov.CIDALMACEN IN (1,4,6,8,10,12,14,15,16) and amov.CIDUNIDAD NOT IN(1,28,50) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and amov.CIDALMACEN IN (1,4,6,8,10,12,14,15,16,17) and amov.CIDUNIDAD NOT IN(1,28,50) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -6589,7 +6595,7 @@ SELECT
                     ELSE
                     SUM(CUNIDADES) END AS TotalUnidades,
         '1' As indicador
-        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and amov.CIDALMACEN IN (1,4,6,8,10,12,14,15,16) and amov.CIDUNIDAD NOT IN(1,28,50) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and amov.CIDALMACEN IN (1,4,6,8,10,12,14,15,16,17) and amov.CIDUNIDAD NOT IN(1,28,50) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -7228,7 +7234,7 @@ SELECT
                     ELSE
                     SUM(CUNIDADES) END AS TotalUnidades,
         '1' As indicador
-        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and amov.CIDALMACEN IN (1,4,6,8,10,12,14,15,16) and amov.CIDUNIDAD NOT IN(1,28,50) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and amov.CIDALMACEN IN (1,4,6,8,10,12,14,15,16,17) and amov.CIDUNIDAD NOT IN(1,28,50) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -7930,7 +7936,7 @@ CASE adoc.CRAZONSOCIAL
                     ELSE
                     SUM((amov.CTOTAL)-amov.CIMPUESTO1) END AS Total,
                     '1' As indicador
-                    FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION INNER JOIN [adDEKKERLAB].[dbo].[admConversionesUnidad] as aconv ON apro.CIDUNIDADBASE = aconv.CIDUNIDAD1 and amov.CIDUNIDAD = aconv.CIDUNIDAD2 WHERE $sWhere and amov.CIDALMACEN IN (3,5,7,9,11,13) and amov.CIDUNIDAD IN(28) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+                    FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION INNER JOIN [adDEKKERLAB].[dbo].[admConversionesUnidad] as aconv ON apro.CIDUNIDADBASE = aconv.CIDUNIDAD1 and amov.CIDUNIDAD = aconv.CIDUNIDAD2 WHERE $sWhere and amov.CIDALMACEN IN (3,5,7,9,11,13,18) and amov.CIDUNIDAD IN(28) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -8541,7 +8547,7 @@ CASE adoc.CRAZONSOCIAL
         ELSE
         SUM((amov.CTOTAL)-amov.CIMPUESTO1) END AS Total,
         '1' As indicador
-        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION INNER JOIN [adDEKKERLAB].[dbo].[admConversionesUnidad] as aconv ON apro.CIDUNIDADBASE = aconv.CIDUNIDAD1 and amov.CIDUNIDAD = aconv.CIDUNIDAD2 WHERE $sWhere and amov.CIDALMACEN IN (3,5,7,9,11,13) and amov.CIDUNIDAD IN(28) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION INNER JOIN [adDEKKERLAB].[dbo].[admConversionesUnidad] as aconv ON apro.CIDUNIDADBASE = aconv.CIDUNIDAD1 and amov.CIDUNIDAD = aconv.CIDUNIDAD2 WHERE $sWhere and amov.CIDALMACEN IN (3,5,7,9,11,13,18) and amov.CIDUNIDAD IN(28) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -9238,7 +9244,7 @@ CASE adoc.CRAZONSOCIAL
         ELSE
         SUM(amov.CUNIDADES * aconv.CFACTORCONVERSION)  END AS CUNIDADES,
         '1' As indicador
-        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION INNER JOIN [adDEKKERLAB].[dbo].[admConversionesUnidad] as aconv ON apro.CIDUNIDADBASE = aconv.CIDUNIDAD1 and amov.CIDUNIDAD = aconv.CIDUNIDAD2 WHERE $sWhere and amov.CIDALMACEN IN (3,5,7,9,11,13) and amov.CIDUNIDAD IN(28) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION INNER JOIN [adDEKKERLAB].[dbo].[admConversionesUnidad] as aconv ON apro.CIDUNIDADBASE = aconv.CIDUNIDAD1 and amov.CIDUNIDAD = aconv.CIDUNIDAD2 WHERE $sWhere and amov.CIDALMACEN IN (3,5,7,9,11,13,18) and amov.CIDUNIDAD IN(28) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -9845,7 +9851,7 @@ CASE adoc.CRAZONSOCIAL
         ELSE
         SUM(amov.CUNIDADES * aconv.CFACTORCONVERSION)  END AS CUNIDADES,
         '1' As indicador
-        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION INNER JOIN [adDEKKERLAB].[dbo].[admConversionesUnidad] as aconv ON apro.CIDUNIDADBASE = aconv.CIDUNIDAD1 and amov.CIDUNIDAD = aconv.CIDUNIDAD2 WHERE $sWhere and amov.CIDALMACEN IN (3,5,7,9,11,13) and amov.CIDUNIDAD IN(28) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION INNER JOIN [adDEKKERLAB].[dbo].[admConversionesUnidad] as aconv ON apro.CIDUNIDADBASE = aconv.CIDUNIDAD1 and amov.CIDUNIDAD = aconv.CIDUNIDAD2 WHERE $sWhere and amov.CIDALMACEN IN (3,5,7,9,11,13,18) and amov.CIDUNIDAD IN(28) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -10544,7 +10550,7 @@ CASE adoc.CRAZONSOCIAL
         ELSE
         SUM((amov.CTOTAL)-amov.CIMPUESTO1) END AS Total,
         '1' As indicador
-        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla2 ON apro.CIDVALORCLASIFICACION1 = acla2.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla2 ON apro.CIDVALORCLASIFICACION1 = acla2.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -11154,7 +11160,7 @@ CASE adoc.CRAZONSOCIAL
         ELSE
         SUM((amov.CTOTAL)-amov.CIMPUESTO1) END AS Total,
         '1' As indicador
-        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla2 ON apro.CIDVALORCLASIFICACION1 = acla2.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+        FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR  INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla2 ON apro.CIDVALORCLASIFICACION1 = acla2.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -11972,7 +11978,7 @@ CASE adoc.CRAZONSOCIAL
                  SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Desglose,
                  'DEKKERLAB' as Empresa
                  
-          FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION  WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+          FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION  WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -12700,7 +12706,7 @@ END As canalComercial,
          SUM(adoc.CTOTAL-adoc.CIMPUESTO1) END AS Desglose,
          'DEKKERLAB' as Empresa
          
-  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION  WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+  FROM [adDEKKERLAB].[dbo].[admDocumentos] as adoc INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION  WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -13550,7 +13556,7 @@ END As canalComercial,
                     ELSE
                     SUM(CUNIDADES) END AS TotalUnidades,
           '1' As indicador
-          FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and amov.CIDALMACEN IN (1,4,6,8,10,12,14,15,16) and amov.CIDUNIDAD NOT IN(1,28,50) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+          FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and amov.CIDALMACEN IN (1,4,6,8,10,12,14,15,16,17) and amov.CIDUNIDAD NOT IN(1,28,50) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -14323,7 +14329,7 @@ END As canalComercial,
                     ELSE
                     SUM(CUNIDADES) END AS TotalUnidades,
           '1' As indicador
-          FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and amov.CIDALMACEN IN (1,4,6,8,10,12,14,15,16) and amov.CIDUNIDAD NOT IN(1,28,50) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+          FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION WHERE $sWhere and amov.CIDALMACEN IN (1,4,6,8,10,12,14,15,16,17) and amov.CIDUNIDAD NOT IN(1,28,50) and adoc.CIDDOCUMENTODE IN(4,5) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
 3046,
 3047,
 6,
@@ -15165,7 +15171,7 @@ END As canalComercial,
          SUM((amov.CTOTAL)-amov.CIMPUESTO1) END AS Total,
          '1' As indicador,
          'DEKKERLAB' as Empresa
-         FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla2 ON apro.CIDVALORCLASIFICACION1 = acla2.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+         FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla2 ON apro.CIDVALORCLASIFICACION1 = acla2.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
  3046,
  3047,
  6,
@@ -15921,7 +15927,7 @@ END As canalComercial,
          SUM((amov.CTOTAL)-amov.CIMPUESTO1) END AS Total,
          '1' As indicador,
          'DEKKERLAB' as Empresa
-         FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla2 ON apro.CIDVALORCLASIFICACION1 = acla2.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,
+         FROM [adDEKKERLAB].[dbo].[admProductos] as apro LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admMovimientos] as amov ON apro.CIDPRODUCTO = amov.CIDPRODUCTO LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admDocumentos] as adoc ON amov.CIDDOCUMENTO = adoc.CIDDOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admClientes] as aclien ON adoc.CIDCLIENTEPROVEEDOR = aclien.CIDCLIENTEPROVEEDOR INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen ON adoc.CIDAGENTE = agen.CIDAGENTE INNER JOIN [adDEKKERLAB].[dbo].[admConceptos] as acon ON adoc.CIDDOCUMENTODE = acon.CIDDOCUMENTODE AND adoc.CIDCONCEPTODOCUMENTO = acon.CIDCONCEPTODOCUMENTO INNER JOIN [adDEKKERLAB].[dbo].[admAgentes] as agen2 ON aclien.CIDAGENTEVENTA = agen2.CIDAGENTE  LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla ON aclien.CIDVALORCLASIFCLIENTE3 = acla.CIDVALORCLASIFICACION LEFT OUTER JOIN [adDEKKERLAB].[dbo].[admClasificacionesValores] as acla2 ON apro.CIDVALORCLASIFICACION1 = acla2.CIDVALORCLASIFICACION WHERE $sWhere and adoc.CIDDOCUMENTODE IN(4,5,7,13) and adoc.CIDCONCEPTODOCUMENTO IN(3048,3081,3082,
  3046,
  3047,
  6,
@@ -17570,6 +17576,8 @@ SELECT * FROM DetalleVentas PIVOT(SUM(Abonado) FOR indicador in([1])) as pivotTa
      THEN 'SUCURSAL CAPU' 
      WHEN 'FCEC' 
      THEN 'ECOMMERCE'
+      WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
      ELSE
      'SIN ASIGNAR'
      END AS canalComercial
@@ -17653,6 +17661,8 @@ CASE adoc.CSERIEDOCUMENTO
      THEN 'SUCURSAL CAPU' 
      WHEN 'FCEC' 
      THEN 'ECOMMERCE'
+     WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
      ELSE
      'SIN ASIGNAR'
      END AS canalComercial
@@ -17763,6 +17773,8 @@ CASE adoc.CSERIEDOCUMENTO
      THEN 'SUCURSAL CAPU' 
      WHEN 'FCEC' 
      THEN 'ECOMMERCE'
+     WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
      ELSE
      'SIN ASIGNAR'
      END AS canalComercial
@@ -17874,6 +17886,8 @@ CASE adoc.CSERIEDOCUMENTO
      THEN 'SUCURSAL CAPU' 
      WHEN 'FCEC' 
      THEN 'ECOMMERCE'
+     WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
      ELSE
      'SIN ASIGNAR'
      END AS canalComercial
@@ -17999,6 +18013,8 @@ SELECT Cliente,canalComercial,SUM(Venta) as Ventas,SUM(CostoVenta) as Costos,Sum
            THEN 'SUCURSAL CAPU' 
            WHEN 'FCEC' 
            THEN 'ECOMMERCE'
+           WHEN 'FCCT'
+            THEN 'SUCURSAL ACATEPEC'
            ELSE
            'SIN ASIGNAR'
            END AS canalComercial
@@ -18082,6 +18098,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -18192,6 +18210,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -18303,6 +18323,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -18479,6 +18501,8 @@ SELECT Cliente,canalComercial,SUM(Venta) as Ventas,SUM(CostoVenta) as Costos,Sum
            THEN 'SUCURSAL CAPU' 
            WHEN 'FCEC' 
            THEN 'ECOMMERCE'
+           WHEN 'FCCT'
+            THEN 'SUCURSAL ACATEPEC'
            ELSE
            'SIN ASIGNAR'
            END AS canalComercial
@@ -18562,6 +18586,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -18672,6 +18698,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -18783,6 +18811,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -18908,6 +18938,8 @@ SELECT Cliente,Clasificacion,SUM(Venta) as Ventas,SUM(CostoVenta) as Costos,Sum(
            THEN 'SUCURSAL CAPU' 
            WHEN 'FCEC' 
            THEN 'ECOMMERCE'
+           WHEN 'FCCT'
+            THEN 'SUCURSAL ACATEPEC'
            ELSE
            'SIN ASIGNAR'
            END AS canalComercial
@@ -18991,6 +19023,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -19101,6 +19135,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -19212,6 +19248,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -19381,6 +19419,8 @@ SELECT Cliente,Clasificacion,SUM(Venta) as Ventas,SUM(CostoVenta) as Costos,Sum(
            THEN 'SUCURSAL CAPU' 
            WHEN 'FCEC' 
            THEN 'ECOMMERCE'
+           WHEN 'FCCT'
+            THEN 'SUCURSAL ACATEPEC'
            ELSE
            'SIN ASIGNAR'
            END AS canalComercial
@@ -19464,6 +19504,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -19574,6 +19616,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -19685,6 +19729,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -19810,6 +19856,8 @@ SELECT CCODIGOPRODUCTO,CNOMBREPRODUCTO,SUM(Venta) as Ventas,SUM(CostoVenta) as C
            THEN 'SUCURSAL CAPU' 
            WHEN 'FCEC' 
            THEN 'ECOMMERCE'
+           WHEN 'FCCT'
+            THEN 'SUCURSAL ACATEPEC'
            ELSE
            'SIN ASIGNAR'
            END AS canalComercial
@@ -19893,6 +19941,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -20003,6 +20053,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
@@ -20114,6 +20166,8 @@ CASE adoc.CSERIEDOCUMENTO
     THEN 'SUCURSAL CAPU' 
     WHEN 'FCEC' 
     THEN 'ECOMMERCE'
+    WHEN 'FCCT'
+     THEN 'SUCURSAL ACATEPEC'
     ELSE
     'SIN ASIGNAR'
     END AS canalComercial
