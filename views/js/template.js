@@ -1457,6 +1457,8 @@ function cargarDetalleVentasCliente(page, centro) {
       $("#loader").html("");
     },
   });
+   var centroTrabajo = localStorage.getItem("centroDetalle");
+  $("#centroTrabajo option[value='"+centroTrabajo+"']").attr("selected", true);
 }
 function cargarDetalleVentasClienteProducto(page, tipo) {
   var vista = "cargarDetalleVentasClienteProducto";

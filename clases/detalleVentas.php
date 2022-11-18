@@ -12017,7 +12017,7 @@ CASE adoc.CRAZONSOCIAL
 
 
           $query = $this->mysqli->query($sql);
-
+        
           $sql1 = "WITH ventasDiarias AS(SELECT 
         adoc.CIDDOCUMENTO,
         acon.CNOMBRECONCEPTO,
