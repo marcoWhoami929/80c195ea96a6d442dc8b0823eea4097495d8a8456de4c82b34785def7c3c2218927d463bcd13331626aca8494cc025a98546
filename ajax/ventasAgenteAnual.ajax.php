@@ -52,6 +52,7 @@ if ($action == 'ventasAgente') {
                         <th>2020</th>
                         <th>2021</th>
                         <th>2022</th>
+                        <th>2023</th>
                         <th>TOTAL GENERAL</th>
                     </tr>
                 </thead>
@@ -68,7 +69,7 @@ if ($action == 'ventasAgente') {
                     $año8 = 0;
                     $año9 = 0;
                     $año10 = 0;
-
+                    $año11 = 0;
                     $añoTotales = 0;
 
                     foreach ($datos as $key => $row) {
@@ -82,6 +83,7 @@ if ($action == 'ventasAgente') {
                         $año8 += $row['2020'];
                         $año9 += $row['2021'];
                         $año10 += $row['2022'];
+                        $año11 += $row['2023'];
                         $añoTotales += $row['Totales'];
                     ?>
                         <tr>
@@ -96,6 +98,7 @@ if ($action == 'ventasAgente') {
                             <td style="font-weight:bold;text-align:right" onclick="redireccionAccionVentas('<?= $row['Agente']; ?>','Agentes','','2020','13','')">$<?= number_format($row['2020'], 2) ?></td>
                             <td style="font-weight:bold;text-align:right" onclick="redireccionAccionVentas('<?= $row['Agente']; ?>','Agentes','','2021','13','')">$<?= number_format($row['2021'], 2) ?></td>
                             <td style="font-weight:bold;text-align:right" onclick="redireccionAccionVentas('<?= $row['Agente']; ?>','Agentes','','2022','13','')">$<?= number_format($row['2022'], 2) ?></td>
+                            <td style="font-weight:bold;text-align:right" onclick="redireccionAccionVentas('<?= $row['Agente']; ?>','Agentes','','2023','13','')">$<?= number_format($row['2023'], 2) ?></td>
                             <th style="font-weight:bold;text-align:right">$<?= number_format($row['Totales'], 2) ?></th>
                         </tr>
                     <?php
@@ -116,6 +119,7 @@ if ($action == 'ventasAgente') {
                         <th style="font-weight:bold;text-align:right">$<?= number_format($año8, 2) ?></th>
                         <th style="font-weight:bold;text-align:right">$<?= number_format($año9, 2) ?></th>
                         <th style="font-weight:bold;text-align:right">$<?= number_format($año10, 2) ?></th>
+                        <th style="font-weight:bold;text-align:right">$<?= number_format($año11, 2) ?></th>
                         <th style="font-weight:bold;text-align:right">$<?= number_format($añoTotales, 2) ?></th>
                     </tr>
                 </tfoot>

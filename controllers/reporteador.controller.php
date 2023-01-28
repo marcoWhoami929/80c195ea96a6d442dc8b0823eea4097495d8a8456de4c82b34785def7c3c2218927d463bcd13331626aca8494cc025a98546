@@ -1374,9 +1374,9 @@ class ControllerReports
         /*
         GENERACION DE LA CABECERA DE CAMPOS FILTROS
         */
-        array_push($arregloHeaders, "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022");
+        array_push($arregloHeaders, "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022","2023");
         array_push($arregloHeaders, "TOTAL GENERAL");
-        array_push($arregloCampos, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022);
+        array_push($arregloCampos, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,2023);
         array_push($arregloCampos, "Totales");
         /*
         GENERACION DE LA CABECERA DE CAMPOS FILTROS
@@ -1441,6 +1441,7 @@ class ControllerReports
                 $objPHPExcel->getActiveSheet()->setCellValue("K$i", $value[(int)$arregloCampos[10]]);
                 $objPHPExcel->getActiveSheet()->setCellValue("L$i", $value[(int)$arregloCampos[11]]);
                 $objPHPExcel->getActiveSheet()->setCellValue("M$i", $value[(int)$arregloCampos[12]]);
+                $objPHPExcel->getActiveSheet()->setCellValue("N$i", $value[(int)$arregloCampos[13]]);
                 $objPHPExcel->getActiveSheet()->setCellValue($letra . $i,  $value[$arregloCampos[$totalCampos]]);
             } else {
                 $objPHPExcel->getActiveSheet()->getStyle("A$i")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
@@ -1457,6 +1458,7 @@ class ControllerReports
                 $objPHPExcel->getActiveSheet()->setCellValue("J$i", $value[(int)$arregloCampos[9]]);
                 $objPHPExcel->getActiveSheet()->setCellValue("K$i", $value[(int)$arregloCampos[10]]);
                 $objPHPExcel->getActiveSheet()->setCellValue("L$i", $value[(int)$arregloCampos[11]]);
+                $objPHPExcel->getActiveSheet()->setCellValue("M$i", $value[(int)$arregloCampos[12]]);
                 $objPHPExcel->getActiveSheet()->setCellValue($letra . $i,  $value[$arregloCampos[$totalCampos]]);
             }
 
@@ -1485,6 +1487,7 @@ class ControllerReports
             $objPHPExcel->getActiveSheet()->setCellValue("K$i", "=SUM(K5:K$puntero)");
             $objPHPExcel->getActiveSheet()->setCellValue("L$i", "=SUM(L5:L$puntero)");
             $objPHPExcel->getActiveSheet()->setCellValue("M$i", "=SUM(M5:M$puntero)");
+            $objPHPExcel->getActiveSheet()->setCellValue("N$i", "=SUM(N5:M$puntero)");
         } else {
 
             $objPHPExcel->getActiveSheet()->getStyle("A$i:" . $letra . $i)->getFill()->applyFromArray(array(
@@ -1506,6 +1509,7 @@ class ControllerReports
             $objPHPExcel->getActiveSheet()->setCellValue("J$i", "=SUM(J5:J$puntero)");
             $objPHPExcel->getActiveSheet()->setCellValue("K$i", "=SUM(K5:K$puntero)");
             $objPHPExcel->getActiveSheet()->setCellValue("L$i", "=SUM(L5:L$puntero)");
+            $objPHPExcel->getActiveSheet()->setCellValue("M$i", "=SUM(M5:M$puntero)");
         }
 
 
@@ -1579,6 +1583,7 @@ class ControllerReports
                     $objPHPExcel->getActiveSheet()->setCellValue("K$i", $value[(int)$arregloCampos[10]]);
                     $objPHPExcel->getActiveSheet()->setCellValue("L$i", $value[(int)$arregloCampos[11]]);
                     $objPHPExcel->getActiveSheet()->setCellValue("M$i", $value[(int)$arregloCampos[12]]);
+                    $objPHPExcel->getActiveSheet()->setCellValue("N$i", $value[(int)$arregloCampos[13]]);
                     $objPHPExcel->getActiveSheet()->setCellValue($letra . $i,  $value[$arregloCampos[$totalCampos]]);
                 } else {
                     $objPHPExcel->getActiveSheet()->getStyle("A$i")->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
@@ -1595,6 +1600,7 @@ class ControllerReports
                     $objPHPExcel->getActiveSheet()->setCellValue("J$i", $value[(int)$arregloCampos[9]]);
                     $objPHPExcel->getActiveSheet()->setCellValue("K$i", $value[(int)$arregloCampos[10]]);
                     $objPHPExcel->getActiveSheet()->setCellValue("L$i", $value[(int)$arregloCampos[11]]);
+                    $objPHPExcel->getActiveSheet()->setCellValue("M$i", $value[(int)$arregloCampos[12]]);
                     $objPHPExcel->getActiveSheet()->setCellValue($letra . $i,  $value[$arregloCampos[$totalCampos]]);
                 }
 
@@ -1623,6 +1629,7 @@ class ControllerReports
                 $objPHPExcel->getActiveSheet()->setCellValue("K$i", "=SUM(K5:K$puntero)");
                 $objPHPExcel->getActiveSheet()->setCellValue("L$i", "=SUM(L5:L$puntero)");
                 $objPHPExcel->getActiveSheet()->setCellValue("M$i", "=SUM(M5:M$puntero)");
+                $objPHPExcel->getActiveSheet()->setCellValue("N$i", "=SUM(N5:N$puntero)");
             } else {
 
                 $objPHPExcel->getActiveSheet()->getStyle("A$i:" . $letra . $i)->getFill()->applyFromArray(array(
@@ -1644,6 +1651,7 @@ class ControllerReports
                 $objPHPExcel->getActiveSheet()->setCellValue("J$i", "=SUM(J5:J$puntero)");
                 $objPHPExcel->getActiveSheet()->setCellValue("K$i", "=SUM(K5:K$puntero)");
                 $objPHPExcel->getActiveSheet()->setCellValue("L$i", "=SUM(L5:L$puntero)");
+                $objPHPExcel->getActiveSheet()->setCellValue("M$i", "=SUM(M5:M$puntero)");
             }
 
 

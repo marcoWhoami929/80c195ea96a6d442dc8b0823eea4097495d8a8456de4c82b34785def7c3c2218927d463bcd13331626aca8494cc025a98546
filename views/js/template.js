@@ -304,7 +304,7 @@ $(function () {
 
       if (localStorage.mes === undefined) {
         localStorage.setItem("mes", mesCurrent);
-        localStorage.setItem("año", 2022);
+        localStorage.setItem("año", 2023);
       } else {
       }
       break;

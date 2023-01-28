@@ -760,7 +760,7 @@ class detalleVentasAnual extends ConexionsBd
                     $campoOrden = "NombreCliente";
                     break;
                case 'monto':
-                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0)";
+                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0)";
                     break;
           }
           $sWhere = " adoc.CCANCELADO  = '" . $estatus . "' ";
@@ -1389,7 +1389,7 @@ ventasOrdenadas As(
     FROM ventasData  $condicional
     
     )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden  OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden  OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
 
 
           $query = $this->mysqli->query($sql);
@@ -1999,7 +1999,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden";
 
           $nums_row = $this->countAll($sql1);
 
@@ -2058,7 +2058,7 @@ SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],
                     $campoOrden = "canalComercial";
                     break;
                case 'monto':
-                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0)";
+                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0)";
                     break;
           }
           $sWhere = " adoc.CCANCELADO  = '" . $estatus . "' ";
@@ -2687,7 +2687,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
 
 
           $query = $this->mysqli->query($sql);
@@ -3298,7 +3298,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden";
 
           $nums_row = $this->countAll($sql1);
 
@@ -3356,7 +3356,7 @@ SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],
                     $campoOrden = "Agente";
                     break;
                case 'monto':
-                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0)";
+                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0)";
                     break;
           }
           $sWhere = " adoc.CCANCELADO  = '" . $estatus . "' ";
@@ -3985,7 +3985,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden  OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden  OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
 
 
           $query = $this->mysqli->query($sql);
@@ -4595,7 +4595,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden";
 
           $nums_row = $this->countAll($sql1);
 
@@ -4665,7 +4665,7 @@ SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],
                     $campoOrden = "CCODIGOPRODUCTO";
                     break;
                case 'monto':
-                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0)";
+                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0)";
                     break;
           }
 
@@ -5293,7 +5293,7 @@ SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],
                 FROM ventasData  $condicional
                 
                 )
-                SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+                SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
 
 
           $query = $this->mysqli->query($sql);
@@ -5900,7 +5900,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden";
 
           $nums_row = $this->countAll($sql1);
 
@@ -5969,7 +5969,7 @@ SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],
                     $campoOrden = "CCODIGOPRODUCTO";
                     break;
                case 'monto':
-                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0)";
+                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0)";
                     break;
           }
           $sWhere = " adoc.CCANCELADO  = '" . $estatus . "' ";
@@ -6628,7 +6628,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(TotalUnidades) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(TotalUnidades) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
 
 
           $query = $this->mysqli->query($sql);
@@ -7267,7 +7267,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(TotalUnidades) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(TotalUnidades) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden";
 
           $nums_row = $this->countAll($sql1);
 
@@ -7338,7 +7338,7 @@ SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],
                     $campoOrden = "CCODIGOPRODUCTO";
                     break;
                case 'monto':
-                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0)";
+                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0)";
                     break;
           }
 
@@ -7970,7 +7970,7 @@ CASE adoc.CRAZONSOCIAL
                  FROM ventasData  $condicional
                  
                  )
-                 SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+                 SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
 
 
           $query = $this->mysqli->query($sql);
@@ -8581,7 +8581,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden";
 
           $nums_row = $this->countAll($sql1);
 
@@ -8651,7 +8651,7 @@ SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],
                     $campoOrden = "CCODIGOPRODUCTO";
                     break;
                case 'monto':
-                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0)";
+                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0)";
                     break;
           }
 
@@ -9279,7 +9279,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(CUNIDADES) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(CUNIDADES) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
 
 
           $query = $this->mysqli->query($sql);
@@ -9886,7 +9886,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(CUNIDADES) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(CUNIDADES) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden";
 
           $nums_row = $this->countAll($sql1);
 
@@ -9952,7 +9952,7 @@ SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],
                     $campoOrden = "Marca";
                     break;
                case 'monto':
-                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0)";
+                    $campoOrden = "IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0)";
                     break;
           }
 
@@ -10584,7 +10584,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden OFFSET $offset ROWS FETCH NEXT $per_page ROWS ONLY";
 
 
           $query = $this->mysqli->query($sql);
@@ -11194,7 +11194,7 @@ SELECT
 FROM ventasData  $condicional
 
 )
-SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022])) as pivotTable  order by $campoOrden $orden";
+SELECT *,IsNull([2013],0) + IsNull([2014],0) + IsNull([2015],0) + IsNull([2016],0) + IsNull([2017],0) + IsNull([2018],0) + IsNull([2019],0) + IsNull([2020],0) + IsNull([2021],0) + IsNull([2022],0) + IsNull([2023],0) Totales FROM ventasOrdenadas PIVOT(SUM(Total) FOR Año in([2013],[2014],[2015],[2016],[2017],[2018],[2019],[2020],[2021],[2022],[2023])) as pivotTable  order by $campoOrden $orden";
 
           $nums_row = $this->countAll($sql1);
 

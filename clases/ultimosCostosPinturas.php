@@ -186,6 +186,9 @@ class ultimosCostosPinturas extends ConexionsBd
             case '2022':
                 $meses = "2013,2014,2015,2016,2017,2018,2019,2020,2021";
                 break;
+            case '2023':
+                $meses = "2013,2014,2015,2016,2017,2018,2019,2020,2021,2022";
+                break;
         }
 
         $sql = "WITH consulta as (SELECT  admpro.CIDPRODUCTO,admcos.CULTIMOCOSTOH,admmov.CIDDOCUMENTO,admcos.CFECHACOSTOH,MONTH(admcos.CFECHACOSTOH) as mes,YEAR(admcos.CFECHACOSTOH) as año,ROW_NUMBER() OVER(PARTITION BY admcos.CIDPRODUCTO,DATEADD(MONTH,DATEDIFF(MONTH,0,admcos.CFECHACOSTOH),0)
